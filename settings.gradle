@@ -1,0 +1,2 @@
+rootProject.name='Chefi'
+include ':app'
