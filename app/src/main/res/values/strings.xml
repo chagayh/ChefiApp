@@ -7,4 +7,15 @@
     <string name="hello_home_fragment">Hello home fragment</string>
     <string name="hello_search_fragment">Hello search fragment</string>
     <string name="hello_profile_fragment">Hello profile fragment</string>
+
+    <!-- menu names -->
+    <string name="home_title">Home</string>
+    <string name="favorites_title">favorites</string>
+    <string name="search_title">search</string>
+    <string name="add_title">add</string>
+    <string name="profile_title">profile</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="recipe_fragment">recipe fragment</string>
+
 </resources>

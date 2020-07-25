@@ -30,4 +30,9 @@
         android:name="com.example.chefi.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/recipeFragment"
+        android:name="com.example.chefi.recipeFragment"
+        android:label="fragment_recipe"
+        tools:layout="@layout/fragment_recipe" />
 </navigation>
