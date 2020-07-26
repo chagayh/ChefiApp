@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "869501740673",
+    "firebase_url": "https://chefi-24c01.firebaseio.com",
+    "project_id": "chefi-24c01",
+    "storage_bucket": "chefi-24c01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869501740673:android:87170ba5a7d272eedc0f80",
+        "android_client_info": {
+          "package_name": "com.example.chefi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869501740673-vuml7tedufin9ihckkb3ei5cr7al944f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chefi",
+            "certificate_hash": "22fb75b420d7cd85e028cb764bb673e40caeb7b1"
+          }
+        },
+        {
+          "client_id": "869501740673-qote6fhs6ep7eatjct0d9q5min8mogqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxWxBATi3ApG0-SFaT1OeXFglQjR_u8UY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869501740673-qote6fhs6ep7eatjct0d9q5min8mogqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
