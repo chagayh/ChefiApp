@@ -9,13 +9,24 @@
     <string name="hello_profile_fragment">Hello profile fragment</string>
 
     <!-- menu names -->
+    // bottom menu
     <string name="home_title">Home</string>
     <string name="favorites_title">favorites</string>
     <string name="search_title">search</string>
     <string name="add_title">add</string>
     <string name="profile_title">profile</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    // register menu
+    <string name="log_in">Log In</string>
+    <string name="sign_in">Sign In</string>
+
+
     <string name="recipe_fragment">recipe fragment</string>
+    <string name="hello_log_in_fragment">log in fragment</string>
+    <string name="hello_sign_in_fragment">sign in fragment</string>
+
+    // RegisterDialog
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
 
 </resources>
