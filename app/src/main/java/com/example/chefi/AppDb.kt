@@ -16,10 +16,6 @@ class AppDb {
     // TAGS
     private val TAG_ACCOUNT: String = "account"
 
-    init {
-
-    }
-
     fun checkCurrentUser(): FirebaseUser? {
         return auth.currentUser
     }
