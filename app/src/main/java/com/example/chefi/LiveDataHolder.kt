@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 
-class LiveDataHolder {
+object LiveDataHolder {
 
-    private val mutableUserLiveData = MutableLiveData<FirebaseUser>()
+    private val mutableUserLiveData : MutableLiveData<FirebaseUser> by lazy {
+        MutableLiveData<FirebaseUser>()
+    }
 
     fun getUserLiveData() : LiveData<FirebaseUser>{
         return mutableUserLiveData

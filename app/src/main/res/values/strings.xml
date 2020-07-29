@@ -25,7 +25,7 @@
     <string name="hello_log_in_fragment">log in fragment</string>
     <string name="hello_sign_in_fragment">sign in fragment</string>
 
-    // RegisterDialog
+    // LoginActivity
     <string name="user_name">User Name</string>
     <string name="password">Password</string>
 

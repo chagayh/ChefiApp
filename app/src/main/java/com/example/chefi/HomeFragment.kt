@@ -35,19 +35,6 @@ class HomeFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        setObserver()
-    }
-
-    private fun setObserver() {
-        appContext.getUserLiveData().observe (this, Observer { value ->
-            if (value == null){
-                Log.d(TAG_LIVE_DATA, "null user, live data")
-            } else {
-                Toast.makeText(appContext, "user ${value.email} created", Toast.LENGTH_SHORT)
-                    .show()
-                Log.d(TAG_LIVE_DATA, "new user, live data ${value.email}")
-            }
-        })
     }
 
     override fun onCreateView(
