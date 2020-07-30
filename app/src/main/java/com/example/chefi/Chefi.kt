@@ -21,8 +21,12 @@ class Chefi : Application() {
 //        liveDataHolder = LiveDataHolder()
     }
 
-    fun signIn(email: String, password: String){
-        appDb.createUserWithEmailPassword(email, password)
+    fun signIn(email: String, password: String, provider: Int){
+        when (provider){
+            R.string.emailPasswordProvider -> appDb.createUserWithEmailPassword(email, password)
+            R.string.googleProvider -> appDb.signInWithGoogle()
+        }
+
     }
 
     fun logIn(email: String, password: String){

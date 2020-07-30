@@ -28,5 +28,9 @@
     // LoginActivity
     <string name="user_name">User Name</string>
     <string name="password">Password</string>
+    // provider strings
+    <string name="emailPasswordProvider">email_password</string>
+    <string name="googleProvider">google</string>
+
 
 </resources>

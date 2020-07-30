@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 val email = userNameEditText.text.toString()
                 val password = passwordEditText.text.toString()
-                appContext.signIn(email, password)
+                appContext.signIn(email, password, R.string.emailPasswordProvider)
             }
         }
         logInBtn.setOnClickListener {
