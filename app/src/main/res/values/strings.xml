@@ -32,5 +32,8 @@
     <string name="emailPasswordProvider">email_password</string>
     <string name="googleProvider">google</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>
