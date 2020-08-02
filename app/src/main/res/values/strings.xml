@@ -32,8 +32,17 @@
     <string name="emailPasswordProvider">email_password</string>
     <string name="googleProvider">google</string>
 
+    //Firestore collections keys
+    <string name="usersCollection">users_collection</string>
+    <string name="recipesCollection">recipes_collection</string>
+    <string name="recipesCommentsCollection">recipes_comments_collection</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
+    // dialog sign in
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile_description">profile description</string>
+    <string name="full_name">full name</string>
 
 
 </resources>

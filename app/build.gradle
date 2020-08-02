@@ -37,13 +37,15 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     // add the Firebase SDK for Google Analytics
     implementation 'com.google.firebase:firebase-analytics:17.4.4'
     implementation 'com.google.firebase:firebase-auth-ktx:19.3.2'
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.5.0'
 
     def lifecycle_version = "2.2.0"
     def nav_version = "2.3.0"

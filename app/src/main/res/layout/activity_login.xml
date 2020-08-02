@@ -6,28 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vpPager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-<!--        TODO - in order to change PagerTabStrip -->
-<!--        https://developer.android.com/reference/androidx/viewpager/widget/PagerTabStrip.html-->
-
-        <androidx.viewpager.widget.PagerTabStrip
-            android:id="@+id/pager_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:paddingBottom="20dp"
-            android:paddingTop="8dp" />
-
-    </androidx.viewpager.widget.ViewPager>
-
     <FrameLayout
         android:id="@+id/quick_log_frame"
         android:layout_width="match_parent"

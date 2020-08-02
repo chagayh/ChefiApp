@@ -1,20 +1,11 @@
 package com.example.chefi
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.os.Bundle
-import android.os.PersistableBundle
-import com.google.android.material.snackbar.Snackbar
+import android.content.res.Resources
+import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -23,7 +14,6 @@ class AppDb {
 
     // Declare an instance of FirebaseAuth
     private val auth: FirebaseAuth = Firebase.auth
-    private lateinit var googleSignInClient: GoogleSignInClient
 
     companion object {
         // TAGS
@@ -41,13 +31,27 @@ class AppDb {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG_ACCOUNT, "createUserWithEmail:success")
                     val user = auth.currentUser
-//                    liveDataHolder.getUserMutableLiveData().postValue(user)
-                    LiveDataHolder.getUserMutableLiveData().postValue(user)
+                    LiveDataHolder.getFirebaseUserMutableLiveData().postValue(user)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG_ACCOUNT, "createUserWithEmail:failure", task.exception)
                 }
             }
+    }
+
+    /*
+    * set without merge will overwrite a document or create it if it doesn't exist yet
+    * set with merge will update fields in the document or create it if it doesn't exists
+     */
+    fun addUserToCollection(user: User?) {
+        Log.d(TAG_ACCOUNT, "in add to collection, uid = ${user?.uid}")
+        if (user?.uid != null){
+            Log.d(TAG_ACCOUNT, "in add to collection")
+            val firestore = FirebaseFirestore.getInstance()
+            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(user.uid!!)
+                .set(user)
+        }
     }
 
     fun logIn(email: String, password: String){
@@ -56,9 +60,9 @@ class AppDb {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
+                    val newUser = User(user?.uid, user?.email)
                     Log.d(TAG_ACCOUNT, "logInWithEmail:success")
-//                    liveDataHolder.getUserMutableLiveData().postValue(user)
-                    LiveDataHolder.getUserMutableLiveData().postValue(user)
+                    postUser(newUser)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG_ACCOUNT, "logInWithEmail:failure", task.exception)
@@ -66,8 +70,20 @@ class AppDb {
             }
     }
 
+    fun postUser(user: User?) {
+        LiveDataHolder.getUserMutableLiveData().postValue(user)
+    }
+
     fun signOut(){
         auth.signOut()
+    }
+
+    fun deleteUser() {
+        val currUser = auth.currentUser
+        currUser?.delete()
+            ?.addOnCompleteListener {
+                Log.d(TAG_ACCOUNT, "deleted user")
+            }
     }
 
 }
