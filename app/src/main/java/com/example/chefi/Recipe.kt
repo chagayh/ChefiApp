@@ -1,11 +1,12 @@
 package com.example.chefi
 
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import java.lang.ref.Reference
+import android.net.Uri
+import com.google.firebase.firestore.CollectionReference
 
-data class Recipe (
-    var uid: String,
-    var comments: Reference<String>,
-    var likes: Int = 0
+data class Recipe(
+    var uid: String? = null,
+    var name: String? = null,
+    var comments: CollectionReference? = null,
+    var likes: Int = 0,
+    var imageUri: Uri? = null
 )

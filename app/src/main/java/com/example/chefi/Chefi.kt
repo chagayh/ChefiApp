@@ -2,8 +2,8 @@ package com.example.chefi
 
 import android.app.Application
 import android.content.Context
-import android.content.res.Resources
-import com.google.firebase.auth.FirebaseUser
+import android.net.Uri
+import com.google.firebase.firestore.DocumentReference
 
 class Chefi : Application() {
     private lateinit var appDb : AppDb
@@ -34,8 +34,8 @@ class Chefi : Application() {
         appDb.logIn(email, password)
     }
 
-    fun checkCurrentUser() : FirebaseUser? {
-        return appDb.checkCurrentUser()
+    fun checkCurrentUser() : User? {
+        return appDb.getCurrUser()
     }
 
     fun addUserToCollection(user: User?){
@@ -48,6 +48,10 @@ class Chefi : Application() {
 
     fun deleteUser(){
         appDb.deleteUser()
+    }
+
+    fun addRecipe(recipeTitle: String, imageUri: Uri?) {
+        appDb.addRecipe(recipeTitle, imageUri)
     }
 
 }

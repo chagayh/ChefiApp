@@ -27,7 +27,6 @@ class UserEmailFragment : Fragment() {
     private lateinit var passwordEditText: EditText
     private lateinit var signInBtn: Button
     private lateinit var logInBtn: Button
-    private var newUser: User? = null
 
     companion object {
         val TAG_SIGN_IN = "signInTag"

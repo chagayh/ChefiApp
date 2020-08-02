@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.ktx.toObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         else {
-            Toast.makeText(this, "user = ${user.email}", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "user = null", Toast.LENGTH_SHORT)
                 .show()
 //            updateUI(user)  // TODO
         }

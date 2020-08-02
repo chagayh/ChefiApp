@@ -1,11 +1,13 @@
 package com.example.chefi
 
+import com.google.firebase.firestore.DocumentReference
+
 data class User (
-    var uid: String?,
-    var email: String?,
+    var uid: String? = null,
+    var email: String? = null,
     var name: String? = null,
     var description: String? = null,
-    var recipes: MutableList<Recipe>? = null,
-    var following: MutableList<String>? = null,     // users id's
-    var followers: MutableList<String>? = null      // users id's
+    var recipes: ArrayList<DocumentReference>? = null,
+    var following: ArrayList<DocumentReference>? = null,     // users id's
+    var followers: ArrayList<DocumentReference>? = null      // users id's
 )
