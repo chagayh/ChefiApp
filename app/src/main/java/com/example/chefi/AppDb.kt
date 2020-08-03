@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
@@ -97,10 +98,8 @@ class AppDb {
 
     fun addRecipe(recipeTitle: String, imageUri: Uri?) {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
-        val commentsCollectionPath = Chefi.getCon().getString(R.string.recipesCommentsCollection)
+//        val commentsCollectionPath = Chefi.getCon().getString(R.string.recipesCommentsCollection)
         val document = firestore.collection(recipeCollectionPath).document()
-//        val collectionReference = firestore.document(document.id).collection(commentsCollectionPath)
-//        Log.d("account", "collectionReference = ${collectionReference.parent}")
         val recipe = Recipe(document.id, recipeTitle, 0, imageUri)
         Log.d("account", "prob before set")
         document.set(recipe)
@@ -110,7 +109,21 @@ class AppDb {
             .addOnFailureListener {
             Log.d("account", "in failure")
         }
-        firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
+        if (currUser?.recipes == null) {
+            currUser?.recipes = ArrayList()
+            Log.d("account", "currUser.recipe = ${currUser?.recipes}")
+        }
+        Log.d("account", "currUser.recipe = ${currUser?.recipes}")
+        currUser?.recipes?.add(document)
+
+        // update the user in the db
+        currUser?.uid?.let {
+            firestore.collection(Chefi.getCon().getString(R.string.usersCollection)).document(
+                it
+            ).set(currUser!!, SetOptions.merge())
+        }
+        // if we want to also add a comments collection - use next line
+//        firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
         addRecipeToUserData(document)
     }
 
