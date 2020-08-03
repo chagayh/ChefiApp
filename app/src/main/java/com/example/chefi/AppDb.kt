@@ -99,8 +99,9 @@ class AppDb {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
         val commentsCollectionPath = Chefi.getCon().getString(R.string.recipesCommentsCollection)
         val document = firestore.collection(recipeCollectionPath).document()
-        val collectionReference = document.collection(commentsCollectionPath)
-        val recipe = Recipe(document.id, recipeTitle, collectionReference, 0, imageUri)
+//        val collectionReference = firestore.document(document.id).collection(commentsCollectionPath)
+//        Log.d("account", "collectionReference = ${collectionReference.parent}")
+        val recipe = Recipe(document.id, recipeTitle, 0, imageUri)
         Log.d("account", "prob before set")
         document.set(recipe)
             .addOnSuccessListener {
@@ -109,6 +110,7 @@ class AppDb {
             .addOnFailureListener {
             Log.d("account", "in failure")
         }
+        firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
         addRecipeToUserData(document)
     }
 
