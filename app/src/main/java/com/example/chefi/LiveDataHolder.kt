@@ -2,6 +2,7 @@ package com.example.chefi
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.chefi.database.User
 import com.google.firebase.auth.FirebaseUser
 
 object LiveDataHolder {

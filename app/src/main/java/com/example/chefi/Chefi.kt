@@ -3,7 +3,8 @@ package com.example.chefi
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import com.google.firebase.firestore.DocumentReference
+import com.example.chefi.database.AppDb
+import com.example.chefi.database.User
 
 class Chefi : Application() {
     private lateinit var appDb : AppDb
