@@ -34,6 +34,7 @@ class AppDb {
     }
 
     fun getCurrUser() : User? {
+        updateCurrentUser(auth.currentUser)
         return currUser
     }
 

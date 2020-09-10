@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
             if (value == null){
                 Log.d(TAG_LIVE_DATA, "null user, live data")
             } else {
-                Toast.makeText(this, "user ${value.name} created", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "user ${value.name} connected", Toast.LENGTH_SHORT)
                     .show()
                 Log.d(TAG_LIVE_DATA, "new user, live data ${value.email}")
                 val appIntent = Intent(this, MainActivity::class.java)

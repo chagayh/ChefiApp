@@ -3,6 +3,7 @@ package com.example.chefi.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -25,19 +26,33 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         val navController = findNavController(R.id.navHostFragment)
         bottomNavigationView.setupWithNavController(navController)
+
+//        val user = appContext.checkCurrentUser()
+//        Log.d("mainActivity", "user = $user")
+//        if (user == null){
+//            val intent = Intent(this, LoginActivity::class.java)
+//            startActivity(intent)
+//        }
+//        else {
+//            Toast.makeText(this, "user = ${user.email}", Toast.LENGTH_SHORT)
+//                .show()
+////            updateUI(user)  // TODO
+//        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        val user = appContext.checkCurrentUser()
-        if (user == null){
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
-        else {
-            Toast.makeText(this, "user = null", Toast.LENGTH_SHORT)
-                .show()
-//            updateUI(user)  // TODO
-        }
-    }
+    // TODO - BUG: endless loop
+//    override fun onStart() {
+//        super.onStart()
+//        val user = appContext.checkCurrentUser()
+//        Log.d("mainActivity", "user = $user")
+//        if (user == null){
+//            val intent = Intent(this, LoginActivity::class.java)
+//            startActivity(intent)
+//        }
+//        else {
+//            Toast.makeText(this, "user = ${user.email}", Toast.LENGTH_SHORT)
+//                .show()
+////            updateUI(user)  // TODO
+//        }
+//    }
 }
