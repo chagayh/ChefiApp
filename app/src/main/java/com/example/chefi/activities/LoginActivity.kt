@@ -27,20 +27,16 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
         setObservers()
-
         this.supportFragmentManager
             .beginTransaction()
             .replace(R.id.user_email_frame, UserEmailFragment())
             .replace(R.id.quick_log_frame, QuickLogFragment())
             .commit()
-
-
+        checkUserConnected()
     }
 
     private fun setObservers() {
-
         // data class User observer
         LiveDataHolder.getUserLiveData().observe (this, Observer { value ->
             if (value == null){
@@ -56,36 +52,13 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    @SuppressLint("InflateParams")
-    private fun startSignInDialog(user: FirebaseUser?){
-        var newUser: User?
-        val dialog = AlertDialog.Builder(this)
-        val inflater = this.layoutInflater
-        val view = inflater.inflate(R.layout.sign_in_dialog, null)
-        dialog.setView(view)
-        val fullName = view?.findViewById<EditText>(R.id.fullNameEditText)
-        val description = view?.findViewById<EditText>(R.id.descriptionEditText)
-        dialog.setPositiveButton("ok", DialogInterface.OnClickListener { dialog, id ->
-            if (fullName?.text.toString().trim().isEmpty()
-                || description?.text.toString().trim().isEmpty()) {
-                Toast.makeText(this, "missing fields", Toast.LENGTH_SHORT)
-                    .show()
-                startSignInDialog(user)
-            } else {
-                newUser = User(user?.uid,
-                    user?.email,
-                    fullName?.text.toString(),
-                    description?.text.toString())
-                Log.d("account", "in else of start sign in dialog ${newUser?.name}")
-                appContext.addUserToCollection(newUser)
-                appContext.postUser(newUser)
-            }
-        })
-        dialog.setNegativeButton("cancel", DialogInterface.OnClickListener { dialo, id ->
-            appContext.deleteUser()
-            dialo.cancel()
-        })
-        dialog.create()
-            .show()
+    private fun checkUserConnected(){
+        val user = appContext.checkCurrentUser()
+        Log.d("mainActivity", "user = $user")
+        if (user != null){
+            val appIntent = Intent(this, MainActivity::class.java)
+            startActivity(appIntent)
+            finish()
+        }
     }
 }
