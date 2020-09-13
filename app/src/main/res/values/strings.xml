@@ -26,8 +26,9 @@
     <string name="hello_sign_in_fragment">sign in fragment</string>
 
     // LoginActivity
-    <string name="user_name">User Name</string>
+    <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="name">Name</string>
     // provider strings
     <string name="emailPasswordProvider">email_password</string>
     <string name="googleProvider">google</string>
