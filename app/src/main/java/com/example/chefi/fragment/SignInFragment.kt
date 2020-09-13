@@ -56,7 +56,7 @@ class SignInFragment : Fragment() {
                 val email = emailEditText.text.toString()
                 val name = nameEditText.text.toString()
                 val password = passwordEditText.text.toString()
-                appContext.signIn(email, password)
+                appContext.signIn(email, password, name)
             }
         }
     }

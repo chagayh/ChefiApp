@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:hint="@string/name"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@id/emailEditText"
         app:layout_constraintHorizontal_bias="0.0"

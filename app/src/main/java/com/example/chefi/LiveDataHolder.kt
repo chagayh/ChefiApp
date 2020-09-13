@@ -11,23 +11,11 @@ object LiveDataHolder {
         MutableLiveData<User>()
     }
 
-    private val mutableFirebaseUserLiveData : MutableLiveData<FirebaseUser> by lazy {
-        MutableLiveData<FirebaseUser>()
-    }
-
     fun getUserLiveData() : LiveData<User>{
         return mutableUserLiveData
     }
 
     fun getUserMutableLiveData() : MutableLiveData<User>{
         return mutableUserLiveData
-    }
-
-    fun getFirebaseUserLiveData() : LiveData<FirebaseUser>{
-        return mutableFirebaseUserLiveData
-    }
-
-    fun getFirebaseUserMutableLiveData() : MutableLiveData<FirebaseUser>{
-        return mutableFirebaseUserLiveData
     }
 }

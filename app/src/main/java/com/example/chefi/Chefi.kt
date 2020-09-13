@@ -27,8 +27,8 @@ class Chefi : Application() {
         appCon = this
     }
 
-    fun signIn(email: String, password: String){
-        appDb.createUserWithEmailPassword(email, password)
+    fun signIn(email: String, password: String, name: String){
+        appDb.createUserWithEmailPassword(email, password, name)
     }
 
     fun logIn(email: String, password: String){

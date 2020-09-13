@@ -66,6 +66,4 @@ class UserEmailFragment : Fragment() {
             }
         }.attach()
     }
-
-
 }

@@ -56,14 +56,18 @@ class AppDb {
         }
     }
 
-    fun createUserWithEmailPassword(email: String, password: String) {
+    fun createUserWithEmailPassword(email: String, password: String, name: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG_ACCOUNT, "createUserWithEmail:success")
                     val user = auth.currentUser
-                    LiveDataHolder.getFirebaseUserMutableLiveData().postValue(user)
+                    val newUser = User(user?.uid
+                                       ,user?.email
+                                       ,name)
+                    addUserToCollection(newUser)
+                    postUser(newUser)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG_ACCOUNT, "createUserWithEmail:failure", task.exception)

@@ -40,20 +40,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setObservers() {
-        // firebase user observer
-        LiveDataHolder.getFirebaseUserLiveData().observe (this, Observer { value ->
-            if (value == null){
-                Log.d(TAG_LIVE_DATA, "null user, live data")
-            } else {
-                Toast.makeText(this, "user ${value.email} created", Toast.LENGTH_SHORT)
-                    .show()
-                Log.d(TAG_LIVE_DATA, "new user, live data ${value.email}")
-                startSignInDialog(value)
-//                val appIntent = Intent(this, MainActivity::class.java)
-//                startActivity(appIntent)
-//                finish()
-            }
-        })
 
         // data class User observer
         LiveDataHolder.getUserLiveData().observe (this, Observer { value ->
