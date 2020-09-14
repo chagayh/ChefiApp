@@ -39,6 +39,10 @@ class Chefi : Application() {
         return appDb.getCurrUser()
     }
 
+    fun uploadImage(uri: Uri, fileExtension: String?) {
+        appDb.uploadImage(uri, fileExtension)
+    }
+
     fun addUserToCollection(user: User?){
         appDb.addUserToCollection(user)
     }

@@ -6,19 +6,23 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
+import com.google.common.io.Files.getFileExtension
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 
 @SuppressLint("Registered")
 class AppDb {
@@ -26,6 +30,8 @@ class AppDb {
     // Declare an instance of FirebaseAuth
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore = FirebaseFirestore.getInstance()
+    private val storageRef = FirebaseStorage.getInstance().getReference(Chefi.getCon().getString(R.string.imageUpload))
+    private val databaseRef = FirebaseDatabase.getInstance().getReference(Chefi.getCon().getString(R.string.imageUpload))
     private var currUser: User? = null
 
     companion object {
@@ -161,6 +167,14 @@ class AppDb {
             ?.addOnCompleteListener {
                 Log.d(TAG_ACCOUNT, "deleted user")
             }
+    }
+
+    fun uploadImage(uri: Uri, fileExtension: String?) {
+        val imagePath = System.currentTimeMillis().toString() + "." + fileExtension
+        val fileRef = storageRef.child(imagePath)
+        fileRef.putFile(uri)
+            .addOnSuccessListener {  }
+        // TODO(implement)
     }
 
 }
