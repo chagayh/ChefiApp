@@ -30,8 +30,9 @@ class AppDb {
     // Declare an instance of FirebaseAuth
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore = FirebaseFirestore.getInstance()
-    private val storageRef = FirebaseStorage.getInstance().getReference(Chefi.getCon().getString(R.string.imageUpload))
-    private val databaseRef = FirebaseDatabase.getInstance().getReference(Chefi.getCon().getString(R.string.imageUpload))
+    // Chefi.getCon().getString(R.string.imageUpload)
+    private val storageRef = FirebaseStorage.getInstance().getReference("uploads")
+    private val databaseRef = FirebaseDatabase.getInstance().getReference("uploads")
     private var currUser: User? = null
 
     companion object {
@@ -173,7 +174,16 @@ class AppDb {
         val imagePath = System.currentTimeMillis().toString() + "." + fileExtension
         val fileRef = storageRef.child(imagePath)
         fileRef.putFile(uri)
-            .addOnSuccessListener {  }
+            .addOnSuccessListener { taskSnapshot ->
+
+            }
+            .addOnFailureListener { exeption ->
+
+            }
+            .addOnProgressListener { taskSnapshot ->
+                val progress = (100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
+                // TODO - progress bar
+            }
         // TODO(implement)
     }
 
