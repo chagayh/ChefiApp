@@ -40,7 +40,7 @@ class Chefi : Application() {
     }
 
     fun uploadImage(uri: Uri, fileExtension: String?) {
-        appDb.uploadImage(uri, fileExtension)
+        appDb.uploadImageToStorage(uri, fileExtension)
     }
 
     fun addUserToCollection(user: User?){

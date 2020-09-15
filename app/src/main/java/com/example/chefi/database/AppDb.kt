@@ -6,13 +6,19 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.Toast
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
+import com.example.chefi.activities.MainActivity
 import com.google.common.io.Files.getFileExtension
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -25,7 +31,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
 @SuppressLint("Registered")
-class AppDb {
+class AppDb : Application() {
+    val appContext: Chefi
+        get() = applicationContext as Chefi
 
     // Declare an instance of FirebaseAuth
     private val auth: FirebaseAuth = Firebase.auth
@@ -170,21 +178,30 @@ class AppDb {
             }
     }
 
-    fun uploadImage(uri: Uri, fileExtension: String?) {
+    private fun uploadImageToDatabase(uri: Uri) {
+        // TODO (implement)
+    }
+
+    fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
         val imagePath = System.currentTimeMillis().toString() + "." + fileExtension
         val fileRef = storageRef.child(imagePath)
+        val progressBar = ProgressBar(appContext)
+        progressBar.display     // TODO - check to switch to visibility
+
         fileRef.putFile(uri)
             .addOnSuccessListener { taskSnapshot ->
-
+                progressBar.visibility = View.GONE
+                Toast.makeText(appContext, "File uploaded", Toast.LENGTH_SHORT)
+                    .show()
+                // TODO - update progress bar
             }
             .addOnFailureListener { exeption ->
-
+                Log.d("AppDb", "fail upload image - ${exeption.message}")
             }
             .addOnProgressListener { taskSnapshot ->
                 val progress = (100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
-                // TODO - progress bar
+                progressBar.progress = progress.toInt()
             }
-        // TODO(implement)
     }
 
 }
