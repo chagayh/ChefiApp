@@ -1,5 +1,6 @@
 package com.example.chefi.fragment
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -58,5 +59,12 @@ class ProfileFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    fun setComponents(view: View){
+        val displayWidth = Resources.getSystem().displayMetrics.widthPixels;
+        val displayHeight = Resources.getSystem().displayMetrics.heightPixels;
+
+
     }
 }
