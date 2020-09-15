@@ -9,9 +9,8 @@
     <FrameLayout
         android:id="@+id/quick_log_frame"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_height="200dp" />
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <FrameLayout
         android:id="@+id/user_email_frame"
