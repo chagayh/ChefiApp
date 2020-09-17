@@ -6,6 +6,9 @@
         android:name="android.hardware.camera
                      android.required='true'"/>
 
+    <uses-permission
+        android:name="android.permission.INTERNET" />
+
     <application
         android:name=".Chefi"
         android:allowBackup="true"

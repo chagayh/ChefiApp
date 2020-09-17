@@ -43,6 +43,10 @@ class Chefi : Application() {
         appDb.uploadImageToStorage(uri, fileExtension)
     }
 
+    fun loadImage() {
+        appDb.loadRecipes()
+    }
+
     fun addUserToCollection(user: User?){
         appDb.addUserToCollection(user)
     }
@@ -55,8 +59,13 @@ class Chefi : Application() {
         appDb.deleteUser()
     }
 
-    fun addRecipe(recipeTitle: String, imageUri: Uri?) {
-        appDb.addRecipe(recipeTitle, imageUri)
+    // TODO - for debug only
+    fun getCurrUser() : User? {
+        return appDb.getCurrUser()
     }
+
+//    fun addRecipe(recipeTitle: String?) {
+//        appDb.addRecipe(recipeTitle)
+//    }
 
 }

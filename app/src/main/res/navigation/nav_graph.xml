@@ -35,4 +35,9 @@
         android:name="com.example.chefi.fragment.RecipeFragment"
         android:label="fragment_recipe"
         tools:layout="@layout/fragment_recipe" />
+    <fragment
+        android:id="@+id/displayFragment"
+        android:name="com.example.chefi.fragment.DisplayFragment"
+        android:label="fragment_display"
+        tools:layout="@layout/fragment_display" />
 </navigation>

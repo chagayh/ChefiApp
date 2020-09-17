@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Chefi.iml" filepath="$PROJECT_DIR$/Chefi.iml" group="Chefi" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Chefi/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Chefi.iml" filepath="$PROJECT_DIR$/.idea/modules/Chefi.iml" group="Chefi" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="Chefi/app" />
     </modules>
   </component>
 </project>
