@@ -1,13 +1,11 @@
 package com.example.chefi.adapters
 
 import android.content.Context
-import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.R
-import com.example.chefi.database.MyImage
 import com.example.chefi.database.Recipe
 import com.example.chefi.holders.ImageHolder
 import com.squareup.picasso.Picasso
@@ -17,9 +15,9 @@ class ImageItemAdapter : RecyclerView.Adapter<ImageHolder>() {
     private lateinit var context: Context
     private val TAG_ADAPTER = "imageItemAdapter"
 
-    fun setItems(items: MutableList<Recipe>) {
+    fun setItems(newItems: MutableList<Recipe>) {
         items.clear()
-        items.addAll(items)
+        items.addAll(newItems)
         Log.d(TAG_ADAPTER, "items size = ${items.size}")
 //        Log.d(TAG_ADAPTER, "items size = ${items.size}")
         notifyDataSetChanged()

@@ -18,6 +18,7 @@ import com.example.chefi.activities.MainActivity
 import com.example.chefi.adapters.ImageItemAdapter
 import com.example.chefi.database.MyImage
 import androidx.lifecycle.Observer
+import com.example.chefi.database.Recipe
 
 /**
  * A simple [Fragment] subclass.
@@ -64,8 +65,8 @@ class DisplayFragment : Fragment() {
             if (value == null){
                 Log.d(TAG_DISPLAY_FRAGMENT, "null recipe, live data")
             } else {
-                Log.d(TAG_DISPLAY_FRAGMENT, "new recipes, recipes.size = $value")
-                imageItemAdapter.setItems(value)
+                Log.d(TAG_DISPLAY_FRAGMENT, "new recipes, recipes.size = ${value.size}")
+                imageItemAdapter.setItems(ArrayList<Recipe>(value))
             }
         })
     }

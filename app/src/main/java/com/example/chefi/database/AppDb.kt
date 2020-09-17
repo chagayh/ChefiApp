@@ -13,6 +13,7 @@ import android.util.Log
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -228,20 +229,19 @@ class AppDb : Application() {
         Log.d(TAG_APP_DB, "currUser?.recipes size = ${recipesRefList?.size}")
         if (recipesRefList != null) {
             for (recipeRef in recipesRefList) {
-                val documentRecipe = firestore.collection("recipes_collection").document(recipeRef.toString())
-                    
                 recipeRef.get().addOnSuccessListener { documentSnapshot ->
                     val recipe = documentSnapshot.toObject<Recipe>()
                     if (recipe != null) {
-//                        Log.d(TAG_APP_DB, "recipe likes = ${recipe.likes}")
                         usersRecipes.add(recipe)
+                        Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes.size}")
+//                        Log.e(TAG_APP_DB, "usersRecipes.size = $")
 //                        postRecipes(recipes)
                     } else {
                         Log.d(TAG_APP_DB, "recipe = null")
                     }
                 }
             }
-            Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes.size}")
+            Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes.size} last")
             postRecipes()
         }
     }
