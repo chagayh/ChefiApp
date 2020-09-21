@@ -16,8 +16,10 @@ class MainActivity : AppCompatActivity() {
     private val appContext: Chefi
         get() = applicationContext as Chefi
 
-    // TAGS
-    private val TAG_LIVE_DATA: String = "userLiveData"
+    companion object{
+        // TAGS
+        private val TAG_LIVE_DATA: String = "userLiveData"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -14,15 +14,17 @@ import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import kotlin.collections.ArrayList
 
 @SuppressLint("Registered")
 class AppDb : Application() {
@@ -39,32 +41,44 @@ class AppDb : Application() {
 
     // Users fields
     private var currUser: User? = null
-    private val usersRecipes = ArrayList<Recipe>()
+    private var usersRecipes : ArrayList<Recipe>? = null
 
     companion object {
         // TAGS
         private const val TAG_APP_DB: String = "appDb"
     }
 
+    init {
+        updateCurrentUser()
+    }
+
     fun getCurrUser(): User? {
-        updateCurrentUser(auth.currentUser)
         return currUser
     }
 
-    private fun updateCurrentUser(firebaseUser: FirebaseUser?) {
-        Log.d("account", "begin of update curr user = $currUser")
-        val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
-        val userId = firebaseUser?.uid
-        val documentUser = userId?.let { firestore.collection(usersCollectionPath).document(it) }
-        Log.d("account", "after docUser curr user = $currUser")
-        documentUser?.get()?.addOnSuccessListener { documentSnapshot ->
-            val user = documentSnapshot.toObject<User>()
-            if (user != null) {
-                Log.d("account", "user name = ${user.name}")
-                currUser = user
-                postUser(currUser)
-            } else {
-                Log.d("account", "user = null")
+    private fun initCurrUser(){
+        currUser = null
+        usersRecipes = null
+    }
+
+    private fun updateCurrentUser() {
+        val firebaseUser = auth.currentUser
+        if (firebaseUser != null){
+            Log.d(TAG_APP_DB, "begin of update curr user = $currUser")
+            val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
+            val userId = firebaseUser?.uid
+            val documentUser = firestore.collection(usersCollectionPath).document(userId!!)
+            Log.d(TAG_APP_DB, "after docUser curr user = $currUser")
+            documentUser.get().addOnSuccessListener { documentSnapshot ->
+                val user = documentSnapshot.toObject<User>()
+                if (user != null) {
+                    Log.d(TAG_APP_DB, "user name = ${user.name}")
+                    currUser = user
+                    usersRecipes = ArrayList()
+                    postUser(currUser)
+                } else {
+                    Log.d("account", "user = null")
+                }
             }
         }
     }
@@ -88,10 +102,6 @@ class AppDb : Application() {
             }
     }
 
-    /*
-    * set without merge will overwrite a document or create it if it doesn't exist yet
-    * set with merge will update fields in the document or create it if it doesn't exists
-     */
     fun addUserToCollection(user: User?) {
         Log.d(TAG_APP_DB, "in add to collection, uid = ${user?.uid}")
         if (user?.uid != null) {
@@ -99,6 +109,9 @@ class AppDb : Application() {
             firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
                 .document(user.uid!!)
                 .set(user)
+                .addOnSuccessListener {
+                    updateCurrentUser()
+                }
         }
     }
 
@@ -107,8 +120,7 @@ class AppDb : Application() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    val user = auth.currentUser
-                    updateCurrentUser(user)
+                    updateCurrentUser()
                     Log.d(TAG_APP_DB, "logInWithEmail:success")
                 } else {
                     // If sign in fails, display a message to the user.
@@ -117,68 +129,67 @@ class AppDb : Application() {
             }
     }
 
+    // TODO - do that as a worker (WorkerManager)
     private fun addRecipe(recipeTitle: String?, imageUrl: String?) {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
-//        val commentsCollectionPath = Chefi.getCon().getString(R.string.recipesCommentsCollection)
         val document = firestore.collection(recipeCollectionPath).document()
         val recipe = Recipe(document.id, recipeTitle, 0, imageUrl)
-        Log.d("account", "prob before set")
-        document.set(recipe)
-            .addOnSuccessListener {
-                Log.d("account", "in success")
-            }
-            .addOnFailureListener {
-                Log.d("account", "in failure")
-            }
-        if (currUser?.recipes == null) {
-            currUser?.recipes = ArrayList()
-            Log.d(TAG_APP_DB, "currUser.recipe = ${currUser?.recipes}")
-        }
-        Log.d(TAG_APP_DB, "currUser.recipe = ${currUser?.recipes}")
-        currUser?.recipes?.add(document)
 
-        // update the user in the db
-        currUser?.uid?.let {
-            firestore.collection(Chefi.getCon().getString(R.string.usersCollection)).document(
-                it
-            ).set(currUser!!, SetOptions.merge())
-        }
+        addRecipeToRecipesCollection(document, recipe)
+        addRecipeToLocalCurrUserObject(document)
+        updateUserInUsersCollection()
+
         // if we want to also add a comments collection - use next line
-//        firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
-        addRecipeToUserData(document)
+        // firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
     }
 
-    private fun addRecipeToUserData(recipe: DocumentReference) {
-        if (currUser == null) {
-            Log.w("account", "current user = null")
-        } else {
-            if (currUser!!.recipes == null) {
-                currUser!!.recipes = ArrayList()
-            }
-            currUser!!.recipes?.add(recipe)
+    private fun updateUserInUsersCollection() {
+        // update the user in the db
+        val currUserId = currUser?.uid
+        if (currUserId != null) {
+            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(currUserId)
+                .set(currUser!!, SetOptions.merge())
         }
+    }
+
+    private fun addRecipeToLocalCurrUserObject(document: DocumentReference) {
+        if (currUser == null) {
+            Log.e(TAG_APP_DB, "current user = null")
+        } else if (currUser?.recipes == null) {
+            currUser?.recipes = ArrayList()
+        }
+        Log.d(TAG_APP_DB, "currUser.recipe.size = ${currUser?.recipes?.size}")
+        currUser?.recipes?.add(document)
+    }
+
+    private fun addRecipeToRecipesCollection(document: DocumentReference, recipe : Recipe) {
+        document.set(recipe)
+            .addOnSuccessListener {
+                Log.d(TAG_APP_DB, "in success")
+                usersRecipes?.add(recipe)
+            }
+            .addOnFailureListener {
+                Log.d(TAG_APP_DB, "in failure")
+            }
     }
 
     fun postUser(user: User?) {
         LiveDataHolder.getUserMutableLiveData().postValue(user)
     }
 
-    private fun postRecipes() {
-        Log.d(TAG_APP_DB, "usersRecipes.size = ${usersRecipes.size}")
+    fun postRecipes() {
+        Log.d(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
         LiveDataHolder.getRecipeMutableLiveData().postValue(usersRecipes)
     }
 
     fun signOut() {
-        currUser = null
+        initCurrUser()
         auth.signOut()
     }
 
-    fun deleteUser() {
-        val currUser = auth.currentUser
-        currUser?.delete()
-            ?.addOnCompleteListener {
-                Log.d(TAG_APP_DB, "deleted user")
-            }
+    fun deleteRecipe(){
+        TODO()
     }
 
     private fun uploadImageToDatabase(myImage: MyImage) {
@@ -188,6 +199,7 @@ class AppDb : Application() {
         }
     }
 
+    // TODO - as a worker
     fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
         val imagePath = System.currentTimeMillis().toString() + "." + fileExtension
         val fileRef = storageRef.child(imagePath)
@@ -205,7 +217,7 @@ class AppDb : Application() {
                     if (downloadUri.isSuccessful) {
                         val url = downloadUri.result.toString()
                         Log.d(TAG_APP_DB, "url upload image - $url")
-                        uploadImageToDatabase(MyImage(null, url))
+                        uploadImageToDatabase(MyImage(url))
                         addRecipe(null, url)
                     } else {
                         Log.d(TAG_APP_DB, "dowloadUri.isSuccessful = false")
@@ -224,7 +236,6 @@ class AppDb : Application() {
     }
 
     fun loadRecipes() {
-        updateCurrentUser(auth.currentUser)
         val recipesRefList = currUser?.recipes
         Log.d(TAG_APP_DB, "currUser?.recipes size = ${recipesRefList?.size}")
         if (recipesRefList != null) {
@@ -232,8 +243,8 @@ class AppDb : Application() {
                 recipeRef.get().addOnSuccessListener { documentSnapshot ->
                     val recipe = documentSnapshot.toObject<Recipe>()
                     if (recipe != null) {
-                        usersRecipes.add(recipe)
-                        Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes.size}")
+                        usersRecipes?.add(recipe)
+                        Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
 //                        Log.e(TAG_APP_DB, "usersRecipes.size = $")
 //                        postRecipes(recipes)
                     } else {
@@ -241,9 +252,58 @@ class AppDb : Application() {
                     }
                 }
             }
-            Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes.size} last")
+            Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
             postRecipes()
         }
+    }
+
+    fun loadRecipesFirstTime(){
+        val recipesRefList = currUser?.recipes
+        val tasks = ArrayList<Task<DocumentSnapshot>>()
+        usersRecipes = ArrayList()
+
+        if (recipesRefList != null) {
+            for (recipeRef in recipesRefList) {
+                val docTask = recipeRef.get()
+                tasks.add(docTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                .addOnSuccessListener { value ->
+                    for (recipeDoc in value) {
+                        val recipe = recipeDoc.toObject<Recipe>()
+                        if (recipe != null) {
+                            usersRecipes?.add(recipe)
+                        }
+                    }
+                    postRecipes()
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
+                }
+        }
+    }
+
+    suspend fun loadRecipes_1(index : Int) {
+        val recipesRefList = currUser?.recipes
+        Log.d(TAG_APP_DB, "currUser?.recipes size = ${recipesRefList?.size}")
+        if (recipesRefList != null) {
+            for (recipeRef in recipesRefList) {
+                Log.d(TAG_APP_DB, "current thread = ${Thread.currentThread().name}")
+                recipeRef.get().addOnSuccessListener { documentSnapshot ->
+                    val recipe = documentSnapshot.toObject<Recipe>()
+                    if (recipe != null) {
+                        usersRecipes?.add(recipe)
+                        Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
+//                        Log.e(TAG_APP_DB, "usersRecipes.size = $")
+//                        postRecipes(recipes)
+                    } else {
+                        Log.d(TAG_APP_DB, "recipe = null")
+                    }
+                }
+            }
+            Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
+        }
+
+//        Log.d(TAG_APP_DB, "current thread = ${Thread.currentThread().name}")
+
     }
 }
 

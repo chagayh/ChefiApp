@@ -49,5 +49,10 @@
     <string name="profile_description">profile description</string>
     <string name="full_name">full name</string>
 
+    // Workers keys
+    <string name="keyDataType">dataType</string>
+    <string name="keyRecipeType">recipe</string>
+    <string name="keyRecipesData">recipesArray</string>
+
 
 </resources>

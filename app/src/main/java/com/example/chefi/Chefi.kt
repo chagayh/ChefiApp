@@ -5,6 +5,9 @@ import android.content.Context
 import android.net.Uri
 import com.example.chefi.database.AppDb
 import com.example.chefi.database.User
+//import com.example.chefi.workers.FetchDataAsyncWorker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class Chefi : Application() {
     private lateinit var appDb : AppDb
@@ -23,8 +26,8 @@ class Chefi : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appDb = AppDb()
         appCon = this
+        appDb = AppDb()
     }
 
     fun signIn(email: String, password: String, name: String){
@@ -43,8 +46,41 @@ class Chefi : Application() {
         appDb.uploadImageToStorage(uri, fileExtension)
     }
 
-    fun loadImage() {
-        appDb.loadRecipes()
+//    fun loadRecipes() : UUID {
+////        appDb.loadRecipes()
+//        val workId = UUID.randomUUID()
+//        val constraints = Constraints.Builder()
+//            .setRequiredNetworkType(NetworkType.CONNECTED)
+//            .build()
+//        val inputData = Data.Builder()
+//            .putString(getString(R.string.keyRecipeType), "Recipe")
+//            .build()
+//        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(FetchDataAsyncWorker::class.java)
+//            .setConstraints(constraints)
+//            .setInputData(inputData)
+//            .addTag(workId.toString())
+//            .build()
+//        WorkManager.getInstance(this)
+//            .enqueue(oneTimeWorkRequest)
+//
+//        return oneTimeWorkRequest.id
+//    }
+
+    fun loadRecipes_2() {
+        appDb.loadRecipesFirstTime()
+    }
+
+//    fun loadRecipes_1() {
+//        CoroutineScope(IO).launch {
+//            appDb.loadRecipes_1()
+//            sendRecipes()
+//        }
+//    }
+
+    private suspend fun sendRecipes() {
+        withContext (Dispatchers.Main) {
+            appDb.postRecipes()
+        }
     }
 
     fun addUserToCollection(user: User?){
@@ -53,10 +89,6 @@ class Chefi : Application() {
 
     fun postUser(user: User?) {
         appDb.postUser(user)
-    }
-
-    fun deleteUser(){
-        appDb.deleteUser()
     }
 
     // TODO - for debug only
