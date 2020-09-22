@@ -130,19 +130,6 @@ class AppDb : Application() {
             }
     }
 
-//    private fun addRecipe(recipeTitle: String?, imageUrl: String?) {
-//        val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
-//        val document = firestore.collection(recipeCollectionPath).document()
-//        val recipe = Recipe(document.id, recipeTitle, 0, imageUrl)
-//
-//        addRecipeToRecipesCollection(document, recipe)
-//        addRecipeToLocalCurrUserObject(document)
-//        updateUserInUsersCollection()
-//
-//        // if we want to also add a comments collection - use next line
-//        // firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
-//    }
-
     private fun updateUserInUsersCollection() {
         // update the user in the db
         val currUserId = currUser?.uid
@@ -174,7 +161,7 @@ class AppDb : Application() {
                 usersRecipes?.add(recipe)
                 addRecipeToLocalCurrUserObject(document)
                 updateUserInUsersCollection()
-                postSingleRecipe(recipe)
+                postSingleRecipe(recipe)    // the worker observe to this post
             }
             .addOnFailureListener {
                 Log.d(TAG_APP_DB, "in failure")
@@ -201,6 +188,7 @@ class AppDb : Application() {
 
     fun deleteRecipe(){
         TODO()
+        // TODO - delete also from local array
     }
 
     private fun uploadImageToDatabase(myImage: MyImage) {
@@ -211,7 +199,6 @@ class AppDb : Application() {
     }
 
     fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
-        Log.d(TAG_APP_DB, "url upload image - $uri")
         val imagePath = System.currentTimeMillis().toString() + "." + fileExtension
         val fileRef = storageRef.child(imagePath)
 //        val progressBar = ProgressBar(appContext)
@@ -245,28 +232,6 @@ class AppDb : Application() {
         Log.d(TAG_APP_DB, "image url = ${fileRef.downloadUrl}")
     }
 
-    fun loadRecipes() {
-        val recipesRefList = currUser?.recipes
-        Log.d(TAG_APP_DB, "currUser?.recipes size = ${recipesRefList?.size}")
-        if (recipesRefList != null) {
-            for (recipeRef in recipesRefList) {
-                recipeRef.get().addOnSuccessListener { documentSnapshot ->
-                    val recipe = documentSnapshot.toObject<Recipe>()
-                    if (recipe != null) {
-                        usersRecipes?.add(recipe)
-                        Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
-//                        Log.e(TAG_APP_DB, "usersRecipes.size = $")
-//                        postRecipes(recipes)
-                    } else {
-                        Log.d(TAG_APP_DB, "recipe = null")
-                    }
-                }
-            }
-            Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
-            postRecipes()
-        }
-    }
-
     fun loadRecipesFirstTime(){
         val recipesRefList = currUser?.recipes
         val tasks = ArrayList<Task<DocumentSnapshot>>()
@@ -289,31 +254,6 @@ class AppDb : Application() {
                     Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
                 }
         }
-    }
-
-    suspend fun loadRecipes_1(index : Int) {
-        val recipesRefList = currUser?.recipes
-        Log.d(TAG_APP_DB, "currUser?.recipes size = ${recipesRefList?.size}")
-        if (recipesRefList != null) {
-            for (recipeRef in recipesRefList) {
-                Log.d(TAG_APP_DB, "current thread = ${Thread.currentThread().name}")
-                recipeRef.get().addOnSuccessListener { documentSnapshot ->
-                    val recipe = documentSnapshot.toObject<Recipe>()
-                    if (recipe != null) {
-                        usersRecipes?.add(recipe)
-                        Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
-//                        Log.e(TAG_APP_DB, "usersRecipes.size = $")
-//                        postRecipes(recipes)
-                    } else {
-                        Log.d(TAG_APP_DB, "recipe = null")
-                    }
-                }
-            }
-            Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
-        }
-
-//        Log.d(TAG_APP_DB, "current thread = ${Thread.currentThread().name}")
-
     }
 }
 

@@ -18,7 +18,6 @@ class Chefi : Application() {
     private lateinit var appDb : AppDb
     private lateinit var workManager : WorkManager
 
-
     // TAGS
     private val TAG_LIVE_DATA: String = "userLiveData"
 
@@ -103,52 +102,6 @@ class Chefi : Application() {
         return oneTimeWorkRequest.id
     }
 
-//    fun loadRecipes() : UUID {
-////        appDb.loadRecipes()
-//        val workId = UUID.randomUUID()
-//        val constraints = Constraints.Builder()
-//            .setRequiredNetworkType(NetworkType.CONNECTED)
-//            .build()
-//        val inputData = Data.Builder()
-//            .putString(getString(R.string.keyRecipeType), "Recipe")
-//            .build()
-//        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(FetchDataAsyncWorker::class.java)
-//            .setConstraints(constraints)
-//            .setInputData(inputData)
-//            .addTag(workId.toString())
-//            .build()
-//        WorkManager.getInstance(this)
-//            .enqueue(oneTimeWorkRequest)
-//
-//        return oneTimeWorkRequest.id
-//    }
-
-    fun loadRecipes_2() {
-        appDb.loadRecipesFirstTime()
-    }
-
-//    fun loadRecipes_1() {
-//        CoroutineScope(IO).launch {
-//            appDb.loadRecipes_1()
-//            sendRecipes()
-//        }
-//    }
-
-    private suspend fun sendRecipes() {
-        withContext (Dispatchers.Main) {
-            appDb.postRecipes()
-        }
-    }
-
-    fun addUserToCollection(user: User?){
-        appDb.addUserToCollection(user)
-    }
-
-    fun postUser(user: User?) {
-        appDb.postUser(user)
-    }
-
-    // TODO - for debug only
     fun getCurrUser() : User? {
         return appDb.getCurrUser()
     }

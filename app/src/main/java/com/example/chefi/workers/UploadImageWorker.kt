@@ -34,8 +34,6 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
         setObserver()
 
         val uriAsString = inputData.getString(appContext.getString(R.string.keyUri))
-//        val uriType = object : TypeToken<Uri>(){}.type
-//        val uri = Gson().fromJson<Uri>(uriAsJson, uriType)
         val uri = Uri.parse(uriAsString)
         val fileExtension = inputData.getString(appContext.getString(R.string.keyFileExtension))
 
