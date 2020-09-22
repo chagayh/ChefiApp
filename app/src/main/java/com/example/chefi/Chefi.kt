@@ -115,6 +115,14 @@ class Chefi : Application() {
         appDb.updateUserFields(fieldName, content)
     }
 
+    fun uploadRecipesFirstTime() {
+        appDb.loadRecipesFirstTime()
+    }
+
+    fun signOut(){
+        appDb.signOut()
+    }
+
     // TODO - delete, for debug only
     fun loadSingleImage(imageId: String){
         appDb.loadSingleImage(imageId)
