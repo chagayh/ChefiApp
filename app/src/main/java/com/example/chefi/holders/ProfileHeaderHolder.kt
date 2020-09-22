@@ -7,7 +7,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.R
-
+// sd
 class ProfileHeaderHolder(view: View): RecyclerView.ViewHolder(view) {
     val _view = view
     val linearLayoutAboutMe: LinearLayout = view.findViewById(R.id.aboutme)
