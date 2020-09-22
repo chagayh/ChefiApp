@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -11,14 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
+import com.example.chefi.activities.LoginActivity
+import com.example.chefi.activities.MainActivity
 import com.example.chefi.database.Recipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.listeners.RecipeClickListener
 import kotlin.math.log
+import android.os.Bundle
+
 
 // we need to create an adapter that extends RecyclerView.Adapter
 // and is generic of our custom type of view holder
@@ -157,10 +163,7 @@ class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<Recycl
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     if (aboutMeDescription.text.toString().trim().isNotEmpty()){
                         holder.aboutMeTextView.text = aboutMeDescription.text
-//                        appContext.getCurrUser()
-                        Log.e("RecipeAdapter", "username: " + (appContext.getCurrUser()?.name ?:"kas" ))
-                        //TODO: Use Chagay API
-
+                        appContext.updateUserFields("aboutMe", aboutMeDescription.text.toString())
                     }
                 })
                 alertDialog.create().show()
@@ -178,8 +181,8 @@ class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<Recycl
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     if (fullName.text.toString().trim().isNotEmpty()){
                         holder.nameTextView.text = fullName.text
+                        appContext.updateUserFields("name", fullName.text.toString())
                     }
-                    //TODO: Use Chagay API
                 })
                 alertDialog.create().show()
             }
@@ -188,7 +191,9 @@ class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<Recycl
 
     private fun setOtherButtons(holder: ProfileHeaderHolder){
         holder.signOutButton.setOnClickListener {
-            //TODO: Use Chagay API and signout
+            appContext.signOut()
+            val appIntent = Intent(it.context, LoginActivity::class.java)
+            startActivity(it.context, appIntent, null)
         }
         holder.followButton.setOnClickListener {
             //TODO: Use Chagay API and signout
