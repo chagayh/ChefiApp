@@ -151,7 +151,9 @@ class RecipeAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 alertDialog.setView(view)
                 val aboutMeDescription: EditText = view.findViewById(R.id.editTextAboutMe)
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                    holder.aboutMeTextView.text = aboutMeDescription.text
+                    if (aboutMeDescription.text.toString().trim().isNotEmpty()){
+                        holder.aboutMeTextView.text = aboutMeDescription.text
+                    }
                     //TODO: Use Chagay API
                 })
                 alertDialog.create().show()
@@ -167,7 +169,9 @@ class RecipeAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     //TODO: Use Chagay API
                 }
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                    holder.nameTextView.text = fullName.text
+                    if (fullName.text.toString().trim().isNotEmpty()){
+                        holder.nameTextView.text = fullName.text
+                    }
                     //TODO: Use Chagay API
                 })
                 alertDialog.create().show()
