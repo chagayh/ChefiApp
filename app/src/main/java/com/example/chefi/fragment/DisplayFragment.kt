@@ -12,10 +12,7 @@ import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
 import com.example.chefi.adapters.ImageItemAdapter
-import com.example.chefi.database.MyImage
 import androidx.lifecycle.Observer
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.example.chefi.database.Recipe
 
 /**
@@ -59,7 +56,7 @@ class DisplayFragment : Fragment() {
 
     private fun setObservers() {
         // data class User observer
-        LiveDataHolder.getRecipeLiveData().observe(viewLifecycleOwner, Observer { value ->
+        LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, Observer { value ->
             if (value == null) {
                 Log.d(TAG_DISPLAY_FRAGMENT, "null recipe, live data")
             } else {

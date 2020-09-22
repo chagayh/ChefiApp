@@ -16,6 +16,30 @@ object LiveDataHolder {
         MutableLiveData<MutableList<Recipe>>()
     }
 
+    private val recipesLiveData : MutableLiveData<Recipe> by lazy {
+        MutableLiveData<Recipe>()
+    }
+
+    private val urlLiveData : MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
+    fun getUrlLiveData() : LiveData<String>{
+        return urlLiveData
+    }
+
+    fun getUrlMutableLiveData() : MutableLiveData<String>{
+        return urlLiveData
+    }
+
+    fun getRecipeLiveData() : LiveData<Recipe>{
+        return recipesLiveData
+    }
+
+    fun getRecipeMutableLiveData() : MutableLiveData<Recipe>{
+        return recipesLiveData
+    }
+
     fun getUserLiveData() : LiveData<User>{
         return mutableUserLiveData
     }
@@ -24,11 +48,11 @@ object LiveDataHolder {
         return mutableUserLiveData
     }
 
-    fun getRecipeLiveData() : LiveData<MutableList<Recipe>>{
+    fun getRecipeListLiveData() : LiveData<MutableList<Recipe>>{
         return mutableRecipesLiveData
     }
 
-    fun getRecipeMutableLiveData() : MutableLiveData<MutableList<Recipe>>{
+    fun getRecipeListMutableLiveData() : MutableLiveData<MutableList<Recipe>>{
         return mutableRecipesLiveData
     }
 

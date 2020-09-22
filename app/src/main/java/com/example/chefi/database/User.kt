@@ -5,13 +5,13 @@ import com.google.firebase.firestore.DocumentReference
 data class User (
     var uid: String? = null,
     var email: String? = null,
-    var imageUrl: String? = null,       // TODO - set, remove, get
-    var name: String? = null,           // TODO - set, remove etc
+    var imageUrl: String? = null,
+    var name: String? = null,
     var userName: String? = null,
-    var aboutMe: String? = null,        // TODO - set, remove etc
-    var recipes: ArrayList<DocumentReference>? = null,      // TODO - remove etc
+    var aboutMe: String? = null,
+    var recipes: ArrayList<DocumentReference>? = null,
     var notifications: ArrayList<DocumentReference>? = null,
-    var favorites: ArrayList<DocumentReference>? = null,    // TODO - remove
-    var following: ArrayList<DocumentReference>? = null,    // TODO - un follow, update to my profile when new follow request
+    var favorites: ArrayList<DocumentReference>? = null,
+    var following: ArrayList<DocumentReference>? = null,
     var followers: ArrayList<DocumentReference>? = null
 )

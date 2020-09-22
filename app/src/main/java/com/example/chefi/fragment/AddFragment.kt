@@ -17,13 +17,9 @@ import android.widget.ProgressBar
 import androidx.navigation.findNavController
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.database.AppDb
-import com.example.chefi.database.Recipe
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.ktx.toObject
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_add.*
 import java.io.IOException
+import java.util.*
+import androidx.lifecycle.Observer
 
 
 /**
@@ -96,7 +92,6 @@ class AddFragment : Fragment() {
                 imageView.setImageBitmap(bitmap)
                 uploadImage()
                 // TODO - if goes back delete the recipe document
-//                appContext.addRecipe(null)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -109,30 +104,14 @@ class AddFragment : Fragment() {
         val contentResolver = activity?.contentResolver
         val mime = MimeTypeMap.getSingleton()
         val fileExtension = mime.getExtensionFromMimeType(contentResolver?.getType(imageUri))
-        appContext.uploadImage(imageUri, fileExtension)
+        val workId = appContext.uploadImage(imageUri, fileExtension)
+        setWorkObserver(workId)
     }
 
-
-    private fun loadImage() {
-        appContext.checkCurrentUser()
-        val user = appContext.getCurrUser()
-        Log.d(TAG_ADD_FRAGMENT, "user name = ${user?.name}")
-        val recipesRefList = user?.recipes
-        if (recipesRefList != null) {
-            val currRecipeRef = recipesRefList[0]
-            currRecipeRef.get().addOnSuccessListener { documentSnapshot ->
-                val recipe = documentSnapshot.toObject<Recipe>()
-                if (recipe != null) {
-                    Log.d(TAG_ADD_FRAGMENT, "curr recipe image url = ${recipe.imageUrl}")
-//                    Log.d(AppDb.TAG_APP_DB, "recipe likes = ${recipe.likes}")
-                    val mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads")
-                    Picasso.with(activity)
-                        .load(recipe.imageUrl)
-                        .into(imageView)
-                } else {
-                    Log.d(TAG_ADD_FRAGMENT, "recipe = null")
-                }
-            }
-        }
+    private fun setWorkObserver(workId: UUID) {
+        appContext.getWorkManager().getWorkInfoByIdLiveData(workId).observe(this
+            , Observer { value ->
+                Log.d(TAG_ADD_FRAGMENT, "value = ${value.outputData.getString(appContext.getString(R.string.keyUrl))}")
+        })
     }
 }

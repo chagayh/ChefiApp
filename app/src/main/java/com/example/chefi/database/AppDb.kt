@@ -10,9 +10,11 @@ import android.app.Application
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
+import androidx.work.*
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
+import com.example.chefi.workers.AddRecipeWorker
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -24,12 +26,11 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("Registered")
 class AppDb : Application() {
-    val appContext: Chefi
-        get() = applicationContext as Chefi
 
     // Declare an instance of FirebaseAuth
     private val auth: FirebaseAuth = Firebase.auth
@@ -66,8 +67,8 @@ class AppDb : Application() {
         if (firebaseUser != null){
             Log.d(TAG_APP_DB, "begin of update curr user = $currUser")
             val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
-            val userId = firebaseUser?.uid
-            val documentUser = firestore.collection(usersCollectionPath).document(userId!!)
+            val userId = firebaseUser.uid
+            val documentUser = firestore.collection(usersCollectionPath).document(userId)
             Log.d(TAG_APP_DB, "after docUser curr user = $currUser")
             documentUser.get().addOnSuccessListener { documentSnapshot ->
                 val user = documentSnapshot.toObject<User>()
@@ -129,19 +130,18 @@ class AppDb : Application() {
             }
     }
 
-    // TODO - do that as a worker (WorkerManager)
-    private fun addRecipe(recipeTitle: String?, imageUrl: String?) {
-        val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
-        val document = firestore.collection(recipeCollectionPath).document()
-        val recipe = Recipe(document.id, recipeTitle, 0, imageUrl)
-
-        addRecipeToRecipesCollection(document, recipe)
-        addRecipeToLocalCurrUserObject(document)
-        updateUserInUsersCollection()
-
-        // if we want to also add a comments collection - use next line
-        // firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
-    }
+//    private fun addRecipe(recipeTitle: String?, imageUrl: String?) {
+//        val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
+//        val document = firestore.collection(recipeCollectionPath).document()
+//        val recipe = Recipe(document.id, recipeTitle, 0, imageUrl)
+//
+//        addRecipeToRecipesCollection(document, recipe)
+//        addRecipeToLocalCurrUserObject(document)
+//        updateUserInUsersCollection()
+//
+//        // if we want to also add a comments collection - use next line
+//        // firestore.document(document.path).collection(commentsCollectionPath).add("comment" to "amazing")
+//    }
 
     private fun updateUserInUsersCollection() {
         // update the user in the db
@@ -163,15 +163,26 @@ class AppDb : Application() {
         currUser?.recipes?.add(document)
     }
 
-    private fun addRecipeToRecipesCollection(document: DocumentReference, recipe : Recipe) {
+    fun addRecipeToRecipesCollection(recipeTitle: String?, imageUrl: String?) {
+        val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
+        val document = firestore.collection(recipeCollectionPath).document()
+        val recipe = Recipe(document.id, recipeTitle, 0, imageUrl)
+
         document.set(recipe)
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "in success")
                 usersRecipes?.add(recipe)
+                addRecipeToLocalCurrUserObject(document)
+                updateUserInUsersCollection()
+                postSingleRecipe(recipe)
             }
             .addOnFailureListener {
                 Log.d(TAG_APP_DB, "in failure")
             }
+    }
+
+    private fun postSingleRecipe(recipe : Recipe) {
+        LiveDataHolder.getRecipeMutableLiveData().postValue(recipe)
     }
 
     fun postUser(user: User?) {
@@ -180,7 +191,7 @@ class AppDb : Application() {
 
     fun postRecipes() {
         Log.d(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
-        LiveDataHolder.getRecipeMutableLiveData().postValue(usersRecipes)
+        LiveDataHolder.getRecipeListMutableLiveData().postValue(usersRecipes)
     }
 
     fun signOut() {
@@ -199,8 +210,8 @@ class AppDb : Application() {
         }
     }
 
-    // TODO - as a worker
     fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
+        Log.d(TAG_APP_DB, "url upload image - $uri")
         val imagePath = System.currentTimeMillis().toString() + "." + fileExtension
         val fileRef = storageRef.child(imagePath)
 //        val progressBar = ProgressBar(appContext)
@@ -218,7 +229,6 @@ class AppDb : Application() {
                         val url = downloadUri.result.toString()
                         Log.d(TAG_APP_DB, "url upload image - $url")
                         uploadImageToDatabase(MyImage(url))
-                        addRecipe(null, url)
                     } else {
                         Log.d(TAG_APP_DB, "dowloadUri.isSuccessful = false")
                     }

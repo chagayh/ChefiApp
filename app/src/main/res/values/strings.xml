@@ -50,9 +50,15 @@
     <string name="full_name">full name</string>
 
     // Workers keys
+
     <string name="keyDataType">dataType</string>
     <string name="keyRecipeType">recipe</string>
     <string name="keyRecipesData">recipesArray</string>
+    <string name="keyRecipeTitle">recipeTitle</string>
+    <string name="keyRecipeImageUrl">recipeImageUrl</string>
+    <string name="keyUri">uri</string>
+    <string name="keyUrl">url</string>
+    <string name="keyFileExtension">fileExtension</string>
 
 
 </resources>
