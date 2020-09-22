@@ -316,6 +316,14 @@ class AppDb : Application() {
                 }
             })
     }
+
+    fun updateUserFields(fieldName: String, content: String) {
+        when (fieldName) {
+            "aboutMe" -> currUser?.aboutMe = content
+            "name" -> currUser?.name = content
+        }
+        updateUserInUsersCollection()
+    }
 }
 
 // TODO - add on single event listener

@@ -111,6 +111,10 @@ class Chefi : Application() {
         return appDb.deleteRecipe(recipe)
     }
 
+    fun updateUserFields(fieldName: String, content: String){
+        appDb.updateUserFields(fieldName, content)
+    }
+
     // TODO - delete, for debug only
     fun loadSingleImage(imageId: String){
         appDb.loadSingleImage(imageId)
