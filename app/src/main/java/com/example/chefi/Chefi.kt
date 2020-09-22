@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.work.*
 import com.example.chefi.database.AppDb
+import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
@@ -31,8 +32,8 @@ class Chefi : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        workManager = WorkManager.getInstance(this)
         appCon = this
+        workManager = WorkManager.getInstance(this)
         appDb = AppDb()
     }
 
@@ -104,5 +105,14 @@ class Chefi : Application() {
 
     fun getCurrUser() : User? {
         return appDb.getCurrUser()
+    }
+
+    fun deleteRecipe(recipe : Recipe) {
+        return appDb.deleteRecipe(recipe)
+    }
+
+    // TODO - delete, for debug only
+    fun loadSingleImage(imageId: String){
+        appDb.loadSingleImage(imageId)
     }
 }

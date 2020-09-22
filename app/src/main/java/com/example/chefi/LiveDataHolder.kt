@@ -2,9 +2,9 @@ package com.example.chefi
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.chefi.database.DatabaseImage
 import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
-import com.google.firebase.auth.FirebaseUser
 
 object LiveDataHolder {
 
@@ -20,16 +20,16 @@ object LiveDataHolder {
         MutableLiveData<Recipe>()
     }
 
-    private val urlLiveData : MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
+    private val databaseImageLiveData : MutableLiveData<DatabaseImage> by lazy {
+        MutableLiveData<DatabaseImage>()
     }
 
-    fun getUrlLiveData() : LiveData<String>{
-        return urlLiveData
+    fun getDatabaseImageLiveData() : LiveData<DatabaseImage>{
+        return databaseImageLiveData
     }
 
-    fun getUrlMutableLiveData() : MutableLiveData<String>{
-        return urlLiveData
+    fun getDatabaseImageMutableLiveData() : MutableLiveData<DatabaseImage>{
+        return databaseImageLiveData
     }
 
     fun getRecipeLiveData() : LiveData<Recipe>{

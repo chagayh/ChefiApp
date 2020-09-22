@@ -4,7 +4,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +19,8 @@ import com.example.chefi.R
 import java.io.IOException
 import java.util.*
 import androidx.lifecycle.Observer
+import com.example.chefi.LiveDataHolder
+import com.squareup.picasso.Picasso
 
 
 /**
@@ -88,8 +89,8 @@ class AddFragment : Fragment() {
             try {
                 imageUri = data.data!!
 
-                val bitmap = MediaStore.Images.Media.getBitmap(appContext.contentResolver, imageUri)
-                imageView.setImageBitmap(bitmap)
+//                val bitmap = MediaStore.Images.Media.getBitmap(appContext.contentResolver, imageUri)
+//                imageView.setImageBitmap(bitmap)
                 uploadImage()
                 // TODO - if goes back delete the recipe document
             } catch (e: IOException) {
@@ -104,14 +105,30 @@ class AddFragment : Fragment() {
         val contentResolver = activity?.contentResolver
         val mime = MimeTypeMap.getSingleton()
         val fileExtension = mime.getExtensionFromMimeType(contentResolver?.getType(imageUri))
+        Log.d(TAG_ADD_FRAGMENT, "uploadImage fun")
         val workId = appContext.uploadImage(imageUri, fileExtension)
+        Log.d(TAG_ADD_FRAGMENT, "uploadImage fun")
         setWorkObserver(workId)
     }
 
     private fun setWorkObserver(workId: UUID) {
-        appContext.getWorkManager().getWorkInfoByIdLiveData(workId).observe(this
-            , Observer { value ->
+        appContext.getWorkManager().getWorkInfoByIdLiveData(workId).observe(this,
+            Observer { value ->
                 Log.d(TAG_ADD_FRAGMENT, "value = ${value.outputData.getString(appContext.getString(R.string.keyUrl))}")
+                val imageId = value.outputData.getString(appContext.getString(R.string.keyUrl))
+//                if (imageId != null) {
+//                    loadImageToImageView(imageId)
+//                }
+        })
+    }
+
+    private fun loadImageToImageView(imageId : String) {
+        appContext.loadSingleImage(imageId)
+        LiveDataHolder.getDatabaseImageLiveData().observe(this, Observer { value ->
+            Log.d(TAG_ADD_FRAGMENT, "value = $value")
+            Picasso.with(activity)
+                .load(value.url)
+                .into(imageView)
         })
     }
 }

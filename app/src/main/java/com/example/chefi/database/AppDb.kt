@@ -10,23 +10,23 @@ import android.app.Application
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
-import androidx.work.*
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
-import com.example.chefi.workers.AddRecipeWorker
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("Registered")
@@ -103,7 +103,7 @@ class AppDb : Application() {
             }
     }
 
-    fun addUserToCollection(user: User?) {
+    private fun addUserToCollection(user: User?) {
         Log.d(TAG_APP_DB, "in add to collection, uid = ${user?.uid}")
         if (user?.uid != null) {
             Log.d(TAG_APP_DB, "in add to collection")
@@ -172,11 +172,11 @@ class AppDb : Application() {
         LiveDataHolder.getRecipeMutableLiveData().postValue(recipe)
     }
 
-    fun postUser(user: User?) {
+    private fun postUser(user: User?) {
         LiveDataHolder.getUserMutableLiveData().postValue(user)
     }
 
-    fun postRecipes() {
+    private fun postRecipes() {
         Log.d(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
         LiveDataHolder.getRecipeListMutableLiveData().postValue(usersRecipes)
     }
@@ -186,21 +186,65 @@ class AppDb : Application() {
         auth.signOut()
     }
 
-    fun deleteRecipe(){
-        TODO()
-        // TODO - delete also from local array
+    fun deleteRecipe(recipe : Recipe){
+        // delete from local array
+        usersRecipes?.remove(recipe)
+
+        // delete from storage and data base
+        val imageUrl = recipe.imageUrl
+
+        FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl!!).delete()
+            .addOnSuccessListener {
+                Log.d(TAG_APP_DB, "recipe ${recipe.name} deleted")
+                deleteRecipeFromDatabase(recipe)
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG_APP_DB, "can't delete recipe ${recipe.name}, ${exception.message}")
+            }
     }
 
-    private fun uploadImageToDatabase(myImage: MyImage) {
-        val imageId = databaseRef.push().key
-        if (imageId != null) {
-            databaseRef.child(imageId).setValue(myImage)
+    private fun deleteRecipeFromDatabase(recipe: Recipe) {
+        val query = databaseRef.child(recipe.databaseImageId!!)
+        query.addListenerForSingleValueEvent( object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.ref.removeValue()
+                Log.d(TAG_APP_DB, "database doc $snapshot removed")
+                deleteRecipeFromCollection(recipe)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG_APP_DB, "can't remove database doc ${error.message}")
+            }
+        })
+    }
+
+    private fun deleteRecipeFromCollection(recipe: Recipe) {
+        firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
+            .document(recipe.uid!!)
+            .delete()
+            .addOnSuccessListener {
+                Log.d(TAG_APP_DB, "recipe deleted")
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG_APP_DB, "exception ${exception.message}")
+            }
+    }
+
+    private fun uploadImageToDatabase(imageUrl: String) {
+        // TODO - add databaseId to recipe fields
+        val imageDatabaseId = databaseRef.push().key
+        val image = DatabaseImage(imageDatabaseId!!, imageUrl)
+        databaseRef.child(imageDatabaseId).setValue(image)
+            .addOnSuccessListener {
+            LiveDataHolder.getDatabaseImageMutableLiveData().postValue(image)
         }
+            .addOnFailureListener{ exception ->
+                Log.d(TAG_APP_DB, "exception upload to database = ${exception.message}")
+            }
     }
 
     fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
-        val imagePath = System.currentTimeMillis().toString() + "." + fileExtension
-        val fileRef = storageRef.child(imagePath)
+        val imageStorageId = System.currentTimeMillis().toString() + "." + fileExtension
+        val fileRef = storageRef.child(imageStorageId)
 //        val progressBar = ProgressBar(appContext)
 //        progressBar.display     // TODO - check to switch to visibility
 
@@ -215,9 +259,9 @@ class AppDb : Application() {
                     if (downloadUri.isSuccessful) {
                         val url = downloadUri.result.toString()
                         Log.d(TAG_APP_DB, "url upload image - $url")
-                        uploadImageToDatabase(MyImage(url))
+                        uploadImageToDatabase(url)
                     } else {
-                        Log.d(TAG_APP_DB, "dowloadUri.isSuccessful = false")
+                        Log.d(TAG_APP_DB, "downloadUri.isSuccessful = false")
                     }
                 }
             }
@@ -254,6 +298,23 @@ class AppDb : Application() {
                     Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
                 }
         }
+    }
+
+    // TODO - delete, for debug only
+    fun loadSingleImage(imageId : String){
+        databaseRef.addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (image in snapshot.children){
+                        val databaseImage = image.getValue(DatabaseImage::class.java)
+                        Log.d(TAG_APP_DB, "image = $image, imageId = $imageId")
+                        LiveDataHolder.getDatabaseImageMutableLiveData().postValue(databaseImage)
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
     }
 }
 

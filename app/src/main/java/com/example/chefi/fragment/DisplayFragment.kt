@@ -44,7 +44,7 @@ class DisplayFragment : Fragment() {
         imageItemAdapter = ImageItemAdapter()
         // Set an observer to upload new 'posts'
         recyclerView.adapter = imageItemAdapter
-        loadRecipes()
+//        loadRecipes()
 
         val reverseLayout = false
         recyclerView.layoutManager =
@@ -65,23 +65,4 @@ class DisplayFragment : Fragment() {
             }
         })
     }
-
-    private fun loadRecipes() {
-        appContext.loadRecipes_2()
-    }
-
-//    private fun recipesObserver() {
-//
-//        val workId = appContext.loadRecipes()
-//
-//        val liveDataOfWorker = WorkManager.getInstance().getWorkInfoByIdLiveData(workId)
-//        liveDataOfWorker.observe(this, Observer { value ->
-//            if (value == null || value.state != WorkInfo.State.SUCCEEDED) {
-//                return@Observer
-//            } else {
-//                val listAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipesData))
-//            }
-//
-//        })
-//    }
 }

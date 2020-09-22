@@ -11,6 +11,7 @@ import androidx.work.WorkerParameters
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
+import com.example.chefi.database.DatabaseImage
 import com.google.common.util.concurrent.ListenableFuture
 
 class UploadImageWorker(context: Context, workerParams: WorkerParameters)
@@ -20,8 +21,8 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
     private val appContext: Chefi
         get() = applicationContext as Chefi
 
-    private val TAG_ULOAD_IMAGE_WORKER = "uploadImageWorker"
-    private var observer : Observer<String>? = null
+    private val TAG_UPLOAD_IMAGE_WORKER = "uploadImageWorker"
+    private var observer : Observer<DatabaseImage>? = null
 
     override fun startWork(): ListenableFuture<Result> {
         // 1. here we create the future and store the callback for later use
@@ -42,14 +43,16 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun setObserver() {
-        observer = Observer<String> { value ->
-            Log.d(TAG_ULOAD_IMAGE_WORKER, "in set observer")
+        observer = Observer<DatabaseImage> { value ->
+            Log.d(TAG_UPLOAD_IMAGE_WORKER, "in set observer")
             val outPutData = Data.Builder()
-                .putString(appContext.getString(R.string.keyUrl), value)
+                .putString(appContext.getString(R.string.keyUrl), value.url)
+                .putString(appContext.getString(R.string.keyDataBaseId), value.dataBaseId)
                 .build()
-            LiveDataHolder.getUrlLiveData().removeObserver(observer!!)
+            Log.d(TAG_UPLOAD_IMAGE_WORKER, "value = $value")
+            LiveDataHolder.getDatabaseImageLiveData().removeObserver(observer!!)
             this.callback?.set(Result.success(outPutData))
         }
-        LiveDataHolder.getUrlLiveData().observeForever(observer!!)
+        LiveDataHolder.getDatabaseImageLiveData().observeForever(observer!!)
     }
 }
