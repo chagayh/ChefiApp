@@ -1,5 +1,6 @@
 package com.example.chefi.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -39,7 +40,8 @@ class FavoritesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_favorites, container, false)
         val btn = view.findViewById<Button>(R.id.button)
         btn.setOnClickListener { v ->
-            v.findNavController().navigate(R.id.recipeFragment)
+//            v.findNavController().navigate(R.id.profileFragment)
+            v.findNavController().navInflater.inflate(R.id.profileFragment)
         }
         // Inflate the layout for this fragment
         return view

@@ -16,10 +16,10 @@ import com.example.chefi.adapters.RecipeAdapter
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
+ * Use the [ProfileOtherFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProfileFragment : Fragment() {
+class ProfileOtherFragment : Fragment() {
 
     private lateinit var recyclerViewRecipes: RecyclerView
     private lateinit var recipesAdapter: RecipeAdapter
@@ -35,7 +35,7 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerViewRecipes = view.findViewById(R.id.recyclerViewRecipes)
-        recipesAdapter = RecipeAdapter(false)
+        recipesAdapter = RecipeAdapter(true)
         recipesAdapter.setItems(ArrayList())
         recyclerViewRecipes.adapter = recipesAdapter
 //        recyclerViewRecipes.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)

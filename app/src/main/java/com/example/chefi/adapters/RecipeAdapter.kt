@@ -2,6 +2,7 @@ package com.example.chefi.adapters
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,11 +12,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
+import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.database.Recipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.listeners.RecipeClickListener
+import kotlin.math.log
 
 // we need to create an adapter that extends RecyclerView.Adapter
 // and is generic of our custom type of view holder
@@ -27,12 +30,12 @@ import com.example.chefi.listeners.RecipeClickListener
 // also, we created the interface OnToDoItemClickListener so that the adapter could
 // tell anyone who wants to listen whenever a "person" view was clicked
 
-class RecipeAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//    val appContext: Chefi
-//        get() = activity?.applicationContext as Chefi
-//
-//        appContext.setUserFields(fieldName : String, content : String)
+class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+//    private val Context.app: Chefi
+//        get() = applicationContext as Chefi
 
+//        appContext.setUserFields(fieldName : String, content : String)
+    private lateinit var appContext: Chefi
     private val TYPE_HEADER = 1
     private val TYPE_ITEM = 2
     private val _items: MutableList<Recipe> = ArrayList()
@@ -54,6 +57,7 @@ class RecipeAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  RecyclerView.ViewHolder {
         val context = parent.context
         val view: View
+        appContext = context.applicationContext as Chefi
         if(viewType == TYPE_HEADER){
             view = LayoutInflater.from(context).inflate(R.layout.profile_header, parent, false)
             return ProfileHeaderHolder(view)
@@ -140,7 +144,7 @@ class RecipeAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun setEditButtons(holder: ProfileHeaderHolder) {
-        if(false){ //if not user
+        if(otherFlag){ //if not user
             holder.editAboutMe.visibility = View.GONE
             holder.editMainCard.visibility = View.GONE
         }else{
@@ -153,8 +157,11 @@ class RecipeAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     if (aboutMeDescription.text.toString().trim().isNotEmpty()){
                         holder.aboutMeTextView.text = aboutMeDescription.text
+//                        appContext.getCurrUser()
+                        Log.e("RecipeAdapter", "username: " + (appContext.getCurrUser()?.name ?:"kas" ))
+                        //TODO: Use Chagay API
+
                     }
-                    //TODO: Use Chagay API
                 })
                 alertDialog.create().show()
             }
