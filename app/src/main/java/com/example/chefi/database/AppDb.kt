@@ -92,7 +92,7 @@ class AppDb : Application() {
                     Log.d(TAG_APP_DB, "createUserWithEmail:success")
                     val user = auth.currentUser
                     val newUser = User(
-                        user?.uid, user?.email, name
+                        user?.uid, email=user?.email, name=name
                     )
                     addUserToCollection(newUser)
                     postUser(newUser)
