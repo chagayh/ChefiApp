@@ -91,7 +91,8 @@ class AddFragment : Fragment() {
 
 //                val bitmap = MediaStore.Images.Media.getBitmap(appContext.contentResolver, imageUri)
 //                imageView.setImageBitmap(bitmap)
-                uploadImage()
+                val workId = appContext.uploadImage(imageUri)
+                setWorkObserver(workId)
                 // TODO - if goes back delete the recipe document
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -106,16 +107,17 @@ class AddFragment : Fragment() {
         val mime = MimeTypeMap.getSingleton()
         val fileExtension = mime.getExtensionFromMimeType(contentResolver?.getType(imageUri))
         Log.d(TAG_ADD_FRAGMENT, "uploadImage fun")
-        val workId = appContext.uploadImage(imageUri, fileExtension)
-        Log.d(TAG_ADD_FRAGMENT, "uploadImage fun")
+        val workId = appContext.uploadImage(imageUri)
         setWorkObserver(workId)
     }
 
     private fun setWorkObserver(workId: UUID) {
         appContext.getWorkManager().getWorkInfoByIdLiveData(workId).observe(this,
-            Observer { value ->
-                Log.d(TAG_ADD_FRAGMENT, "value = ${value.outputData.getString(appContext.getString(R.string.keyUrl))}")
-                val imageId = value.outputData.getString(appContext.getString(R.string.keyUrl))
+            Observer { databaseImage ->
+                Log.d(TAG_ADD_FRAGMENT, "value = ${databaseImage.outputData.getString(appContext.getString(R.string.keyUrl))}")
+                val imageId = databaseImage.outputData.getString(appContext.getString(R.string.keyDataBaseId))
+                val imageUrl = databaseImage.outputData.getString(appContext.getString(R.string.keyUrl))
+                // TODO - pass imageId and imageUrl to continue add recipe
 //                if (imageId != null) {
 //                    loadImageToImageView(imageId)
 //                }

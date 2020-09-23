@@ -3,10 +3,14 @@ package com.example.chefi
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.AppDb
+import com.example.chefi.database.DatabaseImage
 import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
+import com.example.chefi.fragment.AddFragment
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.gson.Gson
@@ -21,6 +25,7 @@ class Chefi : Application() {
 
     // TAGS
     private val TAG_LIVE_DATA: String = "userLiveData"
+    private val TAG_CHEFI: String = "chefi"
 
     companion object {
         private lateinit var appCon: Context
@@ -53,11 +58,20 @@ class Chefi : Application() {
         return appDb.getCurrUser()
     }
 
-    fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
+    fun uploadImageToStorage(uri: Uri) {
+        val fileExtension = getFileExtension(uri)
         appDb.uploadImageToStorage(uri, fileExtension)
     }
 
-    fun uploadImage(uri: Uri, fileExtension: String?) : UUID {
+    private fun getFileExtension(imageUri : Uri) : String? {
+        val contentResolver = contentResolver
+        val mime = MimeTypeMap.getSingleton()
+        val fileExtension = mime.getExtensionFromMimeType(contentResolver?.getType(imageUri))
+        Log.d(TAG_CHEFI, "getFileExtension fun, fileExtension = $fileExtension")
+        return fileExtension
+    }
+
+    fun uploadImage(uri: Uri) : UUID {
 
         val workId = UUID.randomUUID()
         val constraints = Constraints.Builder()
@@ -65,7 +79,6 @@ class Chefi : Application() {
             .build()
         val inputData = Data.Builder()
             .putString(getString(R.string.keyUri), uri.toString())
-            .putString(getString(R.string.keyFileExtension), fileExtension)
             .build()
         val oneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadImageWorker::class.java)
             .setConstraints(constraints)
@@ -121,6 +134,10 @@ class Chefi : Application() {
 
     fun signOut(){
         appDb.signOut()
+    }
+
+    fun getUserRecipes() : ArrayList<Recipe>? {
+        return appDb.getUserRecipes()
     }
 
     // TODO - delete, for debug only

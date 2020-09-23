@@ -53,6 +53,10 @@ class AppDb : Application() {
         updateCurrentUser()
     }
 
+    fun getUserRecipes() : ArrayList<Recipe>? {
+        return usersRecipes
+    }
+
     fun getCurrUser(): User? {
         return currUser
     }
@@ -75,7 +79,7 @@ class AppDb : Application() {
                 if (user != null) {
                     Log.d(TAG_APP_DB, "user name = ${user.name}")
                     currUser = user
-                    usersRecipes = ArrayList()
+                    usersRecipes = null
                     postUser(currUser)
                 } else {
                     Log.d("account", "user = null")
@@ -153,8 +157,11 @@ class AppDb : Application() {
     fun addRecipeToRecipesCollection(recipeTitle: String?, imageUrl: String?) {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
         val document = firestore.collection(recipeCollectionPath).document()
-        val recipe = Recipe(document.id, recipeTitle, 0, imageUrl)
+        val recipe = Recipe(uid=document.id, name=recipeTitle, likes=0, imageUrl=imageUrl)
 
+        if (usersRecipes == null) {
+            usersRecipes = ArrayList()
+        }
         document.set(recipe)
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "in success")
@@ -181,6 +188,7 @@ class AppDb : Application() {
         LiveDataHolder.getRecipeListMutableLiveData().postValue(usersRecipes)
     }
 
+    // add on success listener and set observer
     fun signOut() {
         initCurrUser()
         auth.signOut()
@@ -279,9 +287,9 @@ class AppDb : Application() {
     fun loadRecipesFirstTime(){
         val recipesRefList = currUser?.recipes
         val tasks = ArrayList<Task<DocumentSnapshot>>()
-        usersRecipes = ArrayList()
 
         if (recipesRefList != null) {
+            usersRecipes = ArrayList()
             for (recipeRef in recipesRefList) {
                 val docTask = recipeRef.get()
                 tasks.add(docTask)
@@ -321,6 +329,8 @@ class AppDb : Application() {
         when (fieldName) {
             "aboutMe" -> currUser?.aboutMe = content
             "name" -> currUser?.name = content
+            "imageUrl" -> currUser?.imageUrl = content
+            "databaseImageId" -> currUser?.databaseImageId = content
         }
         updateUserInUsersCollection()
     }

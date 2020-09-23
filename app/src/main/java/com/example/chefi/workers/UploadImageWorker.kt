@@ -36,20 +36,19 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
 
         val uriAsString = inputData.getString(appContext.getString(R.string.keyUri))
         val uri = Uri.parse(uriAsString)
-        val fileExtension = inputData.getString(appContext.getString(R.string.keyFileExtension))
 
-        appContext.uploadImageToStorage(uri, fileExtension)
+        appContext.uploadImageToStorage(uri)
         return future
     }
 
     private fun setObserver() {
-        observer = Observer<DatabaseImage> { value ->
+        observer = Observer<DatabaseImage> { databaseImage ->
             Log.d(TAG_UPLOAD_IMAGE_WORKER, "in set observer")
             val outPutData = Data.Builder()
-                .putString(appContext.getString(R.string.keyUrl), value.url)
-                .putString(appContext.getString(R.string.keyDataBaseId), value.dataBaseId)
+                .putString(appContext.getString(R.string.keyUrl), databaseImage.url)
+                .putString(appContext.getString(R.string.keyDataBaseId), databaseImage.dataBaseId)
                 .build()
-            Log.d(TAG_UPLOAD_IMAGE_WORKER, "value = $value")
+            Log.d(TAG_UPLOAD_IMAGE_WORKER, "value = $databaseImage")
             LiveDataHolder.getDatabaseImageLiveData().removeObserver(observer!!)
             this.callback?.set(Result.success(outPutData))
         }

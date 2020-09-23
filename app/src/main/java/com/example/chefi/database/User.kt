@@ -13,5 +13,6 @@ data class User (
     var notifications: ArrayList<DocumentReference>? = null,
     var favorites: ArrayList<DocumentReference>? = null,
     var following: ArrayList<DocumentReference>? = null,
-    var followers: ArrayList<DocumentReference>? = null
+    var followers: ArrayList<DocumentReference>? = null,
+    var databaseImageId: String? = null
 )
