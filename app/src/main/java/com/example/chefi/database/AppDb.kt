@@ -7,6 +7,7 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.Notification
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
@@ -42,7 +43,11 @@ class AppDb : Application() {
 
     // Users fields
     private var currUser: User? = null
-    private var usersRecipes : ArrayList<Recipe>? = null
+    private var userRecipes : ArrayList<Recipe>? = null
+    private var userFollowing : ArrayList<User>? = null
+    private var userFollowers : ArrayList<User>? = null
+    private var userNotification : ArrayList<Notification>? = null
+    private var userFavorites : ArrayList<Recipe>? = null
 
     companion object {
         // TAGS
@@ -54,7 +59,7 @@ class AppDb : Application() {
     }
 
     fun getUserRecipes() : ArrayList<Recipe>? {
-        return usersRecipes
+        return userRecipes
     }
 
     fun getCurrUser(): User? {
@@ -63,7 +68,11 @@ class AppDb : Application() {
 
     private fun initCurrUser(){
         currUser = null
-        usersRecipes = null
+        userRecipes = null
+        userFavorites = null
+        userFollowers = null
+        userFollowing = null
+        userNotification = null
     }
 
     private fun updateCurrentUser() {
@@ -79,7 +88,11 @@ class AppDb : Application() {
                 if (user != null) {
                     Log.d(TAG_APP_DB, "user name = ${user.name}")
                     currUser = user
-                    usersRecipes = null
+                    userRecipes = null
+                    userFavorites = null
+                    userFollowers = null
+                    userFollowing = null
+                    userNotification = null
                     postUser(currUser)
                 } else {
                     Log.d("account", "user = null")
@@ -159,13 +172,13 @@ class AppDb : Application() {
         val document = firestore.collection(recipeCollectionPath).document()
         val recipe = Recipe(uid=document.id, name=recipeTitle, likes=0, imageUrl=imageUrl)
 
-        if (usersRecipes == null) {
-            usersRecipes = ArrayList()
+        if (userRecipes == null) {
+            userRecipes = ArrayList()
         }
         document.set(recipe)
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "in success")
-                usersRecipes?.add(recipe)
+                userRecipes?.add(recipe)
                 addRecipeToLocalCurrUserObject(document)
                 updateUserInUsersCollection()
                 postSingleRecipe(recipe)    // the worker observe to this post
@@ -184,8 +197,8 @@ class AppDb : Application() {
     }
 
     private fun postRecipes() {
-        Log.d(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size}")
-        LiveDataHolder.getRecipeListMutableLiveData().postValue(usersRecipes)
+        Log.d(TAG_APP_DB, "usersRecipes.size = ${userRecipes?.size}")
+        LiveDataHolder.getRecipeListMutableLiveData().postValue(userRecipes)
     }
 
     // add on success listener and set observer
@@ -196,7 +209,7 @@ class AppDb : Application() {
 
     fun deleteRecipe(recipe : Recipe){
         // delete from local array
-        usersRecipes?.remove(recipe)
+        userRecipes?.remove(recipe)
 
         // delete from storage and data base
         val imageUrl = recipe.imageUrl
@@ -289,7 +302,7 @@ class AppDb : Application() {
         val tasks = ArrayList<Task<DocumentSnapshot>>()
 
         if (recipesRefList != null) {
-            usersRecipes = ArrayList()
+            userRecipes = ArrayList()
             for (recipeRef in recipesRefList) {
                 val docTask = recipeRef.get()
                 tasks.add(docTask)
@@ -299,11 +312,11 @@ class AppDb : Application() {
                     for (recipeDoc in value) {
                         val recipe = recipeDoc.toObject<Recipe>()
                         if (recipe != null) {
-                            usersRecipes?.add(recipe)
+                            userRecipes?.add(recipe)
                         }
                     }
                     postRecipes()
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${usersRecipes?.size} last")
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userRecipes?.size} last")
                 }
         }
     }
@@ -329,9 +342,41 @@ class AppDb : Application() {
         when (fieldName) {
             "aboutMe" -> currUser?.aboutMe = content
             "name" -> currUser?.name = content
-            "imageUrl" -> currUser?.imageUrl = content
+            "imageUrl" -> currUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
             "databaseImageId" -> currUser?.databaseImageId = content
         }
+        updateUserInUsersCollection()
+    }
+
+    fun follow(userToFollow: User) {
+        if (userFollowing == null) {
+            userFollowing = ArrayList()
+        }
+        userFollowing!!.add(userToFollow)
+        updateUserInUsersCollection()
+    }
+
+    fun unFollow(userToUnFollow: User) {
+        if (userFollowing == null) {
+            return
+        }
+        userFollowing!!.remove(userToUnFollow)
+        updateUserInUsersCollection()
+    }
+
+    fun addRecipeToFavorites(recipe: Recipe) {
+        if (userFavorites == null) {
+            userFavorites = ArrayList()
+        }
+        userFavorites!!.add(recipe)
+        updateUserInUsersCollection()
+    }
+
+    fun removeRecipeToFavorites(recipe: Recipe) {
+        if (userFavorites == null) {
+            return
+        }
+        userFavorites!!.remove(recipe)
         updateUserInUsersCollection()
     }
 }

@@ -140,6 +140,22 @@ class Chefi : Application() {
         return appDb.getUserRecipes()
     }
 
+    fun follow(userToFollow : User) {
+        appDb.follow(userToFollow)
+    }
+
+    fun unFollow(userToUnFollow : User) {
+        appDb.unFollow(userToUnFollow)
+    }
+
+    fun addRecipeToFavorites(recipe: Recipe) {
+        appDb.addRecipeToFavorites(recipe)
+    }
+
+    fun removeRecipeToFavorites(recipe: Recipe) {
+        appDb.removeRecipeToFavorites(recipe)
+    }
+
     // TODO - delete, for debug only
     fun loadSingleImage(imageId: String){
         appDb.loadSingleImage(imageId)
