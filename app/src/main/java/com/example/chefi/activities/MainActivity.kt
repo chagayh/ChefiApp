@@ -1,10 +1,7 @@
 package com.example.chefi.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.chefi.Chefi
@@ -25,7 +22,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        appContext.uploadRecipesFirstTime()
+        appContext.loadRecipesFirstTime()
+        appContext.loadFavoritesFirstTime()
+        appContext.loadFollowersFirstTime()
+        appContext.loadFollowingFirstTime()
+        appContext.loadNotificationsFirstTime()
+
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         val navController = findNavController(R.id.navHostFragment)
         bottomNavigationView.setupWithNavController(navController)

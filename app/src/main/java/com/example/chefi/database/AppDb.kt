@@ -62,6 +62,18 @@ class AppDb : Application() {
         return userRecipes
     }
 
+    fun getUserFavorites() : ArrayList<Recipe>? {
+        return userFavorites
+    }
+
+    fun getUserFollowing() : ArrayList<User>? {
+        return userFollowing
+    }
+
+    fun getUserFollowers() : ArrayList<User>? {
+        return userFollowers
+    }
+
     fun getCurrUser(): User? {
         return currUser
     }
@@ -196,12 +208,22 @@ class AppDb : Application() {
         LiveDataHolder.getUserMutableLiveData().postValue(user)
     }
 
-    private fun postRecipes() {
-        Log.d(TAG_APP_DB, "usersRecipes.size = ${userRecipes?.size}")
-        LiveDataHolder.getRecipeListMutableLiveData().postValue(userRecipes)
+    private fun postRecipes(recipesList: ArrayList<Recipe>) {
+        Log.d(TAG_APP_DB, "usersRecipes.size = ${recipesList.size}")
+        LiveDataHolder.getRecipeListMutableLiveData().postValue(recipesList)
     }
 
-    // add on success listener and set observer
+    private fun postUsersList(usersList: ArrayList<User>) {
+        Log.d(TAG_APP_DB, "usersList.size = ${usersList.size}")
+        LiveDataHolder.getUsersMutableLiveData().postValue(usersList)
+    }
+
+    private fun postNotificationList(notificationList: ArrayList<Notification>) {
+        Log.d(TAG_APP_DB, "usersList.size = ${notificationList.size}")
+        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
+    }
+
+    // TODO add on success listener and set observer
     fun signOut() {
         initCurrUser()
         auth.signOut()
@@ -315,8 +337,104 @@ class AppDb : Application() {
                             userRecipes?.add(recipe)
                         }
                     }
-                    postRecipes()
+                    postRecipes(userRecipes!!)   // TODO - check if needed
                     Log.e(TAG_APP_DB, "usersRecipes.size = ${userRecipes?.size} last")
+                }
+        }
+    }
+
+    fun loadFavoritesFirstTime(){
+        val recipesFavoritesList = currUser?.favorites
+        val tasks = ArrayList<Task<DocumentSnapshot>>()
+
+        if (recipesFavoritesList != null) {
+            userFavorites = ArrayList()
+            for (recipeRef in recipesFavoritesList) {
+                val docTask = recipeRef.get()
+                tasks.add(docTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                .addOnSuccessListener { value ->
+                    for (recipeDoc in value) {
+                        val recipe = recipeDoc.toObject<Recipe>()
+                        if (recipe != null) {
+                            userFavorites?.add(recipe)
+                        }
+                    }
+                    postRecipes(userFavorites!!)   // TODO - check if needed
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userFavorites?.size} last")
+                }
+        }
+    }
+
+    fun loadFollowingFirstTime(){
+        val userFollowingList = currUser?.following
+        val tasks = ArrayList<Task<DocumentSnapshot>>()
+
+        if (userFollowingList != null) {
+            userFollowing = ArrayList()
+            for (userRef in userFollowingList) {
+                val docTask = userRef.get()
+                tasks.add(docTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                .addOnSuccessListener { value ->
+                    for (userDoc in value) {
+                        val user = userDoc.toObject<User>()
+                        if (user != null) {
+                            userFollowing?.add(user)
+                        }
+                    }
+                    postUsersList(userFollowing!!)   // TODO - check if needed
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userFollowing?.size} last")
+                }
+        }
+    }
+
+    fun loadFollowersFirstTime(){
+        val userFollowersList = currUser?.followers
+        val tasks = ArrayList<Task<DocumentSnapshot>>()
+
+        if (userFollowersList != null) {
+            userFollowers = ArrayList()
+            for (userRef in userFollowersList) {
+                val docTask = userRef.get()
+                tasks.add(docTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                .addOnSuccessListener { value ->
+                    for (userDoc in value) {
+                        val user = userDoc.toObject<User>()
+                        if (user != null) {
+                            userFollowers?.add(user)
+                        }
+                    }
+                    postUsersList(userFollowers!!)   // TODO - check if needed
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userFollowers?.size} last")
+                }
+        }
+    }
+
+    fun loadNotificationsFirstTime(){
+        val userNotificationsList = currUser?.notifications
+        val tasks = ArrayList<Task<DocumentSnapshot>>()
+
+        if (userNotificationsList != null) {
+            userNotification = ArrayList()
+            for (notificationRef in userNotificationsList) {
+                val docTask = notificationRef.get()
+                tasks.add(docTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                .addOnSuccessListener { value ->
+                    for (notificationDoc in value) {
+                        val notification = notificationDoc.toObject<Notification>()
+                        if (notification != null) {
+                            userNotification?.add(notification)
+                        }
+                    }
+                    postNotificationList(userNotification!!)   // TODO - check if needed
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userNotification?.size} last")
                 }
         }
     }
@@ -348,6 +466,23 @@ class AppDb : Application() {
         updateUserInUsersCollection()
     }
 
+    fun addUserToFollowers(otherUser: User) {
+
+        val currUserId = currUser?.uid
+        val otherUserId = otherUser.uid
+
+        if (currUserId != null && otherUserId != null) {
+            val currUserDoc = firestore.collection(Chefi.getCon()
+                .getString(R.string.usersCollection))
+                .document(currUserId)
+
+            otherUser.followers?.add(currUserDoc)
+            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(otherUserId)
+                .set(otherUser, SetOptions.merge())
+        }
+    }
+
     fun follow(userToFollow: User) {
         if (userFollowing == null) {
             userFollowing = ArrayList()
@@ -372,7 +507,7 @@ class AppDb : Application() {
         updateUserInUsersCollection()
     }
 
-    fun removeRecipeToFavorites(recipe: Recipe) {
+    fun removeRecipeFromFavorites(recipe: Recipe) {
         if (userFavorites == null) {
             return
         }

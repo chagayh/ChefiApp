@@ -7,17 +7,13 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.AppDb
-import com.example.chefi.database.DatabaseImage
 import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
-import com.example.chefi.fragment.AddFragment
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
-import com.google.gson.Gson
 //import com.example.chefi.workers.FetchDataAsyncWorker
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Chefi : Application() {
     private lateinit var appDb : AppDb
@@ -128,8 +124,24 @@ class Chefi : Application() {
         appDb.updateUserFields(fieldName, content)
     }
 
-    fun uploadRecipesFirstTime() {
+    fun loadRecipesFirstTime() {
         appDb.loadRecipesFirstTime()
+    }
+
+    fun loadFavoritesFirstTime() {
+        appDb.loadFavoritesFirstTime()
+    }
+
+    fun loadFollowingFirstTime() {
+        appDb.loadFollowingFirstTime()
+    }
+
+    fun loadFollowersFirstTime() {
+        appDb.loadFollowersFirstTime()
+    }
+
+    fun loadNotificationsFirstTime() {
+        appDb.loadNotificationsFirstTime()
     }
 
     fun signOut(){
@@ -138,6 +150,18 @@ class Chefi : Application() {
 
     fun getUserRecipes() : ArrayList<Recipe>? {
         return appDb.getUserRecipes()
+    }
+
+    fun getUserFavorites() : ArrayList<Recipe>? {
+        return appDb.getUserFavorites()
+    }
+
+    fun getUserFollowing() : ArrayList<User>? {
+        return appDb.getUserFollowing()
+    }
+
+    fun getUserFollowers() : ArrayList<User>?  {
+        return appDb.getUserFollowers()
     }
 
     fun follow(userToFollow : User) {
@@ -152,8 +176,13 @@ class Chefi : Application() {
         appDb.addRecipeToFavorites(recipe)
     }
 
-    fun removeRecipeToFavorites(recipe: Recipe) {
-        appDb.removeRecipeToFavorites(recipe)
+    fun removeRecipeFromFavorites(recipe: Recipe) {
+        appDb.removeRecipeFromFavorites(recipe)
+    }
+
+    fun addUserToFollowers(otherUser: User) {
+        // adding currUser to followers list of otherUser
+        appDb.addUserToFollowers(otherUser)
     }
 
     // TODO - delete, for debug only
