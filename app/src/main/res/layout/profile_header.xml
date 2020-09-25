@@ -13,347 +13,285 @@
         android:background="@color/kas" />
 
     <LinearLayout
-        android:id="@+id/topbar"
+        android:id="@+id/linearLayoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="68dp"
-        android:layout_alignParentTop="true"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="10dp"
-            android:src="@drawable/ic_arrow_back_24dp" />
+        <!--Top Profile Section -->
 
         <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/signOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
-            android:fontFamily="@font/proximanovaregular"
-            android:text="Sign Out"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:visibility="visible" />
-
-<!--        <RelativeLayout-->
-<!--            android:layout_width="50dp"-->
-<!--            android:layout_height="50dp">-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:padding="6dp"-->
-<!--                android:src="@drawable/ic_notifications_white_24dp" />-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="20dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:layout_alignParentTop="true"-->
-<!--                android:layout_alignParentEnd="true"-->
-<!--                android:layout_margin="8dp"-->
-<!--                android:padding="4dp"-->
-<!--                android:src="@drawable/circleyellowfil" />-->
-<!--        </RelativeLayout>-->
-
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/topbar"
-        android:layout_marginTop="-22dp"
-        android:scrollbars="none">
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
 
         <LinearLayout
-            android:id="@+id/linearLayoutHeader"
+            android:id="@+id/LinearLayoutTopCard"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circularbordersolid"
+            android:gravity="center"
             android:orientation="vertical"
-            android:paddingLeft="20dp"
+            android:padding="30dp"
+            android:paddingLeft="0dp"
             android:paddingTop="10dp"
-            android:paddingRight="20dp">
+            android:paddingRight="0dp">
 
-            <!--Top Profile Section -->
-
-            <LinearLayout
-                android:id="@+id/LinearLayoutTopCard"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/TextViewEditMainCard"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/circularbordersolid"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="30dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp">
+                android:layout_gravity="end"
+                android:layout_marginEnd="0dp"
+                android:fontFamily="@font/proximanovaregular"
+                android:text="Edit"
+                android:textColor="#FFCF66"
+                android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/TextViewEditMainCard"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="0dp"
-                    android:fontFamily="@font/proximanovaregular"
-                    android:text="Edit"
-                    android:textColor="#FFCF66"
-                    android:textSize="14sp" />
+            <androidx.cardview.widget.CardView
 
-                <androidx.cardview.widget.CardView
+                android:id="@+id/cardi"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:cardCornerRadius="150dp"
+                app:cardElevation="0dp">
 
-                    android:id="@+id/cardi"
+                <ImageView
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    app:cardCornerRadius="150dp"
-                    app:cardElevation="0dp">
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/chagaipp" />
 
-                    <ImageView
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_centerInParent="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/chagaipp" />
-
-                </androidx.cardview.widget.CardView>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-                    <TextView
-                        android:id="@+id/nameTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="@font/proximanovaregular"
-                        android:text="Chagay Koffman"
-                        android:textColor="#424242"
-                        android:textSize="19dp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/TextViewDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/proximanovaregular"
-                        android:text="\@chagay"
-                        android:textAlignment="center"
-                        android:textSize="14sp" />
-
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:paddingBottom="10dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <Button
-                            android:id="@+id/ButtonFollow"
-                            android:layout_width="120dp"
-                            android:layout_height="35dp"
-                            android:background="@drawable/circular_grey_bordersolid"
-                            android:fontFamily="@font/proximanovaregular"
-                            android:padding="10dp"
-                            android:text="Follow"
-                            android:textAlignment="center"
-                            android:textSize="12sp" />
-
-                        <!--                            android:src="@drawable/tickinsidecircle" />-->
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:padding="8dp">
-
-                        <Button
-                            android:id="@+id/ButtonFollowers"
-                            android:layout_width="120dp"
-                            android:layout_height="35dp"
-                            android:background="@drawable/circular_grey_bordersolid"
-                            android:fontFamily="@font/proximanovaregular"
-                            android:padding="10dp"
-                            android:text="Followers"
-                            android:textAlignment="center"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <!--Option Bar-->
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:id="@+id/menuLinearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/nameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/proximanovaregular"
+                    android:text="Chagay Koffman"
+                    android:textColor="#424242"
+                    android:textSize="19dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/TextViewDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/proximanovaregular"
+                    android:text="\@chagay"
+                    android:textAlignment="center"
+                    android:textSize="14sp" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/circularbordersolid"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:paddingBottom="10dp">
 
-                <TextView
-                    android:id="@+id/recipesbtn"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:fontFamily="@font/proximanovaregular"
                     android:gravity="center"
-                    android:padding="13dp"
-                    android:text="Recipes"
-                    android:textAllCaps="true"
-                    android:textColor="@color/blue"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:padding="8dp">
+
+                    <Button
+                        android:id="@+id/ButtonFollow"
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/circular_grey_bordersolid"
+                        android:fontFamily="@font/proximanovaregular"
+                        android:padding="10dp"
+                        android:text="Follow"
+                        android:textAlignment="center"
+                        android:textSize="12sp" />
+
+                    <!--                            android:src="@drawable/tickinsidecircle" />-->
+
+                </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/lightgrey" />
-
-                <TextView
-                    android:id="@+id/favoritesbtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:fontFamily="@font/proximanovaregular"
                     android:gravity="center"
-                    android:padding="13dp"
-                    android:text="Favorites"
-                    android:textAllCaps="true"
-                    android:textColor="@color/lightgrey"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:padding="8dp">
 
-                <LinearLayout
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/lightgrey" />
+                    <Button
+                        android:id="@+id/ButtonFollowers"
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/circular_grey_bordersolid"
+                        android:fontFamily="@font/proximanovaregular"
+                        android:padding="10dp"
+                        android:text="Followers"
+                        android:textAlignment="center"
+                        android:textSize="12sp" />
 
-            </LinearLayout>
-
-            <!--Bootom Cards with sections-->
-            <LinearLayout
-                android:id="@+id/personalinfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <!--About Me Card-->
-
-                <!--Contact Details-->
-
-                <!--Skills Details-->
-
-
-            </LinearLayout>
-
-            <!--Experience Bottom Cards-->
-            <LinearLayout
-                android:id="@+id/favorites"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <!--Review Bottom Cards-->
-            <LinearLayout
-                android:id="@+id/recipes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/aboutMeDialog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/circularbordersolid"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/aboutme"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/proximanovaregular"
-                            android:text="@string/about_me"
-                            android:textSize="17sp"
-                            android:textStyle="bold" />
-
-                        <Space
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <TextView
-                            android:id="@+id/textViewAboutMeEdit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:fontFamily="@font/proximanovaregular"
-                            android:text="Edit"
-                            android:textColor="#FFCF66"
-                            android:textSize="14sp"
-                            android:visibility="visible" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/aboutMeTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/my_desc"
-                        android:visibility="visible" />
                 </LinearLayout>
 
             </LinearLayout>
+        </LinearLayout>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
+        <!--Option Bar-->
+
+        <LinearLayout
+            android:id="@+id/menuLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/circularbordersolid"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/recipesbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:fontFamily="@font/proximanovaregular"
+                android:gravity="center"
+                android:padding="13dp"
+                android:text="Recipes"
+                android:textAllCaps="true"
+                android:textColor="@color/blue"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/lightgrey" />
+
+            <TextView
+                android:id="@+id/favoritesbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:fontFamily="@font/proximanovaregular"
+                android:gravity="center"
+                android:padding="13dp"
+                android:text="Favorites"
+                android:textAllCaps="true"
+                android:textColor="@color/lightgrey"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/lightgrey" />
 
         </LinearLayout>
-    </ScrollView>
+
+        <!--Bootom Cards with sections-->
+        <LinearLayout
+            android:id="@+id/personalinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--About Me Card-->
+
+            <!--Contact Details-->
+
+            <!--Skills Details-->
+
+
+        </LinearLayout>
+
+        <!--Experience Bottom Cards-->
+        <LinearLayout
+            android:id="@+id/favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <!--Review Bottom Cards-->
+        <LinearLayout
+            android:id="@+id/recipes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/aboutMeDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/circularbordersolid"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/aboutme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/proximanovaregular"
+                        android:text="@string/about_me"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/textViewAboutMeEdit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:fontFamily="@font/proximanovaregular"
+                        android:text="Edit"
+                        android:textColor="#FFCF66"
+                        android:textSize="14sp"
+                        android:visibility="visible" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/aboutMeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/my_desc"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+    </LinearLayout>
 
 
 </RelativeLayout>

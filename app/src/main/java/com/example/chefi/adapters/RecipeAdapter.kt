@@ -24,6 +24,7 @@ import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.listeners.RecipeClickListener
 import kotlin.math.log
 import android.os.Bundle
+import com.example.chefi.database.User
 
 
 // we need to create an adapter that extends RecyclerView.Adapter
@@ -36,7 +37,7 @@ import android.os.Bundle
 // also, we created the interface OnToDoItemClickListener so that the adapter could
 // tell anyone who wants to listen whenever a "person" view was clicked
 
-class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 //    private val Context.app: Chefi
 //        get() = applicationContext as Chefi
 
@@ -82,7 +83,7 @@ class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<Recycl
     }
 
     override fun getItemCount(): Int {
-        return if(recipesFlag) 25 else 1
+        return if(recipesFlag) 200 else 1
     }
 
 
@@ -94,9 +95,9 @@ class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<Recycl
         if(holder is RecipeHolder)
         {
             holder._image.setImageResource(R.drawable.dog)
-            Log.e("chagaipp", _screenWidth.toString())
-            holder._card.layoutParams.width = _screenWidth?.div(3)?.toInt() ?: 1
-            holder._card.layoutParams.height = _screenWidth?.div(3)?.toInt() ?: 1
+//            Log.e("chagaipp", _screenWidth.toString())
+//            holder._card.layoutParams.width = _screenWidth?.div(3)?.toInt() ?: 1
+//            holder._card.layoutParams.height = _screenWidth?.div(3)?.toInt() ?: 1
 //            if(position == 2){
 //                holder._image.setMa
             // set a listener to know when view was clicked, and tell the listener if exists
@@ -122,15 +123,8 @@ class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<Recycl
         setMenuButtons(holder)
         setEditButtons(holder)
         setOtherButtons(holder)
-        holder.scroller.setOnTouchListener(object : View.OnTouchListener {
-            @SuppressLint("ClickableViewAccessibility")
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                v?.parent?.requestDisallowInterceptTouchEvent(false)
-                v?.onTouchEvent(event)
-                return true
-            }
-        })
     }
+
     private fun setMenuButtons(holder: ProfileHeaderHolder){
 //        holder.aboutMeEdit.vis
         holder.favoritesButton.setOnClickListener(View.OnClickListener {
@@ -190,11 +184,6 @@ class RecipeAdapter(private val otherFlag: Boolean): RecyclerView.Adapter<Recycl
     }
 
     private fun setOtherButtons(holder: ProfileHeaderHolder){
-        holder.signOutButton.setOnClickListener {
-            appContext.signOut()
-            val appIntent = Intent(it.context, LoginActivity::class.java)
-            startActivity(it.context, appIntent, null)
-        }
         holder.followButton.setOnClickListener {
             //TODO: Use Chagay API and signout
         }

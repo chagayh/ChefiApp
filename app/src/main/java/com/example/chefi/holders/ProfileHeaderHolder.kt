@@ -19,11 +19,9 @@ class ProfileHeaderHolder(view: View): RecyclerView.ViewHolder(view) {
     val recipesButton: TextView = view.findViewById(R.id.recipesbtn)
     val greyColor = view.resources.getColor(R.color.grey)
     val blueColor = view.resources.getColor(R.color.blue)
-    val scroller: ScrollView = view.findViewById(R.id.scrollView)
     // Buttons:
     val editAboutMe:TextView = view.findViewById(R.id.textViewAboutMeEdit)
     val editMainCard:TextView = view.findViewById(R.id.TextViewEditMainCard)
-    val signOutButton:TextView = view.findViewById(R.id.signOut)
     val followButton:TextView = view.findViewById(R.id.ButtonFollow)
     val followersButton:TextView = view.findViewById(R.id.ButtonFollowers)
 
