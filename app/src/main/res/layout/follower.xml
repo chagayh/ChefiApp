@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/followerCard"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@null"
+        app:cardCornerRadius="150dp"
+        app:cardElevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+        <ImageView
+            android:id="@+id/imageViewFollower"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            app:srcCompat="@drawable/chagaipp" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/textViewFollower"
+        app:layout_constraintLeft_toRightOf="@id/followerCard"
+        android:fontFamily="@font/proximanovaregular"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/followerCard"
+        app:layout_constraintBottom_toBottomOf="@id/followerCard"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Yitzchak Vaknin" />
+
+    <Button
+        android:id="@+id/buttonFollower"
+        android:elevation="30dp"
+        android:layout_width="80dp"
+        android:layout_height="22dp"
+        android:foregroundTint="#ECECEC"
+        android:text="Unfollow"
+        android:fontFamily="@font/proximanovaregular"
+        android:background="@drawable/follow_button_outline"
+        android:textSize="8sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/followerCard"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintLeft_toRightOf="@id/textViewFollower"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/followerCard"
+        app:layout_constraintVertical_bias="0.5"
+        tools:ignore="SmallSp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

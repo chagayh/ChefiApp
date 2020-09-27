@@ -2,29 +2,24 @@ package com.example.chefi.adapters
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import androidx.core.content.ContextCompat.startActivity
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.activities.LoginActivity
-import com.example.chefi.activities.MainActivity
 import com.example.chefi.database.Recipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.listeners.RecipeClickListener
-import kotlin.math.log
-import android.os.Bundle
 import com.example.chefi.database.User
+import com.squareup.picasso.Picasso
+import kotlin.math.log
 
 
 // we need to create an adapter that extends RecyclerView.Adapter
@@ -37,7 +32,7 @@ import com.example.chefi.database.User
 // also, we created the interface OnToDoItemClickListener so that the adapter could
 // tell anyone who wants to listen whenever a "person" view was clicked
 
-class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 //    private val Context.app: Chefi
 //        get() = applicationContext as Chefi
 
@@ -45,15 +40,16 @@ class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): Re
     private lateinit var appContext: Chefi
     private val TYPE_HEADER = 1
     private val TYPE_ITEM = 2
-    private val _items: MutableList<Recipe> = ArrayList()
-    private var _screenWidth: Float? = null
+    private var _items: ArrayList<Recipe>? = ArrayList()
     var recipesFlag:Boolean = true
     var toDoItemClickCallback: RecipeClickListener? = null
+    private val otherFlag = user != null
+    private lateinit var tempUser: User
 
     // public method to show a new list of items
-    fun setItems(items: List<Recipe>){
-        _items.clear()
-        _items.addAll(items)
+    fun setItems(items: ArrayList<Recipe>){
+        _items?.clear()
+        _items?.addAll(items)
         notifyDataSetChanged()
     }
 
@@ -65,6 +61,7 @@ class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): Re
         val context = parent.context
         val view: View
         appContext = context.applicationContext as Chefi
+        tempUser = (user ?: appContext.getCurrUser()) as User
         if(viewType == TYPE_HEADER){
             view = LayoutInflater.from(context).inflate(R.layout.profile_header, parent, false)
             return ProfileHeaderHolder(view)
@@ -83,6 +80,7 @@ class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): Re
     }
 
     override fun getItemCount(): Int {
+//        return 1 + (_items?.size ?: 0)
         return if(recipesFlag) 200 else 1
     }
 
@@ -91,24 +89,37 @@ class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): Re
     // we set the view fields based on the person
     // and set a ClickListener to know whenever the user taps on the view
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        val item = _items[position]
         if(holder is RecipeHolder)
         {
             holder._image.setImageResource(R.drawable.dog)
-//            Log.e("chagaipp", _screenWidth.toString())
-//            holder._card.layoutParams.width = _screenWidth?.div(3)?.toInt() ?: 1
-//            holder._card.layoutParams.height = _screenWidth?.div(3)?.toInt() ?: 1
-//            if(position == 2){
-//                holder._image.setMa
+            val item = _items?.get(position - 1)
             // set a listener to know when view was clicked, and tell the listener if exists
-//            holder.itemView.setOnClickListener {
-//                toDoItemClickCallback?.onToDoItemClicked(item)
-//            }
+            holder.itemView.setOnClickListener {
+                // TODO: open recipe page
+            }
             // set a long listener to know when view was clicked, and tell the listener if exists
-//        holder.itemView.setOnLongClickListener {
-//            toDoItemLongClickCallback?.onToDoItemLongClicked(item)
-//            true
-//        }
+            if (!otherFlag){
+                holder.itemView.setOnLongClickListener {
+                    if (item != null) {
+                        if(recipesFlag){
+                            val alertDialog = AlertDialog.Builder(it.context)
+                            alertDialog.setTitle("Would you like to delete this recipe?")
+                            alertDialog.setPositiveButton("Confirm") { _: DialogInterface, _: Int ->
+                                _items?.remove(item)
+                                appContext.deleteRecipe(item)
+                                _items?.let { it1 -> setItems(it1) }
+                            }
+                            alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
+                            alertDialog.show()
+                        }else{
+                            _items?.remove(item)
+                            appContext.removeRecipeFromFavorites(item)
+                            _items?.let { it1 -> setItems(it1) }
+                        }
+                    }
+                    true
+                }
+            }
         }else if(holder is ProfileHeaderHolder){
             setProfileHeader(holder)
         }
@@ -116,23 +127,40 @@ class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): Re
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setProfileHeader(holder: ProfileHeaderHolder){
-        _screenWidth = holder.k
-        Log.e("kas222", holder.k.toString())
         holder.favorites.visibility = View.GONE
         holder.recipes.visibility = View.VISIBLE
+        customizeComponents(holder)
         setMenuButtons(holder)
-        setEditButtons(holder)
+        if(!otherFlag){setEditButtons(holder)}
         setOtherButtons(holder)
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun customizeComponents(holder: ProfileHeaderHolder){
+        holder.aboutMeTextView.text = tempUser.aboutMe
+        holder.nameTextView.text = tempUser.name
+        holder.usernameTextView.text = "@" + tempUser.userName
+        if(!otherFlag){holder.followButton.text = "Following"}
+        _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
+        if(tempUser.imageUrl != null){
+            Picasso.with(appContext)
+                .load(tempUser.imageUrl)
+                .into(holder.image)
+        }
+        else{
+            holder.image.setImageResource(R.drawable.chagaipp)
+        }
+    }
+
     private fun setMenuButtons(holder: ProfileHeaderHolder){
-//        holder.aboutMeEdit.vis
         holder.favoritesButton.setOnClickListener(View.OnClickListener {
             holder.favorites.visibility = View.VISIBLE
             holder.recipes.visibility = View.GONE
             holder.favoritesButton.setTextColor(holder.blueColor)
             holder.recipesButton.setTextColor(holder.greyColor)
             recipesFlag = false
+            _items = if (otherFlag) ArrayList() else appContext.getUserFavorites()
+//            notifyDataSetChanged()
         })
         holder.recipesButton.setOnClickListener(View.OnClickListener {
             holder.favorites.visibility = View.GONE
@@ -140,6 +168,8 @@ class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): Re
             holder.favoritesButton.setTextColor(holder.greyColor)
             holder.recipesButton.setTextColor(holder.blueColor)
             recipesFlag = true
+            _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
+//            notifyDataSetChanged()
         })
     }
 
@@ -185,10 +215,14 @@ class RecipeAdapter(private val otherFlag: Boolean, private val user: User?): Re
 
     private fun setOtherButtons(holder: ProfileHeaderHolder){
         holder.followButton.setOnClickListener {
-            //TODO: Use Chagay API and signout
+            if (user != null) {
+                appContext.follow(user)
+            }else{
+                it.findNavController().navigate(R.id.followersFragment)
+            }
         }
         holder.followersButton.setOnClickListener {
-            //TODO: replace fragment
+            it.findNavController().navigate(R.id.followersFragment)
         }
     }
 }

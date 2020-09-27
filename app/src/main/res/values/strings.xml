@@ -12,9 +12,9 @@
     // bottom menu
     <string name="home_title">Home</string>
     <string name="notifications_title">Notifications</string>
-    <string name="search_title">search</string>
-    <string name="add_title">add</string>
-    <string name="profile_title">profile</string>
+    <string name="search_title">Search</string>
+    <string name="add_title">Add</string>
+    <string name="profile_title">Profile</string>
 
     // register menu
     <string name="log_in">Log In</string>
