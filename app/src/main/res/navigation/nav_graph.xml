@@ -19,7 +19,7 @@
         android:id="@+id/favoritesFragment"
         android:name="com.example.chefi.fragment.FavoritesFragment"
         android:label="fragment_favorites"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_notification" />
     <fragment
         android:id="@+id/addFragment"
         android:name="com.example.chefi.fragment.AddFragment"

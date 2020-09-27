@@ -2,6 +2,7 @@ package com.example.chefi.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,8 @@ import com.example.chefi.R
 import com.example.chefi.activities.LoginActivity
 import com.example.chefi.adapters.FollowersAdapter
 import com.example.chefi.adapters.RecipeAdapter
+import com.example.chefi.database.NotificationItem
+import com.example.chefi.database.NotificationType
 
 class FollowersFragment : Fragment() {
 
