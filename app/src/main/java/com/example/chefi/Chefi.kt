@@ -204,4 +204,8 @@ class Chefi : Application() {
     fun loadSingleImage(imageId: String){
         appDb.loadSingleImage(imageId)
     }
+
+    fun fireBaseSearchUsers(searchText: String) {
+        appDb.fireBaseSearchUsers(searchText)
+    }
 }

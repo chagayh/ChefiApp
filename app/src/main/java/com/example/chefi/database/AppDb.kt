@@ -28,6 +28,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("Registered")
@@ -90,15 +91,12 @@ class AppDb : Application() {
     private fun updateCurrentUser() {
         val firebaseUser = auth.currentUser
         if (firebaseUser != null){
-            Log.d(TAG_APP_DB, "begin of update curr user = $currUser")
             val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
             val userId = firebaseUser.uid
             val documentUser = firestore.collection(usersCollectionPath).document(userId)
-            Log.d(TAG_APP_DB, "after docUser curr user = $currUser")
             documentUser.get().addOnSuccessListener { documentSnapshot ->
                 val user = documentSnapshot.toObject<User>()
                 if (user != null) {
-                    Log.d(TAG_APP_DB, "user name = ${user.name}")
                     currUser = user
                     userRecipes = null
                     userFavorites = null
@@ -121,7 +119,10 @@ class AppDb : Application() {
                     Log.d(TAG_APP_DB, "createUserWithEmail:success")
                     val user = auth.currentUser
                     val newUser = User(
-                        user?.uid, email=user?.email, userName=userName
+                        user?.uid,
+                        email=user?.email,
+                        userName=userName,
+                        userName_lowerCase=userName.toLowerCase(Locale.ROOT)
                     )
                     addUserToCollection(newUser)
                     postUser(newUser)
@@ -223,7 +224,6 @@ class AppDb : Application() {
     }
 
     private fun postRecipes(recipesList: ArrayList<Recipe>) {
-        Log.d(TAG_APP_DB, "usersRecipes.size = ${recipesList.size}")
         LiveDataHolder.getRecipeListMutableLiveData().postValue(recipesList)
     }
 
@@ -351,7 +351,6 @@ class AppDb : Application() {
                         }
                     }
                     postRecipes(userRecipesList)   // TODO - check if needed
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userRecipesList.size} last")
                     if (user == null) {
                         userRecipes = ArrayList()
                         userRecipes = userRecipesList
@@ -483,7 +482,9 @@ class AppDb : Application() {
     fun updateUserFields(fieldName: String, content: String) {
         when (fieldName) {
             "aboutMe" -> currUser?.aboutMe = content
-            "name" -> currUser?.name = content
+            "name" -> {
+                currUser?.name = content
+                currUser?.name_lowerCase = content.toLowerCase(Locale.ROOT) }
             "imageUrl" -> currUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
             "databaseImageId" -> currUser?.databaseImageId = content
         }
@@ -537,6 +538,29 @@ class AppDb : Application() {
         }
         userFavorites!!.remove(recipe)
         updateUserInUsersCollection()
+    }
+
+    fun fireBaseSearchUsers(searchText: String) {
+        val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
+        val usersRef = firestore.collection(usersCollectionPath)
+        val query = usersRef
+            .whereGreaterThanOrEqualTo("name_lowerCase",
+                                            searchText.toLowerCase(Locale.ROOT))
+        query
+            .get()
+            .addOnSuccessListener { documents->
+                if (documents != null) {
+                    val ansUsers = ArrayList<User>()
+                    for (document in documents.documents) {
+                        val user = document.toObject<User>()
+                        if (user != null) {
+                            ansUsers.add(user)
+                            Log.d(TAG_APP_DB, "user's name = ${user.name}")
+                        }
+                    }
+                    postUsersList(ansUsers)
+                }
+            }
     }
 }
 

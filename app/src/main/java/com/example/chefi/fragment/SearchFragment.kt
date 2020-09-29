@@ -1,16 +1,24 @@
 package com.example.chefi.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.chefi.Chefi
+import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.chefi.database.User
+import com.google.firebase.database.FirebaseDatabase
 
 /**
  * A simple [Fragment] subclass.
@@ -18,17 +26,14 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    val appContext: Chefi
+        get() = activity?.applicationContext as Chefi
+
+    private lateinit var searchBtn: ImageButton
+    private lateinit var barEditText: EditText
+    private val TAG_SEARCH_FRAGMENT: String = "searchFragment"
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,26 +42,33 @@ class SearchFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
+        searchBtn = view.findViewById(R.id.searchBtn)
+        searchBtn = view.findViewById(R.id.searchBtn)
+        barEditText = view.findViewById(R.id.barEditText)
+
+        setSearchBtn()
+        setUsersObserver()
         return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun setSearchBtn() {
+        searchBtn.setOnClickListener {
+            val searchText = barEditText.text.toString()
+            if (searchText.trim().isEmpty()) {
+                Toast.makeText(activity, "empty search bar", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                appContext.fireBaseSearchUsers(searchText)
             }
+        }
+    }
+
+    private fun setUsersObserver() {
+        LiveDataHolder.getUsersLiveData().observe(viewLifecycleOwner,
+            Observer { usersList ->
+                for (user in usersList) {
+                    Log.d(TAG_SEARCH_FRAGMENT, "name = ${user.name}")
+                }
+            })
     }
 }
