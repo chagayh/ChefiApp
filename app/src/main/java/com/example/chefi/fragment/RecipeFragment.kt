@@ -97,10 +97,10 @@ class RecipeFragment : Fragment() {
     private fun setCustomOnBackPressed() {
         requireActivity()
             .onBackPressedDispatcher
-            .addCallback(this, object: OnBackPressedCallback(true) {
+            .addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     Log.d(TAG_RECIPE_FRAGMENT, "delete the recipe from storage and database")
-                    // TODO delete the recipe from storage and database
+                    appContext.deleteImage(imageUrl, null)
                     if (isEnabled) {
                         isEnabled = false
                         requireActivity().onBackPressed()

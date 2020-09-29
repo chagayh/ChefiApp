@@ -80,8 +80,8 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
     }
 
     override fun getItemCount(): Int {
-//        return 1 + (_items?.size ?: 0)
-        return if(recipesFlag) 200 else 1
+        return 1 + (_items?.size ?: 0)
+//        return if(recipesFlag) 200 else 1
     }
 
 
@@ -92,6 +92,7 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
         if(holder is RecipeHolder)
         {
             holder._image.setImageResource(R.drawable.dog)
+            Log.e("zin2", position.toString())
             val item = _items?.get(position - 1)
             // set a listener to know when view was clicked, and tell the listener if exists
             holder.itemView.setOnClickListener {
@@ -142,6 +143,7 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
         holder.usernameTextView.text = "@" + tempUser.userName
         if(!otherFlag){holder.followButton.text = "Following"}
         _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
+        Log.e("zin", _items?.size.toString())
         if(tempUser.imageUrl != null){
             Picasso.with(appContext)
                 .load(tempUser.imageUrl)
