@@ -47,9 +47,6 @@
             android:name="databaseId"
             app:argType="string"
             android:defaultValue="default" />
-        <argument
-            android:name="currRecipeAsString"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/displayFragment"

@@ -193,7 +193,7 @@ class AppDb : Application() {
                             imageUrl=imageUrl,
                             comments= ArrayList(),
                             databaseImageId=databaseImageId,
-                            direction=direction,
+                            directions=direction,
                             ingredients=ingredients,
                             status=status)
 
@@ -202,11 +202,12 @@ class AppDb : Application() {
         }
         document.set(recipe)
             .addOnSuccessListener {
-                Log.d(TAG_APP_DB, "in success")
+                Log.d(TAG_APP_DB, "in success of addRecipeToRecipesCollection")
                 userRecipes?.add(recipe)
                 addRecipeToLocalCurrUserObject(document)
                 updateUserInUsersCollection()
                 postSingleRecipe(recipe)    // the worker observe to this post
+//                Log.d(TAG_APP_DB, "in addRecipeToRecipesCollection userRecipes.size = ${userRecipes!!.size}")
             }
             .addOnFailureListener {
                 Log.d(TAG_APP_DB, "in failure")
@@ -378,7 +379,7 @@ class AppDb : Application() {
                         }
                     }
                     postRecipes(userFavorites!!)   // TODO - check if needed
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userFavorites?.size} last")
+                    Log.e(TAG_APP_DB, "userFavorites.size = ${userFavorites?.size} last")
                 }
         }
     }
@@ -401,7 +402,7 @@ class AppDb : Application() {
                         }
                     }
                     postUsersList(followingList)   // TODO - check if needed
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${followingList.size} last")
+                    Log.e(TAG_APP_DB, "followingList.size = ${followingList.size} last")
                     if (user == null) {
                         userFollowing = ArrayList()
                         userFollowing = followingList
@@ -413,7 +414,7 @@ class AppDb : Application() {
     fun loadFollowers(user: User?){
         val userFollowersList = currUser?.followers
         val tasks = ArrayList<Task<DocumentSnapshot>>()
-        val followingList = ArrayList<User>()
+        val followersList = ArrayList<User>()
         if (userFollowersList != null) {
 //            userFollowers = ArrayList()
             for (userRef in userFollowersList) {
@@ -425,14 +426,14 @@ class AppDb : Application() {
                     for (userDoc in value) {
                         val currUser = userDoc.toObject<User>()
                         if (currUser != null) {
-                            followingList.add(currUser)
+                            followersList.add(currUser)
                         }
                     }
-                    postUsersList(followingList)
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${followingList.size} last")
+                    postUsersList(followersList)
+                    Log.e(TAG_APP_DB, "followingList.size = ${followersList.size} last")
                     if (user == null) {
                         userFollowers = ArrayList()
-                        userFollowers = followingList
+                        userFollowers = followersList
                     }
                 }
         }
@@ -457,7 +458,7 @@ class AppDb : Application() {
                         }
                     }
                     postNotificationList(userNotification!!)   // TODO - check if needed
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userNotification?.size} last")
+                    Log.e(TAG_APP_DB, "userNotification.size = ${userNotification?.size} last")
                 }
         }
     }

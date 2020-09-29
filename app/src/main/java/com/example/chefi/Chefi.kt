@@ -11,6 +11,7 @@ import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
+import com.google.gson.Gson
 //import com.example.chefi.workers.FetchDataAsyncWorker
 import java.util.*
 import kotlin.collections.ArrayList
@@ -97,12 +98,11 @@ class Chefi : Application() {
         appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, databaseImageId, ingredients, status)
     }
 
-    fun addRecipe(name: String,
+    fun addRecipe(name: String?,
                   imageUrl: String?,
-                  recipeTitle: String?,
                   databaseImageId: String?,
-                  direction: Array<String>,
-                  ingredients: Array<String>,
+                  direction: ArrayList<String>?,
+                  ingredients: ArrayList<String>?,
                   status: Int) : UUID {
         val workId = UUID.randomUUID()
         val constraints = Constraints.Builder()
@@ -111,10 +111,9 @@ class Chefi : Application() {
         val inputData = Data.Builder()
             .putString(getString(R.string.keyRecipeName), name)
             .putString(getString(R.string.keyRecipeImageUrl), imageUrl)
-            .putString(getString(R.string.keyRecipeTitle), recipeTitle)
             .putString(getString(R.string.keyDataBaseId), databaseImageId)
-            .putStringArray(getString(R.string.keyRecipeDirections), direction)
-            .putStringArray(getString(R.string.keyRecipeIngredients), ingredients)
+            .putString(getString(R.string.keyRecipeDirections), Gson().toJson(direction))
+            .putString(getString(R.string.keyRecipeIngredients), Gson().toJson(ingredients))
             .putInt(getString(R.string.keyRecipeStatus), status)
             .build()
         val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AddRecipeWorker::class.java)

@@ -9,7 +9,7 @@ data class Recipe(
     var imageUrl: String? = null,
     var comments: ArrayList<DocumentReference>? = null,
     var databaseImageId: String? = null,     // in order to delete file in storage and database
-    var direction: ArrayList<String>? = null, // TODO - new
+    var directions: ArrayList<String>? = null, // TODO - new
     var ingredients: ArrayList<String>? = null, // TODO - new
     var status: Int? = null // TODO - new
 )
