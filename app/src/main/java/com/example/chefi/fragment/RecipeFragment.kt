@@ -10,17 +10,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.navArgs
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import java.util.*
-import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.chefi.database.Recipe
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_add.*
 
 /**
  * A simple [Fragment] subclass.
@@ -43,6 +41,11 @@ class RecipeFragment : Fragment() {
 
     // TODO - can't have empty fields
     // TODO - add progress bar
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setCustomOnBackPressed()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,6 +91,22 @@ class RecipeFragment : Fragment() {
                     // TODO - maybe add a preview page
                     findNavController().navigate(R.id.addFragment)
                 }
+            })
+    }
+
+    private fun setCustomOnBackPressed() {
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(this, object: OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d(TAG_RECIPE_FRAGMENT, "delete the recipe from storage and database")
+                    // TODO delete the recipe from storage and database
+                    if (isEnabled) {
+                        isEnabled = false
+                        requireActivity().onBackPressed()
+                    }
+                }
+
             })
     }
 }
