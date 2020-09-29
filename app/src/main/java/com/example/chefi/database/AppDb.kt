@@ -183,7 +183,6 @@ class AppDb : Application() {
     fun addRecipeToRecipesCollection(recipeName: String?,
                                      imageUrl: String?,
                                      direction: ArrayList<String>?,
-                                     databaseImageId: String?,
                                      ingredients: ArrayList<String>?,
                                      status: Int?)  {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
@@ -193,7 +192,6 @@ class AppDb : Application() {
                             likes=0,
                             imageUrl=imageUrl,
                             comments= ArrayList(),
-                            databaseImageId=databaseImageId,
                             directions=direction,
                             ingredients=ingredients,
                             status=status)
@@ -249,30 +247,40 @@ class AppDb : Application() {
 
         // delete from storage and data base
         val imageUrl = recipe.imageUrl
+        deleteImageFromStorage(imageUrl, recipe)
 
+    }
+
+    private fun deleteImageFromDatabase() {
+
+    }
+
+    fun deleteImageFromStorage(imageUrl: String?, recipe: Recipe?){
         FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl!!).delete()
             .addOnSuccessListener {
-                Log.d(TAG_APP_DB, "recipe ${recipe.name} deleted")
-                deleteRecipeFromDatabase(recipe)
+                if (recipe != null) {
+                    deleteRecipeFromCollection(recipe)
+//                    deleteRecipeFromDatabase(recipe)
+                }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG_APP_DB, "can't delete recipe ${recipe.name}, ${exception.message}")
+                Log.d(TAG_APP_DB, "can't delete recipe ${recipe?.name}, ${exception.message}")
             }
     }
 
-    private fun deleteRecipeFromDatabase(recipe: Recipe) {
-        val query = databaseRef.child(recipe.databaseImageId!!)
-        query.addListenerForSingleValueEvent( object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.ref.removeValue()
-                Log.d(TAG_APP_DB, "database doc $snapshot removed")
-                deleteRecipeFromCollection(recipe)
-            }
-            override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG_APP_DB, "can't remove database doc ${error.message}")
-            }
-        })
-    }
+//    private fun deleteRecipeFromDatabase(recipe: Recipe) {
+//        val query = databaseRef.child(recipe.databaseImageId!!)
+//        query.addListenerForSingleValueEvent( object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                snapshot.ref.removeValue()
+//                Log.d(TAG_APP_DB, "database doc $snapshot removed")
+//                deleteRecipeFromCollection(recipe)
+//            }
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.d(TAG_APP_DB, "can't remove database doc ${error.message}")
+//            }
+//        })
+//    }
 
     private fun deleteRecipeFromCollection(recipe: Recipe) {
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
@@ -286,18 +294,18 @@ class AppDb : Application() {
             }
     }
 
-    private fun uploadImageToDatabase(imageUrl: String) {
-        // TODO - add databaseId to recipe fields
-        val imageDatabaseId = databaseRef.push().key
-        val image = DatabaseImage(imageDatabaseId!!, imageUrl)
-        databaseRef.child(imageDatabaseId).setValue(image)
-            .addOnSuccessListener {
-            LiveDataHolder.getDatabaseImageMutableLiveData().postValue(image)
-        }
-            .addOnFailureListener{ exception ->
-                Log.d(TAG_APP_DB, "exception upload to database = ${exception.message}")
-            }
-    }
+//    private fun uploadImageToDatabase(imageUrl: String) {
+//        // TODO - add databaseId to recipe fields
+//        val imageDatabaseId = databaseRef.push().key
+//        val image = DatabaseImage(imageDatabaseId!!, imageUrl)
+//        databaseRef.child(imageDatabaseId).setValue(image)
+//            .addOnSuccessListener {
+//            LiveDataHolder.getStringMutableLiveData().postValue(image)
+//        }
+//            .addOnFailureListener{ exception ->
+//                Log.d(TAG_APP_DB, "exception upload to database = ${exception.message}")
+//            }
+//    }
 
     fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
         val imageStorageId = System.currentTimeMillis().toString() + "." + fileExtension
@@ -316,7 +324,7 @@ class AppDb : Application() {
                     if (downloadUri.isSuccessful) {
                         val url = downloadUri.result.toString()
                         Log.d(TAG_APP_DB, "url upload image - $url")
-                        uploadImageToDatabase(url)
+                        LiveDataHolder.getStringMutableLiveData().postValue(url)
                     } else {
                         Log.d(TAG_APP_DB, "downloadUri.isSuccessful = false")
                     }
@@ -463,21 +471,21 @@ class AppDb : Application() {
     }
 
     // TODO - delete, for debug only
-    fun loadSingleImage(imageId : String){
-        databaseRef.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for (image in snapshot.children){
-                        val databaseImage = image.getValue(DatabaseImage::class.java)
-                        Log.d(TAG_APP_DB, "image = $image, imageId = $imageId")
-                        LiveDataHolder.getDatabaseImageMutableLiveData().postValue(databaseImage)
-                    }
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-    }
+//    fun loadSingleImage(imageId : String){
+//        databaseRef.addListenerForSingleValueEvent(
+//            object : ValueEventListener {
+//                override fun onDataChange(snapshot: DataSnapshot) {
+//                    for (image in snapshot.children){
+//                        val databaseImage = image.getValue(DatabaseImage::class.java)
+//                        Log.d(TAG_APP_DB, "image = $image, imageId = $imageId")
+//                        LiveDataHolder.getStringMutableLiveData().postValue(databaseImage)
+//                    }
+//                }
+//                override fun onCancelled(error: DatabaseError) {
+//                    TODO("Not yet implemented")
+//                }
+//            })
+//    }
 
     fun updateUserFields(fieldName: String, content: String) {
         when (fieldName) {
@@ -486,7 +494,6 @@ class AppDb : Application() {
                 currUser?.name = content
                 currUser?.name_lowerCase = content.toLowerCase(Locale.ROOT) }
             "imageUrl" -> currUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
-            "databaseImageId" -> currUser?.databaseImageId = content
         }
         updateUserInUsersCollection()
     }

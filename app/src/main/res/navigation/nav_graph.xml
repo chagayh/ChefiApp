@@ -43,10 +43,6 @@
             android:name="imageUrlAsString"
             app:argType="string"
             android:defaultValue="default" />
-        <argument
-            android:name="databaseId"
-            app:argType="string"
-            android:defaultValue="default" />
     </fragment>
     <fragment
         android:id="@+id/displayFragment"

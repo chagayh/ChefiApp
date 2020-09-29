@@ -22,7 +22,7 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
         get() = applicationContext as Chefi
 
     private val TAG_UPLOAD_IMAGE_WORKER = "uploadImageWorker"
-    private var observer : Observer<DatabaseImage>? = null
+    private var observer : Observer<String>? = null
 
     override fun startWork(): ListenableFuture<Result> {
         // 1. here we create the future and store the callback for later use
@@ -42,16 +42,15 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun setObserver() {
-        observer = Observer<DatabaseImage> { databaseImage ->
+        observer = Observer<String> { imageUrl ->
             Log.d(TAG_UPLOAD_IMAGE_WORKER, "in set observer")
             val outPutData = Data.Builder()
-                .putString(appContext.getString(R.string.keyUrl), databaseImage.url)
-                .putString(appContext.getString(R.string.keyDataBaseId), databaseImage.dataBaseId)
+                .putString(appContext.getString(R.string.keyUrl), imageUrl)
                 .build()
-            Log.d(TAG_UPLOAD_IMAGE_WORKER, "value = $databaseImage")
-            LiveDataHolder.getDatabaseImageLiveData().removeObserver(observer!!)
+            Log.d(TAG_UPLOAD_IMAGE_WORKER, "value = $imageUrl")
+            LiveDataHolder.getStringLiveData().removeObserver(observer!!)
             this.callback?.set(Result.success(outPutData))
         }
-        LiveDataHolder.getDatabaseImageLiveData().observeForever(observer!!)
+        LiveDataHolder.getStringLiveData().observeForever(observer!!)
     }
 }

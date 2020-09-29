@@ -12,7 +12,6 @@ import com.example.chefi.database.User
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.gson.Gson
-//import com.example.chefi.workers.FetchDataAsyncWorker
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -92,15 +91,13 @@ class Chefi : Application() {
     fun addRecipeToDb(recipeName: String?,
                       imageUrl: String?,
                       direction: ArrayList<String>?,
-                      databaseImageId: String?,
                       ingredients: ArrayList<String>?,
                       status: Int?) {
-        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, databaseImageId, ingredients, status)
+        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status)
     }
 
     fun addRecipe(name: String?,
                   imageUrl: String?,
-                  databaseImageId: String?,
                   direction: ArrayList<String>?,
                   ingredients: ArrayList<String>?,
                   status: Int) : UUID {
@@ -111,7 +108,6 @@ class Chefi : Application() {
         val inputData = Data.Builder()
             .putString(getString(R.string.keyRecipeName), name)
             .putString(getString(R.string.keyRecipeImageUrl), imageUrl)
-            .putString(getString(R.string.keyDataBaseId), databaseImageId)
             .putString(getString(R.string.keyRecipeDirections), Gson().toJson(direction))
             .putString(getString(R.string.keyRecipeIngredients), Gson().toJson(ingredients))
             .putInt(getString(R.string.keyRecipeStatus), status)
@@ -133,6 +129,10 @@ class Chefi : Application() {
 
     fun deleteRecipe(recipe : Recipe) {
         return appDb.deleteRecipe(recipe)
+    }
+
+    fun deleteImage(imageUrl: String?, recipe: Recipe?) {
+        appDb.deleteImageFromStorage(imageUrl, null)
     }
 
     fun updateUserFields(fieldName: String, content: String){
@@ -201,9 +201,9 @@ class Chefi : Application() {
     }
 
     // TODO - delete, for debug only
-    fun loadSingleImage(imageId: String){
-        appDb.loadSingleImage(imageId)
-    }
+//    fun loadSingleImage(imageId: String){
+//        appDb.loadSingleImage(imageId)
+//    }
 
     fun fireBaseSearchUsers(searchText: String) {
         appDb.fireBaseSearchUsers(searchText)

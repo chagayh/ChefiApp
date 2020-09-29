@@ -23,8 +23,8 @@ object LiveDataHolder {
         MutableLiveData<Recipe>()
     }
 
-    private val databaseImageLiveData : MutableLiveData<DatabaseImage> by lazy {
-        MutableLiveData<DatabaseImage>()
+    private val stringLiveData : MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
     }
 
     private val usersLiveData : MutableLiveData<MutableList<User>> by lazy {
@@ -53,12 +53,12 @@ object LiveDataHolder {
         return notificationsLiveData
     }
 
-    fun getDatabaseImageLiveData() : LiveData<DatabaseImage>{
-        return databaseImageLiveData
+    fun getStringLiveData() : LiveData<String>{
+        return stringLiveData
     }
 
-    fun getDatabaseImageMutableLiveData() : MutableLiveData<DatabaseImage>{
-        return databaseImageLiveData
+    fun getStringMutableLiveData() : MutableLiveData<String>{
+        return stringLiveData
     }
 
     fun getRecipeLiveData() : LiveData<Recipe>{

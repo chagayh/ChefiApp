@@ -36,7 +36,6 @@ class RecipeFragment : Fragment() {
     private lateinit var textViewIngredients: EditText
     private lateinit var textViewStatus: EditText
     private lateinit var imageUrl: String
-    private lateinit var imageDatabaseId: String
     private lateinit var addBtn: Button
 
     // TODO - can't have empty fields
@@ -53,7 +52,6 @@ class RecipeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recipe, container, false)
         imageUrl = args.imageUrlAsString
-        imageDatabaseId = args.databaseId
 
         textViewName = view.findViewById(R.id.textViewName)
         textViewDirections = view.findViewById(R.id.textViewDirections)
@@ -64,7 +62,6 @@ class RecipeFragment : Fragment() {
         addBtn.setOnClickListener {
             val workId = appContext.addRecipe(textViewName.text.toString(),
                                               imageUrl,
-                                              imageDatabaseId,
                                               arrayListOf(textViewDirections.text.toString()),
                                               arrayListOf(textViewIngredients.text.toString()),
                                               Integer.parseInt(textViewStatus.text.toString()))
