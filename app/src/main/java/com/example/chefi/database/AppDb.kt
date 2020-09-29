@@ -113,7 +113,7 @@ class AppDb : Application() {
         }
     }
 
-    fun createUserWithEmailPassword(email: String, password: String, name: String) {
+    fun createUserWithEmailPassword(email: String, password: String, userName: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -121,7 +121,7 @@ class AppDb : Application() {
                     Log.d(TAG_APP_DB, "createUserWithEmail:success")
                     val user = auth.currentUser
                     val newUser = User(
-                        user?.uid, email=user?.email, name=name
+                        user?.uid, email=user?.email, userName=userName
                     )
                     addUserToCollection(newUser)
                     postUser(newUser)
@@ -313,7 +313,7 @@ class AppDb : Application() {
                 // TODO
             }
             .addOnProgressListener { taskSnapshot ->
-                val progress = (100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
+//                val progress = (100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
 //                progressBar.progress = progress.toInt()
             }
         Log.d(TAG_APP_DB, "image url = ${fileRef.downloadUrl}")

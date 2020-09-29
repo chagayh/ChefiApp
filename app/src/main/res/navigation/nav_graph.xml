@@ -24,7 +24,11 @@
         android:id="@+id/addFragment"
         android:name="com.example.chefi.fragment.AddFragment"
         android:label="fragment_add"
-        tools:layout="@layout/fragment_add" />
+        tools:layout="@layout/fragment_add" >
+        <action
+            android:id="@+id/action_addFragment_to_recipeFragment2"
+            app:destination="@id/recipeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.chefi.fragment.SearchFragment"
@@ -34,7 +38,16 @@
         android:id="@+id/recipeFragment"
         android:name="com.example.chefi.fragment.RecipeFragment"
         android:label="fragment_recipe"
-        tools:layout="@layout/fragment_recipe" />
+        tools:layout="@layout/fragment_recipe" >
+        <argument
+            android:name="imageUrlAsString"
+            app:argType="string"
+            android:defaultValue="default" />
+        <argument
+            android:name="databaseId"
+            app:argType="string"
+            android:defaultValue="default" />
+    </fragment>
     <fragment
         android:id="@+id/displayFragment"
         android:name="com.example.chefi.fragment.DisplayFragment"

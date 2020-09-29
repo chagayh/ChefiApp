@@ -42,8 +42,8 @@ class Chefi : Application() {
         return workManager
     }
 
-    fun signIn(email: String, password: String, name: String){
-        appDb.createUserWithEmailPassword(email, password, name)
+    fun signIn(email: String, password: String, userName: String){
+        appDb.createUserWithEmailPassword(email, password, userName)
     }
 
     fun logIn(email: String, password: String){

@@ -11,7 +11,6 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import kotlinx.android.synthetic.main.fragment_sign_in.*
 
 /**
  * A simple [Fragment] subclass.
@@ -36,7 +35,7 @@ class SignInFragment : Fragment() {
 
         emailEditText = view.findViewById(R.id.emailEditText)
         passwordEditText = view.findViewById(R.id.passwordEditText)
-        nameEditText = view.findViewById(R.id.nameEditText)
+        nameEditText = view.findViewById(R.id.userNameEditText)
         signInBtn = view.findViewById(R.id.signInBtn)
 
         setComponents()
@@ -54,9 +53,9 @@ class SignInFragment : Fragment() {
                     .show()
             } else {
                 val email = emailEditText.text.toString()
-                val name = nameEditText.text.toString()
+                val userName = nameEditText.text.toString()
                 val password = passwordEditText.text.toString()
-                appContext.signIn(email, password, name)
+                appContext.signIn(email, password, userName)
             }
         }
     }

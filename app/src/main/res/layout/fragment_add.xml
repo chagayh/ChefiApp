@@ -8,35 +8,35 @@
     tools:context=".fragment.AddFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:id="@+id/imageView"
-        android:hint="@string/hello_add_fragment"
+        android:id="@+id/textView"
+        android:text="Add an image first"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/addBtn"/>
+        app:layout_constraintBottom_toTopOf="@id/galleryBtn"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/addBtn"
-        android:text="Upload an image from gallery"
+        android:id="@+id/galleryBtn"
+        android:text="Gallery"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView"
+        app:layout_constraintTop_toBottomOf="@id/textView"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/displayBtn"
-        android:text="Display uploaded images"
+        android:id="@+id/cameraBtn"
+        android:text="Camera"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addBtn"
+        app:layout_constraintTop_toBottomOf="@id/galleryBtn"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <ProgressBar

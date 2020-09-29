@@ -71,4 +71,9 @@
 
     // Profile Fragment
     <string name="profileBundleKey">user</string>
+
+    // Camera keys
+    <string name="keyCapturedPhotoUri">CAPTURED_PHOTO_URI_KEY</string>
+    <string name="keyPathPhoto">CAPTURED_PHOTO_PATH_KEY</string>
+
 </resources>

@@ -1,7 +1,8 @@
 package com.example.chefi.activities
 
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.chefi.Chefi
@@ -12,6 +13,9 @@ class MainActivity : AppCompatActivity() {
 
     private val appContext: Chefi
         get() = applicationContext as Chefi
+
+    private var currentPhotoPath: String? = null
+    private var capturedImageUri: Uri? = null
 
     companion object{
         // TAGS
@@ -32,32 +36,42 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.navHostFragment)
         bottomNavigationView.setupWithNavController(navController)
 
-//        val user = appContext.checkCurrentUser()
-//        Log.d("mainActivity", "user = $user")
-//        if (user == null){
-//            val intent = Intent(this, LoginActivity::class.java)
-//            startActivity(intent)
-//        }
-//        else {
-//            Toast.makeText(this, "user = ${user.email}", Toast.LENGTH_SHORT)
-//                .show()
-////            updateUI(user)  // TODO
-//        }
     }
 
-    // TODO - BUG: endless loop
-//    override fun onStart() {
-//        super.onStart()
-//        val user = appContext.checkCurrentUser()
-//        Log.d("mainActivity", "user = $user")
-//        if (user == null){
-//            val intent = Intent(this, LoginActivity::class.java)
-//            startActivity(intent)
-//        }
-//        else {
-//            Toast.makeText(this, "user = ${user.email}", Toast.LENGTH_SHORT)
-//                .show()
-////            updateUI(user)  // TODO
-//        }
-//    }
+    fun getCurrentPhotoPath() : String?{
+        return currentPhotoPath
+    }
+
+    fun getCapturedImageUri() : Uri?{
+        return capturedImageUri
+    }
+
+    fun setCurrentPhotoPath(imagePath: String){
+        currentPhotoPath = imagePath
+    }
+
+    fun setCapturedImageUri(uri: Uri){
+        capturedImageUri = uri
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (capturedImageUri != null) {
+            outState.putString(getString(R.string.keyCapturedPhotoUri), capturedImageUri.toString());
+        }
+
+        if (currentPhotoPath != null) {
+            outState.putString(getString(R.string.keyPathPhoto), currentPhotoPath);
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        if (savedInstanceState.containsKey(getString(R.string.keyCapturedPhotoUri))){
+            capturedImageUri = Uri.parse(savedInstanceState.getString(getString(R.string.keyCapturedPhotoUri)))
+        }
+        if (savedInstanceState.containsKey(getString(R.string.keyPathPhoto))){
+            currentPhotoPath = savedInstanceState.getString(getString(R.string.keyPathPhoto))
+        }
+        super.onRestoreInstanceState(savedInstanceState)
+    }
 }
