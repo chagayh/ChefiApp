@@ -179,10 +179,23 @@ class AppDb : Application() {
         currUser?.recipes?.add(document)
     }
 
-    fun addRecipeToRecipesCollection(recipeTitle: String?, imageUrl: String?) {
+    fun addRecipeToRecipesCollection(recipeName: String?,
+                                     imageUrl: String?,
+                                     direction: ArrayList<String>?,
+                                     databaseImageId: String?,
+                                     ingredients: ArrayList<String>?,
+                                     status: Int?)  {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
         val document = firestore.collection(recipeCollectionPath).document()
-        val recipe = Recipe(uid=document.id, name=recipeTitle, likes=0, imageUrl=imageUrl)
+        val recipe = Recipe(uid=document.id,
+                            name=recipeName,
+                            likes=0,
+                            imageUrl=imageUrl,
+                            comments= ArrayList(),
+                            databaseImageId=databaseImageId,
+                            direction=direction,
+                            ingredients=ingredients,
+                            status=status)
 
         if (userRecipes == null) {
             userRecipes = ArrayList()

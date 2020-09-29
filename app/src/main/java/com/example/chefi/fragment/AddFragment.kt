@@ -157,7 +157,7 @@ class AddFragment : Fragment() {
                     val imageUrl =
                         databaseImage.outputData.getString(getString(R.string.keyUrl))
                     // TODO - pass imageId and imageUrl to continue add recipe
-                    val action = AddFragmentDirections.actionAddFragmentToRecipeFragment2(imageUrl!!, imageId!!)
+                    val action = AddFragmentDirections.actionAddFragmentToRecipeFragment2(imageUrl!!, imageId!!, )
                     view?.findNavController()?.navigate(action)
                 }
             })

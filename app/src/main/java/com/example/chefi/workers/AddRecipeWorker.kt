@@ -32,11 +32,25 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
 
         // we place the broadcast receiver and immediately return the "future" object
         setObserver()
+        /*
+            .putString(getString(R.string.keyRecipeName), name)
+            .putString(getString(R.string.keyRecipeImageUrl), imageUrl)
+            .putString(getString(R.string.keyRecipeTitle), recipeTitle)
+            .putString(getString(R.string.keyDataBaseId), databaseImageId)
+            .putStringArray(getString(R.string.keyRecipeDirections), direction)
+            .putStringArray(getString(R.string.keyRecipeIngredients), ingredients)
+            .putInt(getString(R.string.keyRecipeStatus), status)
+         */
 
         val recipeImageUrl = inputData.getString(appContext.getString(R.string.keyRecipeImageUrl))
         val recipeTitle = inputData.getString(appContext.getString(R.string.keyRecipeTitle))
+        val recipeName = inputData.getString(appContext.getString(R.string.keyRecipeName))
+        val recipeDatabaseId = inputData.getString(appContext.getString(R.string.keyDataBaseId))
+        val recipeDirections = inputData.getString(appContext.getString(R.string.keyRecipeDirections))
+        val recipeIngredients = inputData.getString(appContext.getString(R.string.keyRecipeIngredients))
+        val recipeStatus = inputData.getString(appContext.getString(R.string.keyRecipeStatus))
 
-        appContext.addRecipeToDb(recipeTitle, recipeImageUrl)
+        appContext.addRecipeToDb(recipeTitle=recipeTitle, imageUrl=recipeImageUrl)
         return future
     }
 

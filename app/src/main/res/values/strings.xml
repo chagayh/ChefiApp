@@ -54,10 +54,14 @@
     <string name="keyRecipeType">recipe</string>
     <string name="keyRecipesData">recipesArray</string>
     <string name="keyRecipeTitle">recipeTitle</string>
+    <string name="keyRecipeName">recipeName</string>
+    <string name="keyRecipeIngredients">recipeIngredients</string>
+    <string name="keyRecipeStatus">recipeStatus</string>
     <string name="keyRecipeImageUrl">recipeImageUrl</string>
     <string name="keyUri">uri</string>
-    <string name="keyUrl">url</string>
+    <string name="keyUrl">urlKey</string>
     <string name="keyDataBaseId">dataBaseId</string>
+    <string name="keyRecipeDirections">recipeDirections</string>
     <string name="keyFileExtension">fileExtension</string>
 
     // Profile xml

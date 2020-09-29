@@ -88,18 +88,34 @@ class Chefi : Application() {
 
     }
 
-    fun addRecipeToDb(recipeTitle: String?, imageUrl: String?) {
-        appDb.addRecipeToRecipesCollection(recipeTitle, imageUrl)
+    fun addRecipeToDb(recipeName: String?,
+                      imageUrl: String?,
+                      direction: ArrayList<String>?,
+                      databaseImageId: String?,
+                      ingredients: ArrayList<String>?,
+                      status: Int?) {
+        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, databaseImageId, ingredients, status)
     }
 
-    fun addRecipe(recipeTitle: String?, imageUrl: String?) : UUID {
+    fun addRecipe(name: String,
+                  imageUrl: String?,
+                  recipeTitle: String?,
+                  databaseImageId: String?,
+                  direction: Array<String>,
+                  ingredients: Array<String>,
+                  status: Int) : UUID {
         val workId = UUID.randomUUID()
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
         val inputData = Data.Builder()
-            .putString(getString(R.string.keyRecipeTitle), recipeTitle)
+            .putString(getString(R.string.keyRecipeName), name)
             .putString(getString(R.string.keyRecipeImageUrl), imageUrl)
+            .putString(getString(R.string.keyRecipeTitle), recipeTitle)
+            .putString(getString(R.string.keyDataBaseId), databaseImageId)
+            .putStringArray(getString(R.string.keyRecipeDirections), direction)
+            .putStringArray(getString(R.string.keyRecipeIngredients), ingredients)
+            .putInt(getString(R.string.keyRecipeStatus), status)
             .build()
         val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AddRecipeWorker::class.java)
             .setConstraints(constraints)
