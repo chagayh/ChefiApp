@@ -124,20 +124,20 @@ class Chefi : Application() {
         appDb.updateUserFields(fieldName, content)
     }
 
-    fun loadRecipesFirstTime() {
-        appDb.loadRecipesFirstTime()
+    fun loadRecipes(user: User?) {
+        appDb.loadRecipes(user)
     }
 
     fun loadFavoritesFirstTime() {
-        appDb.loadFavoritesFirstTime()
+        appDb.loadFavorites()
     }
 
-    fun loadFollowingFirstTime() {
-        appDb.loadFollowingFirstTime()
+    fun loadFollowingFirstTime(user: User?) {
+        appDb.loadFollowing(user)
     }
 
-    fun loadFollowersFirstTime() {
-        appDb.loadFollowersFirstTime()
+    fun loadFollowersFirstTime(user: User?) {
+        appDb.loadFollowers(user)
     }
 
     fun loadNotificationsFirstTime() {

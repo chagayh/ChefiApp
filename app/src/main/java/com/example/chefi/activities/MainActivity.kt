@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        appContext.loadRecipesFirstTime()
+        appContext.loadRecipes(null)
         appContext.loadFavoritesFirstTime()
-        appContext.loadFollowersFirstTime()
-        appContext.loadFollowingFirstTime()
+        appContext.loadFollowersFirstTime(null)
+        appContext.loadFollowingFirstTime(null)
         appContext.loadNotificationsFirstTime()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)

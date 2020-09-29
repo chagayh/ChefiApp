@@ -319,12 +319,11 @@ class AppDb : Application() {
         Log.d(TAG_APP_DB, "image url = ${fileRef.downloadUrl}")
     }
 
-    fun loadRecipesFirstTime(){
+    fun loadRecipes(user: User?){
         val recipesRefList = currUser?.recipes
         val tasks = ArrayList<Task<DocumentSnapshot>>()
-
+        val userRecipesList = ArrayList<Recipe>()
         if (recipesRefList != null) {
-            userRecipes = ArrayList()
             for (recipeRef in recipesRefList) {
                 val docTask = recipeRef.get()
                 tasks.add(docTask)
@@ -334,16 +333,20 @@ class AppDb : Application() {
                     for (recipeDoc in value) {
                         val recipe = recipeDoc.toObject<Recipe>()
                         if (recipe != null) {
-                            userRecipes?.add(recipe)
+                            userRecipesList.add(recipe)
                         }
                     }
-                    postRecipes(userRecipes!!)   // TODO - check if needed
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userRecipes?.size} last")
+                    postRecipes(userRecipesList)   // TODO - check if needed
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userRecipesList.size} last")
+                    if (user == null) {
+                        userRecipes = ArrayList()
+                        userRecipes = userRecipesList
+                    }
                 }
         }
     }
 
-    fun loadFavoritesFirstTime(){
+    fun loadFavorites(){
         val recipesFavoritesList = currUser?.favorites
         val tasks = ArrayList<Task<DocumentSnapshot>>()
 
@@ -367,12 +370,11 @@ class AppDb : Application() {
         }
     }
 
-    fun loadFollowingFirstTime(){
+    fun loadFollowing(user: User?){
         val userFollowingList = currUser?.following
         val tasks = ArrayList<Task<DocumentSnapshot>>()
-
+        val followingList = ArrayList<User>()
         if (userFollowingList != null) {
-            userFollowing = ArrayList()
             for (userRef in userFollowingList) {
                 val docTask = userRef.get()
                 tasks.add(docTask)
@@ -380,23 +382,27 @@ class AppDb : Application() {
             Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
                 .addOnSuccessListener { value ->
                     for (userDoc in value) {
-                        val user = userDoc.toObject<User>()
-                        if (user != null) {
-                            userFollowing?.add(user)
+                        val currUser = userDoc.toObject<User>()
+                        if (currUser != null) {
+                            followingList.add(currUser)
                         }
                     }
-                    postUsersList(userFollowing!!)   // TODO - check if needed
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userFollowing?.size} last")
+                    postUsersList(followingList)   // TODO - check if needed
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${followingList.size} last")
+                    if (user == null) {
+                        userFollowing = ArrayList()
+                        userFollowing = followingList
+                    }
                 }
         }
     }
 
-    fun loadFollowersFirstTime(){
+    fun loadFollowers(user: User?){
         val userFollowersList = currUser?.followers
         val tasks = ArrayList<Task<DocumentSnapshot>>()
-
+        val followingList = ArrayList<User>()
         if (userFollowersList != null) {
-            userFollowers = ArrayList()
+//            userFollowers = ArrayList()
             for (userRef in userFollowersList) {
                 val docTask = userRef.get()
                 tasks.add(docTask)
@@ -404,13 +410,17 @@ class AppDb : Application() {
             Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
                 .addOnSuccessListener { value ->
                     for (userDoc in value) {
-                        val user = userDoc.toObject<User>()
-                        if (user != null) {
-                            userFollowers?.add(user)
+                        val currUser = userDoc.toObject<User>()
+                        if (currUser != null) {
+                            followingList.add(currUser)
                         }
                     }
-                    postUsersList(userFollowers!!)   // TODO - check if needed
-                    Log.e(TAG_APP_DB, "usersRecipes.size = ${userFollowers?.size} last")
+                    postUsersList(followingList)
+                    Log.e(TAG_APP_DB, "usersRecipes.size = ${followingList.size} last")
+                    if (user == null) {
+                        userFollowers = ArrayList()
+                        userFollowers = followingList
+                    }
                 }
         }
     }
