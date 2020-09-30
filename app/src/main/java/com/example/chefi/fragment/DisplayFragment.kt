@@ -58,7 +58,7 @@ class DisplayFragment : Fragment() {
         // data class User observer
         LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, Observer { value ->
             if (value == null) {
-                Log.d(TAG_DISPLAY_FRAGMENT, "null recipe, live data")
+                Log.d(TAG_DISPLAY_FRAGMENT, "null recipe_profile, live data")
             } else {
                 Log.d(TAG_DISPLAY_FRAGMENT, "new recipes, recipes.size = ${value.size}")
                 imageItemAdapter.setItems(ArrayList<Recipe>(value))

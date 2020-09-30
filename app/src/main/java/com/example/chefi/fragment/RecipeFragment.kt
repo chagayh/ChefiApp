@@ -82,8 +82,8 @@ class RecipeFragment : Fragment() {
                     val recipeType = object : TypeToken<Recipe>() {}.type
 
                     val returnedRecipe = Gson().fromJson<Recipe>(recipeAsJson, recipeType)
-                    Log.d(TAG_RECIPE_FRAGMENT, "recipe = $returnedRecipe")
-                    Toast.makeText(appContext, "recipe ${returnedRecipe.name} CREATED", Toast.LENGTH_SHORT)
+                    Log.d(TAG_RECIPE_FRAGMENT, "recipe_profile = $returnedRecipe")
+                    Toast.makeText(appContext, "recipe_profile ${returnedRecipe.name} CREATED", Toast.LENGTH_SHORT)
                         .show()
                     // TODO - maybe add a preview page
                     findNavController().navigate(R.id.addFragment)
@@ -96,7 +96,7 @@ class RecipeFragment : Fragment() {
             .onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Log.d(TAG_RECIPE_FRAGMENT, "delete the recipe from storage and database")
+                    Log.d(TAG_RECIPE_FRAGMENT, "delete the recipe_profile from storage and database")
                     appContext.deleteImage(imageUrl, null)
                     if (isEnabled) {
                         isEnabled = false

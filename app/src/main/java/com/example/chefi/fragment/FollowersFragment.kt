@@ -1,24 +1,14 @@
 package com.example.chefi.fragment
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.activities.LoginActivity
 import com.example.chefi.adapters.FollowersAdapter
-import com.example.chefi.adapters.RecipeAdapter
-import com.example.chefi.database.NotificationItem
-import com.example.chefi.database.NotificationType
 
 class FollowersFragment : Fragment() {
 
@@ -42,5 +32,4 @@ class FollowersFragment : Fragment() {
         recyclerViewFollowers.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         return view
     }
-
 }

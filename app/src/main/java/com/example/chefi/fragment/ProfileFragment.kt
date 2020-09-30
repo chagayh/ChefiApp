@@ -1,24 +1,22 @@
 package com.example.chefi.fragment
 
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.core.content.ContextCompat.startActivity
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.activities.LoginActivity
-import com.example.chefi.adapters.RecipeAdapter
+import com.example.chefi.adapters.ProfileAdapter
 
 
 /**
@@ -29,7 +27,7 @@ import com.example.chefi.adapters.RecipeAdapter
 class ProfileFragment : Fragment() {
 
     private lateinit var recyclerViewRecipes: RecyclerView
-    private lateinit var recipesAdapter: RecipeAdapter
+    private lateinit var recipesAdapter: ProfileAdapter
     private var SPAN_VALUE: Int = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,10 +40,11 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerViewRecipes = view.findViewById(R.id.recyclerViewRecipes)
-        recipesAdapter = RecipeAdapter(null)
+        recipesAdapter = ProfileAdapter(null)
         recipesAdapter.setItems(ArrayList())
         recyclerViewRecipes.adapter = recipesAdapter
-//        recyclerViewRecipes.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+//        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+//        recyclerViewRecipes.layoutManager = lm
         val gridLayoutManager: GridLayoutManager = GridLayoutManager(activity, SPAN_VALUE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {

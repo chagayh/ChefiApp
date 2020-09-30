@@ -14,7 +14,15 @@
         android:id="@+id/profileFragment"
         android:name="com.example.chefi.fragment.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profile_to_followers"
+            app:destination="@id/followersFragment" >
+            <argument
+                android:name="isFollowers"
+                android:defaultValue="false" />
+        </action>
+    </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.example.chefi.fragment.FavoritesFragment"
@@ -55,7 +63,7 @@
         android:label="fragment_follwers"
         tools:layout="@layout/fragment_follwers" >
         <argument
-            android:name="followersOrFollowing"
+            android:name="isFollowers"
             app:argType="boolean" />
     </fragment>
 </navigation>

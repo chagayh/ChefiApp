@@ -3,7 +3,7 @@ package com.example.chefi.database
 enum class NotificationType{
     LIKE{
         override fun toString(): String {
-            return "%s like your recipe."
+            return "%s like your recipe_profile."
 
         }
     },
