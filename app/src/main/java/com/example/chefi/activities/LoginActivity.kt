@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.chefi.*
 import com.example.chefi.fragment.*
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
@@ -27,7 +29,8 @@ class LoginActivity : AppCompatActivity() {
             .replace(R.id.user_email_frame, UserEmailFragment())
             .replace(R.id.quick_log_frame, QuickLogFragment())
             .commit()
-        appContext.checkCurrentUser()
+//        appContext.checkCurrentUser()
+        checkUser()
     }
 
     private fun setObservers() {
@@ -45,6 +48,24 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun checkUser() {
+        val authStateListener = FirebaseAuth.AuthStateListener {
+            val user = appContext.getCurrUser()
+            if (user != null) {
+                Toast.makeText(this, "user ${user.name} connected", Toast.LENGTH_SHORT)
+                    .show()
+                val appIntent = Intent(this, MainActivity::class.java)
+                startActivity(appIntent)
+                finish()
+            }
+        }
+        appContext.getFirebaseAuth()
+            .addAuthStateListener(authStateListener)
+    }
+
+
+
 
     private fun checkUserConnected(){
         val user = appContext.checkCurrentUser()

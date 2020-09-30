@@ -11,6 +11,7 @@ import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -165,6 +166,10 @@ class Chefi : Application() {
 
     fun getUserRecipes() : ArrayList<Recipe>? {
         return appDb.getUserRecipes()
+    }
+
+    fun getFirebaseAuth() : FirebaseAuth {
+        return appDb.getFirebaseAuth()
     }
 
     fun getUserFavorites() : ArrayList<Recipe>? {

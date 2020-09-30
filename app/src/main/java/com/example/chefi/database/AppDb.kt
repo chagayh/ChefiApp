@@ -8,12 +8,16 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 import android.annotation.SuppressLint
 import android.app.Application
 import android.app.Notification
+import android.content.Intent
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
+import com.example.chefi.activities.LoginActivity
+import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -35,7 +39,8 @@ import kotlin.collections.ArrayList
 class AppDb : Application() {
 
     // Declare an instance of FirebaseAuth
-    private val auth: FirebaseAuth = Firebase.auth
+//    private val auth: FirebaseAuth = Firebase.auth
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
 
     // Chefi.getCon().getString(R.string.imageUpload)
@@ -57,6 +62,10 @@ class AppDb : Application() {
 
     init {
         updateCurrentUser()
+    }
+
+    fun getFirebaseAuth() : FirebaseAuth {
+        return auth
     }
 
     fun getUserRecipes() : ArrayList<Recipe>? {
@@ -248,10 +257,6 @@ class AppDb : Application() {
         // delete from storage and data base
         val imageUrl = recipe.imageUrl
         deleteImageFromStorage(imageUrl, recipe)
-
-    }
-
-    private fun deleteImageFromDatabase() {
 
     }
 
