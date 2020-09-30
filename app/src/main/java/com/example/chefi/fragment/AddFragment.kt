@@ -146,14 +146,15 @@ class AddFragment : Fragment() {
     @SuppressLint("RestrictedApi", "VisibleForTests")
     private fun setWorkObserver(workId: UUID) {
         appContext.getWorkManager().getWorkInfoByIdLiveData(workId).observe(this,
-            Observer { databaseImage ->
+            Observer { value ->
                 Log.d(
                     TAG_ADD_FRAGMENT,
-                    "value = ${databaseImage.outputData.getString(getString(R.string.keyUrl))}"
+                    "value = ${value.outputData.getString(getString(R.string.keyUrl))}"
                 )
-                if (databaseImage.outputData.size() != 0) {
+                Log.d("change_url", "in setWorkObserver image url = ${value.outputData.getString(getString(R.string.keyUrl))}")
+                if (value.outputData.size() != 0) {
                     val imageUrl =
-                        databaseImage.outputData.getString(getString(R.string.keyUrl))
+                        value.outputData.getString(getString(R.string.keyUrl))
                     // TODO - pass imageId and imageUrl to continue add recipe
                     val action = AddFragmentDirections.actionAddFragmentToRecipeFragment2(imageUrl!!)
                     view?.findNavController()?.navigate(action)

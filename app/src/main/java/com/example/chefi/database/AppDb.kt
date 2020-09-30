@@ -264,7 +264,7 @@ class AppDb : Application() {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG_APP_DB, "can't delete recipe ${recipe?.name}, ${exception.message}")
+                Log.d(TAG_APP_DB, "can't delete recipe $imageUrl, ${exception.message}")
             }
     }
 
@@ -324,6 +324,7 @@ class AppDb : Application() {
                     if (downloadUri.isSuccessful) {
                         val url = downloadUri.result.toString()
                         Log.d(TAG_APP_DB, "url upload image - $url")
+                        Log.d("change_url", "in uploadImageToStorage image url = $url")
                         LiveDataHolder.getStringMutableLiveData().postValue(url)
                     } else {
                         Log.d(TAG_APP_DB, "downloadUri.isSuccessful = false")

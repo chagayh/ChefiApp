@@ -43,7 +43,9 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
 
     private fun setObserver() {
         observer = Observer<String> { imageUrl ->
-            Log.d(TAG_UPLOAD_IMAGE_WORKER, "in set observer")
+            Log.d(TAG_UPLOAD_IMAGE_WORKER, "in set observer image url = $imageUrl")
+            Log.d("change_url", "in setObserver image url = $imageUrl")
+
             val outPutData = Data.Builder()
                 .putString(appContext.getString(R.string.keyUrl), imageUrl)
                 .build()
