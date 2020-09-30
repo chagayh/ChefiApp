@@ -121,7 +121,7 @@ class AddFragment : Fragment() {
                     Log.d(TAG_ADD_FRAGMENT, "data = $imageUri")
                     val workId = appContext.uploadImage(imageUri!!)
                     setWorkObserver(workId)
-                    // TODO - if goes back delete the recipe document
+                    // TODO - if goes back delete the recipe_profile document
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -135,7 +135,7 @@ class AddFragment : Fragment() {
                     Log.d(TAG_ADD_FRAGMENT, "photoUri = $imageUri")
                     val workId = appContext.uploadImage(imageUri!!)
                     setWorkObserver(workId)
-                    // TODO - if goes back delete the recipe document
+                    // TODO - if goes back delete the recipe_profile document
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -155,7 +155,6 @@ class AddFragment : Fragment() {
                 if (value.outputData.size() != 0) {
                     val imageUrl =
                         value.outputData.getString(getString(R.string.keyUrl))
-                    // TODO - pass imageId and imageUrl to continue add recipe
                     val action = AddFragmentDirections.actionAddFragmentToRecipeFragment2(imageUrl!!)
                     view?.findNavController()?.navigate(action)
                 }

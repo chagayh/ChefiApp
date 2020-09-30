@@ -3,7 +3,6 @@ package com.example.chefi.adapters
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +15,8 @@ import com.example.chefi.R
 import com.example.chefi.database.Recipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
-import com.example.chefi.listeners.RecipeClickListener
 import com.example.chefi.database.User
 import com.squareup.picasso.Picasso
-import kotlin.math.log
 
 
 // we need to create an adapter that extends RecyclerView.Adapter
@@ -32,17 +29,13 @@ import kotlin.math.log
 // also, we created the interface OnToDoItemClickListener so that the adapter could
 // tell anyone who wants to listen whenever a "person" view was clicked
 
-class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//    private val Context.app: Chefi
-//        get() = applicationContext as Chefi
+class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-//        appContext.setUserFields(fieldName : String, content : String)
     private lateinit var appContext: Chefi
-    private val TYPE_HEADER = 1
-    private val TYPE_ITEM = 2
+    private val TYPE_HEADER = 0
+    private val TYPE_ITEM = 1
     private var _items: ArrayList<Recipe>? = ArrayList()
     var recipesFlag:Boolean = true
-    var toDoItemClickCallback: RecipeClickListener? = null
     private val otherFlag = user != null
     private lateinit var tempUser: User
 
@@ -67,7 +60,7 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
             return ProfileHeaderHolder(view)
         }
         else{
-            view = LayoutInflater.from(context).inflate(R.layout.recipe, parent, false)
+            view = LayoutInflater.from(context).inflate(R.layout.recipe_profile, parent, false)
             return RecipeHolder(view)
         }
     }
@@ -80,7 +73,8 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
     }
 
     override fun getItemCount(): Int {
-        return 1 + (_items?.size ?: 0)
+        val itemsSize = (_items?.size ?: 0)
+        return 1 + itemsSize
 //        return if(recipesFlag) 200 else 1
     }
 
@@ -91,36 +85,7 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is RecipeHolder)
         {
-            holder._image.setImageResource(R.drawable.dog)
-            Log.e("zin2", position.toString())
-            val item = _items?.get(position - 1)
-            // set a listener to know when view was clicked, and tell the listener if exists
-            holder.itemView.setOnClickListener {
-                // TODO: open recipe page
-            }
-            // set a long listener to know when view was clicked, and tell the listener if exists
-            if (!otherFlag){
-                holder.itemView.setOnLongClickListener {
-                    if (item != null) {
-                        if(recipesFlag){
-                            val alertDialog = AlertDialog.Builder(it.context)
-                            alertDialog.setTitle("Would you like to delete this recipe?")
-                            alertDialog.setPositiveButton("Confirm") { _: DialogInterface, _: Int ->
-                                _items?.remove(item)
-                                appContext.deleteRecipe(item)
-                                _items?.let { it1 -> setItems(it1) }
-                            }
-                            alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
-                            alertDialog.show()
-                        }else{
-                            _items?.remove(item)
-                            appContext.removeRecipeFromFavorites(item)
-                            _items?.let { it1 -> setItems(it1) }
-                        }
-                    }
-                    true
-                }
-            }
+            setRecipe(holder, position)
         }else if(holder is ProfileHeaderHolder){
             setProfileHeader(holder)
         }
@@ -143,14 +108,13 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
         holder.usernameTextView.text = "@" + tempUser.userName
         if(!otherFlag){holder.followButton.text = "Following"}
         _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
-        Log.e("zin", _items?.size.toString())
         if(tempUser.imageUrl != null){
             Picasso.with(appContext)
                 .load(tempUser.imageUrl)
                 .into(holder.image)
         }
         else{
-            holder.image.setImageResource(R.drawable.chagaipp)
+            holder.image.setImageResource(R.drawable.defpp)
         }
     }
 
@@ -220,11 +184,54 @@ class RecipeAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.
             if (user != null) {
                 appContext.follow(user)
             }else{
+//                val action = ProfileFragmentDirections.actionProfileToFollowers()
+////                view?.findNavController()?.navigate(action)
+//                it?.findNavController()?.navigate(action)
                 it.findNavController().navigate(R.id.followersFragment)
             }
         }
         holder.followersButton.setOnClickListener {
             it.findNavController().navigate(R.id.followersFragment)
+        }
+    }
+
+    private fun setRecipe(holder: RecipeHolder, position: Int){
+        holder._image.setImageResource(R.drawable.dog)
+        val item = _items?.get(position-1)
+        Picasso.with(appContext)
+            .load(item?.imageUrl)
+            .into(holder._image)
+        setRecipeButtons(holder, position)
+    }
+
+    private fun setRecipeButtons(holder: RecipeHolder,  position: Int){
+        val item = _items?.get(position - 1)
+        // set a listener to know when view was clicked, and tell the listener if exists
+        holder.itemView.setOnClickListener {
+            // TODO: open recipe_profile page
+        }
+        // set a long listener to know when view was clicked, and tell the listener if exists
+        if (!otherFlag){
+            holder.itemView.setOnLongClickListener {
+                if (item != null) {
+                    if(recipesFlag){
+                        val alertDialog = AlertDialog.Builder(it.context)
+                        alertDialog.setTitle("Would you like to delete this recipe_profile?")
+                        alertDialog.setPositiveButton("Confirm") { _: DialogInterface, _: Int ->
+                            _items?.remove(item)
+                            appContext.deleteRecipe(item)
+                            _items?.let { it1 -> setItems(it1) }
+                        }
+                        alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
+                        alertDialog.show()
+                    }else{
+                        _items?.remove(item)
+                        appContext.removeRecipeFromFavorites(item)
+                        _items?.let { it1 -> setItems(it1) }
+                    }
+                }
+                true
+            }
         }
     }
 }
