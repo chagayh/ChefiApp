@@ -8,12 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.core.content.ContextCompat.startActivity
-import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
@@ -77,29 +73,30 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-//        authStateListener = FirebaseAuth.AuthStateListener {
-//            if (FirebaseAuth.getInstance().currentUser != null) {
-//                val appIntent = Intent(context, LoginActivity::class.java)
-//                startActivity(requireContext(), appIntent, null)
-//                activity?.finish()
-//            }
-//        }
-//
-//        appContext.getFirebaseAuth()
-//            .addAuthStateListener(authStateListener!!)
+        authStateListener = FirebaseAuth.AuthStateListener {
+            if (it.currentUser == null) {
+                Log.d(TAG_PROFILE_FRAGMENT, "user = ${appContext.getCurrUser()?.name}")
+                val loginIntent = Intent(context, LoginActivity::class.java)
+                startActivity(requireContext(), loginIntent, null)
+                loginIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                activity?.finish()
+            }
+        }
+
+        appContext.getFirebaseAuth()
+            .addAuthStateListener(authStateListener!!)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        Log.d(TAG_PROFILE_FRAGMENT, "in onDestroy")
-//        Log.d(TAG_PROFILE_FRAGMENT, "in onDestroy")
+        Log.d(TAG_PROFILE_FRAGMENT, "in onDestroy")
     }
 
     override fun onStop() {
-//        super.onStop()
-//        Log.d(TAG_PROFILE_FRAGMENT, "in onStop")
-//        if (authStateListener != null){
-//            appContext.getFirebaseAuth().removeAuthStateListener(authStateListener!!)
-//        }
+        super.onStop()
+        Log.d(TAG_PROFILE_FRAGMENT, "in onStop")
+        if (authStateListener != null){
+            appContext.getFirebaseAuth().removeAuthStateListener(authStateListener!!)
+        }
     }
 }

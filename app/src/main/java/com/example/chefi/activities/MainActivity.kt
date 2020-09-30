@@ -2,12 +2,17 @@ package com.example.chefi.activities
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.chefi.Chefi
 import com.example.chefi.R
+import com.example.chefi.database.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.lifecycle.Observer
+import com.example.chefi.LiveDataHolder
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,23 +24,38 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         // TAGS
-        private val TAG_LIVE_DATA: String = "userLiveData"
+        private val TAG_MAIN_ACTIVITY: String = "mainActivity"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Log.d(TAG_MAIN_ACTIVITY, "in onCreate of mainActivity user's name =${appContext.getCurrUser()?.name}")
 
-        appContext.loadRecipes(null)
-        appContext.loadFavoritesFirstTime()
-        appContext.loadFollowersFirstTime(null)
-        appContext.loadFollowingFirstTime(null)
-        appContext.loadNotificationsFirstTime()
+        setObserver()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         val navController = findNavController(R.id.navHostFragment)
         bottomNavigationView.setupWithNavController(navController)
 
+    }
+
+    private fun setObserver() {
+        // data class User observer
+        val observer = Observer<User> { value ->
+            if (value == null){
+                Log.d(TAG_MAIN_ACTIVITY, "null user, live data")
+            } else {
+                Toast.makeText(this, "user ${value.name} connected", Toast.LENGTH_SHORT)
+                    .show()
+                appContext.loadRecipes(null)
+                appContext.loadFavoritesFirstTime()
+                appContext.loadFollowersFirstTime(null)
+                appContext.loadFollowingFirstTime(null)
+                appContext.loadNotificationsFirstTime()
+            }
+        }
+        LiveDataHolder.getUserLiveData().observe (this, observer)
     }
 
     fun getCurrentPhotoPath() : String?{

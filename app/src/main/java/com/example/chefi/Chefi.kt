@@ -12,6 +12,7 @@ import com.example.chefi.database.User
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
@@ -49,10 +50,6 @@ class Chefi : Application() {
 
     fun logIn(email: String, password: String){
         appDb.logIn(email, password)
-    }
-
-    fun checkCurrentUser() : User? {
-        return appDb.getCurrUser()
     }
 
     fun uploadImageToStorage(uri: Uri) {
@@ -122,6 +119,10 @@ class Chefi : Application() {
             .enqueue(oneTimeWorkRequest)
 
         return oneTimeWorkRequest.id
+    }
+
+    fun getFirebaseCurrUser() : FirebaseUser? {
+        return appDb.getFirebaseCurrUser()
     }
 
     fun getCurrUser() : User? {

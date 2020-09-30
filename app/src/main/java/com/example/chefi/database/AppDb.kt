@@ -21,6 +21,7 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -39,8 +40,8 @@ import kotlin.collections.ArrayList
 class AppDb : Application() {
 
     // Declare an instance of FirebaseAuth
-//    private val auth: FirebaseAuth = Firebase.auth
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth = Firebase.auth
+//    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
 
     // Chefi.getCon().getString(R.string.imageUpload)
@@ -61,6 +62,7 @@ class AppDb : Application() {
     }
 
     init {
+        Log.d(TAG_APP_DB, "in appDb init")
         updateCurrentUser()
     }
 
@@ -88,6 +90,10 @@ class AppDb : Application() {
         return currUser
     }
 
+    fun getFirebaseCurrUser(): FirebaseUser? {
+        return auth.currentUser
+    }
+
     private fun initCurrUser(){
         currUser = null
         userRecipes = null
@@ -105,6 +111,7 @@ class AppDb : Application() {
             val documentUser = firestore.collection(usersCollectionPath).document(userId)
             documentUser.get().addOnSuccessListener { documentSnapshot ->
                 val user = documentSnapshot.toObject<User>()
+                Log.d(TAG_APP_DB, "user?.name = ${user?.name} in updateCurrentUser")
                 if (user != null) {
                     currUser = user
                     userRecipes = null
