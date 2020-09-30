@@ -69,4 +69,14 @@ class ProfileFragment : Fragment() {
         }
         return view
     }
+
+    private fun moveToFollowersFragment() {
+        val action = ProfileFragmentDirections.actionProfileToFollowers(isFollowers=true)
+        view?.findNavController()?.navigate(action)
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        moveToFollowersFragment()
+    }
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
@@ -16,6 +17,8 @@ import com.example.chefi.database.Recipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.database.User
+import com.example.chefi.fragment.FollowersFragmentArgs
+import com.example.chefi.fragment.ProfileFragmentDirections
 import com.squareup.picasso.Picasso
 
 
@@ -191,7 +194,8 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
             }
         }
         holder.followersButton.setOnClickListener {
-            it.findNavController().navigate(R.id.followersFragment)
+            val action = ProfileFragmentDirections.actionProfileToFollowers(isFollowers=true)
+            it.findNavController().navigate(action)
         }
     }
 
