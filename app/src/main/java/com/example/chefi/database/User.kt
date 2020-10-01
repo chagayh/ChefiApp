@@ -1,8 +1,10 @@
 package com.example.chefi.database
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.firebase.firestore.DocumentReference
 
-data class User (
+data class User(
     var uid: String? = null,
     var email: String? = null,
     var imageUrl: String? = null,
@@ -16,4 +18,39 @@ data class User (
     var favorites: ArrayList<DocumentReference>? = null,
     var following: ArrayList<DocumentReference>? = null,
     var followers: ArrayList<DocumentReference>? = null
-)
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        TODO("recipes"),
+        TODO("notifications"),
+        TODO("favorites"),
+        TODO("following"),
+        TODO("followers")
+    ) {
+    }
+
+    override fun describeContents(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun writeToParcel(dest: Parcel?, flags: Int) {
+        TODO("Not yet implemented")
+    }
+
+    companion object CREATOR : Parcelable.Creator<User> {
+        override fun createFromParcel(parcel: Parcel): User {
+            return User(parcel)
+        }
+
+        override fun newArray(size: Int): Array<User?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

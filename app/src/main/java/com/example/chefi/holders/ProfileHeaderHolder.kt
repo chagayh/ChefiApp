@@ -13,8 +13,8 @@ class ProfileHeaderHolder(view: View): RecyclerView.ViewHolder(view) {
     val aboutMeTextView:TextView = view.findViewById(R.id.aboutMeTextView)
     val nameTextView: TextView = view.findViewById(R.id.nameTextView)
     val usernameTextView: TextView = view.findViewById(R.id.usernameTextView)
-    val favorites: LinearLayout = view.findViewById(R.id.favorites)
-    val recipes: LinearLayout = view.findViewById(R.id.recipes)
+    val menuLinear: LinearLayout = view.findViewById(R.id.menuLinearLayout)
+    val followMenuLinear: LinearLayout = view.findViewById(R.id.followMenuLinearLayout)
     val favoritesButton: TextView = view.findViewById(R.id.favoritesbtn)
     val recipesButton: TextView = view.findViewById(R.id.recipesbtn)
     val greyColor = view.resources.getColor(R.color.grey)
@@ -23,6 +23,7 @@ class ProfileHeaderHolder(view: View): RecyclerView.ViewHolder(view) {
     // Buttons:
     val editAboutMe:TextView = view.findViewById(R.id.textViewAboutMeEdit)
     val editMainCard:TextView = view.findViewById(R.id.TextViewEditMainCard)
-    val followButton:TextView = view.findViewById(R.id.ButtonFollow)
+    val followingButton:TextView = view.findViewById(R.id.ButtonFollowing)
     val followersButton:TextView = view.findViewById(R.id.ButtonFollowers)
+    val followButton:TextView = view.findViewById(R.id.followBtn)
 }

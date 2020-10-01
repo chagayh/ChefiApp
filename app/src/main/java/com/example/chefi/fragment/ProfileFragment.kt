@@ -44,7 +44,6 @@ class ProfileFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerViewRecipes = view.findViewById(R.id.recyclerViewRecipes)
         recipesAdapter = ProfileAdapter(null)
-        recipesAdapter.setItems(ArrayList())
         recyclerViewRecipes.adapter = recipesAdapter
 //        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 //        recyclerViewRecipes.layoutManager = lm

@@ -65,5 +65,24 @@
         <argument
             android:name="isFollowers"
             app:argType="boolean" />
+        <argument
+            android:name="curUser"
+            app:argType="com.example.chefi.database.User"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_followers_to_profileOther"
+            app:destination="@id/profileOtherFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileOtherFragment"
+        android:name="com.example.chefi.fragment.ProfileOtherFragment"
+        android:label="ProfileOtherFragment" >
+        <action
+            android:id="@+id/action_profileOtherFragment_to_followersFragment"
+            app:destination="@id/followersFragment" />
+        <argument
+            android:name="curUser"
+            app:argType="com.example.chefi.database.User" />
     </fragment>
 </navigation>

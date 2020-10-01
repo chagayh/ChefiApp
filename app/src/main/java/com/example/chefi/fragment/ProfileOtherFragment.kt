@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,7 +32,8 @@ class ProfileOtherFragment : Fragment() {
 
     private lateinit var recyclerViewRecipes: RecyclerView
     private lateinit var recipesAdapter: ProfileAdapter
-    private var user:  User? = null
+    private var user: User? = null
+    private val args: ProfileOtherFragmentArgs by navArgs()
     private var SPAN_VALUE: Int = 3
     private val logTag = "ProfileOtherFragment"
 
@@ -42,13 +44,13 @@ class ProfileOtherFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        user = args.curUser
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerViewRecipes = view.findViewById(R.id.recyclerViewRecipes)
         recipesAdapter = ProfileAdapter(user)
-        recipesAdapter.setItems(ArrayList())
         recyclerViewRecipes.adapter = recipesAdapter
-//        recyclerViewRecipes.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+//        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+//        recyclerViewRecipes.layoutManager = lm
         val gridLayoutManager: GridLayoutManager = GridLayoutManager(activity, SPAN_VALUE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -59,8 +61,8 @@ class ProfileOtherFragment : Fragment() {
             }
         }
         recyclerViewRecipes.layoutManager = gridLayoutManager
-        recyclerViewRecipes.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
-        recyclerViewRecipes.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.HORIZONTAL))
+//        recyclerViewRecipes.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))
+//        recyclerViewRecipes.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.HORIZONTAL))
 //        recipesAdapter.notifyDataSetChanged()
 
         // set sign out button:
@@ -68,8 +70,6 @@ class ProfileOtherFragment : Fragment() {
         val appContext: Chefi = view.context.applicationContext as Chefi
         signOutButton.setOnClickListener {
             appContext.signOut()
-            val appIntent = Intent(it.context, LoginActivity::class.java)
-            ContextCompat.startActivity(it.context, appIntent, null)
         }
         return view
     }

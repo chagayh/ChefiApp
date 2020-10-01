@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
@@ -17,7 +16,6 @@ import com.example.chefi.database.Recipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.database.User
-import com.example.chefi.fragment.FollowersFragmentArgs
 import com.example.chefi.fragment.ProfileFragmentDirections
 import com.squareup.picasso.Picasso
 
@@ -49,15 +47,11 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
         notifyDataSetChanged()
     }
 
-    // here we need to create a view holder
-    // steps: 1. hold a LayoutInflater
-    //        2. inflate a view
-    //        3. wrap it with a view holder and return it
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  RecyclerView.ViewHolder {
         val context = parent.context
         val view: View
         appContext = context.applicationContext as Chefi
-        tempUser = (user ?: appContext.getCurrUser()) as User
+        tempUser = ((user ?: appContext.getCurrUser()) as User)
         if(viewType == TYPE_HEADER){
             view = LayoutInflater.from(context).inflate(R.layout.profile_header, parent, false)
             return ProfileHeaderHolder(view)
@@ -78,13 +72,8 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
     override fun getItemCount(): Int {
         val itemsSize = (_items?.size ?: 0)
         return 1 + itemsSize
-//        return if(recipesFlag) 200 else 1
     }
 
-
-    // here we need to customize the view holder at the needed position
-    // we set the view fields based on the person
-    // and set a ClickListener to know whenever the user taps on the view
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is RecipeHolder)
         {
@@ -96,8 +85,6 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setProfileHeader(holder: ProfileHeaderHolder){
-        holder.favorites.visibility = View.GONE
-        holder.recipes.visibility = View.VISIBLE
         customizeComponents(holder)
         setMenuButtons(holder)
         if(!otherFlag){setEditButtons(holder)}
@@ -109,7 +96,8 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
         holder.aboutMeTextView.text = tempUser.aboutMe
         holder.nameTextView.text = tempUser.name
         holder.usernameTextView.text = "@" + tempUser.userName
-        if(!otherFlag){holder.followButton.text = "Following"}
+        if(!otherFlag){holder.followingButton.text = "Following"}
+        // TODO: observer
         _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
         if(tempUser.imageUrl != null){
             Picasso.with(appContext)
@@ -121,25 +109,33 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun setMenuButtons(holder: ProfileHeaderHolder){
-        holder.favoritesButton.setOnClickListener(View.OnClickListener {
-            holder.favorites.visibility = View.VISIBLE
-            holder.recipes.visibility = View.GONE
-            holder.favoritesButton.setTextColor(holder.blueColor)
-            holder.recipesButton.setTextColor(holder.greyColor)
-            recipesFlag = false
-            _items = if (otherFlag) ArrayList() else appContext.getUserFavorites()
-//            notifyDataSetChanged()
-        })
-        holder.recipesButton.setOnClickListener(View.OnClickListener {
-            holder.favorites.visibility = View.GONE
-            holder.recipes.visibility = View.VISIBLE
-            holder.favoritesButton.setTextColor(holder.greyColor)
-            holder.recipesButton.setTextColor(holder.blueColor)
-            recipesFlag = true
-            _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
-//            notifyDataSetChanged()
-        })
+        if(otherFlag){
+            holder.menuLinear.visibility = View.GONE
+            holder.followMenuLinear.visibility = View.VISIBLE
+            holder.followButton.setOnClickListener(View.OnClickListener {
+                if (user != null) {
+                    appContext.follow(user)
+                    holder.followButton.text = "UNFOLLOW"
+                }
+            })
+
+        }
+        else{
+            holder.favoritesButton.setOnClickListener(View.OnClickListener {
+                holder.favoritesButton.setTextColor(holder.blueColor)
+                holder.recipesButton.setTextColor(holder.greyColor)
+                recipesFlag = false
+                _items = if (otherFlag) ArrayList() else appContext.getUserFavorites()
+            })
+            holder.recipesButton.setOnClickListener(View.OnClickListener {
+                holder.favoritesButton.setTextColor(holder.greyColor)
+                holder.recipesButton.setTextColor(holder.blueColor)
+                recipesFlag = true
+                _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
+            })
+        }
     }
 
     private fun setEditButtons(holder: ProfileHeaderHolder) {
@@ -183,24 +179,21 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
     }
 
     private fun setOtherButtons(holder: ProfileHeaderHolder){
-        holder.followButton.setOnClickListener {
+        holder.followingButton.setOnClickListener {
             if (user != null) {
                 appContext.follow(user)
             }else{
-//                val action = ProfileFragmentDirections.actionProfileToFollowers()
-////                view?.findNavController()?.navigate(action)
-//                it?.findNavController()?.navigate(action)
-                it.findNavController().navigate(R.id.followersFragment)
+                val action = ProfileFragmentDirections.actionProfileToFollowers(false, user)
+                it.findNavController().navigate(action)
             }
         }
         holder.followersButton.setOnClickListener {
-            val action = ProfileFragmentDirections.actionProfileToFollowers(isFollowers=true)
+            val action = ProfileFragmentDirections.actionProfileToFollowers(true, user)
             it.findNavController().navigate(action)
         }
     }
 
     private fun setRecipe(holder: RecipeHolder, position: Int){
-        holder._image.setImageResource(R.drawable.dog)
         val item = _items?.get(position-1)
         Picasso.with(appContext)
             .load(item?.imageUrl)

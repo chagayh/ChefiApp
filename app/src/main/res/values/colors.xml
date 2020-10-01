@@ -153,4 +153,5 @@
     <color name="bg">#FFFFFF</color>
     <color name="lightgrey">#EEEEEE</color>
     <color name="kas">#228BE1</color>
+<!--    <color name="kas">#AD228BE1</color>-->
 </resources>

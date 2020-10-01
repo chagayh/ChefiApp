@@ -9,11 +9,21 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.adapters.FollowersAdapter
+import com.example.chefi.database.User
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
+import androidx.lifecycle.Observer
+import com.example.chefi.LiveDataHolder
+
 
 class FollowersFragment : Fragment() {
+
+    val appContext: Chefi
+        get() = activity?.applicationContext as Chefi
 
     private val args: FollowersFragmentArgs by navArgs()
     private lateinit var recyclerViewFollowers: RecyclerView
@@ -27,15 +37,33 @@ class FollowersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_follwers, container, false)
         val isFollowers = args.isFollowers
-        Log.d("followersFragment", "isFollowers = $isFollowers")
+        val curUser = args.curUser
         recyclerViewFollowers = view.findViewById(R.id.recyclerViewFollowers)
-        followersAdapter = FollowersAdapter()
-        followersAdapter.setItems(ArrayList())
+        followersAdapter = FollowersAdapter(isFollowers, curUser)
         recyclerViewFollowers.adapter = followersAdapter
         recyclerViewFollowers.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        if (curUser == null){
+            if(isFollowers) {
+                followersAdapter.setItems(appContext.getUserFollowers())
+            }else{
+                followersAdapter.setItems(appContext.getUserFollowing())
+            }
+        }else{
+            // TODO: observer
+            if(isFollowers) {
+                appContext.loadFollowers(curUser)
+            }else{
+                appContext.loadFollowing(curUser)
+            }
+            val observer = Observer<MutableList<User>> { value ->
+                if (value != null){
+                    followersAdapter.setItems(ArrayList(value))
+                }
+            }
+            LiveDataHolder.getUsersListLiveData().observe(viewLifecycleOwner, observer)
+        }
         return view
     }
 }

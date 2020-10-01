@@ -170,6 +170,8 @@ class AppDb {
     }
 
     private fun updateUserInUsersCollection() {
+        Log.e("InUsersCollection", currUser?.name.toString())
+
         // update the user in the db
         val currUserId = currUser?.uid
         if (currUserId != null) {
@@ -523,6 +525,8 @@ class AppDb {
     }
 
     fun follow(userToFollow: User) {
+        // TODO: check duplicate, write to DB
+        Log.e("appDb", userToFollow.name.toString())
         if (userFollowing == null) {
             userFollowing = ArrayList()
         }
@@ -531,6 +535,7 @@ class AppDb {
     }
 
     fun unFollow(userToUnFollow: User) {
+        // TODO: check is exist, delete from DB
         if (userFollowing == null) {
             return
         }

@@ -56,6 +56,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 app:cardCornerRadius="150dp"
+                android:padding="15dp"
                 app:cardElevation="10dp">
 
                 <ImageView
@@ -81,7 +82,7 @@
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/proximanovaregular"
                     android:text="Chagay Koffman"
-                    android:textColor="#424242"
+                    android:textColor="@color/blue"
                     android:textSize="19dp"
                     android:textStyle="bold" />
 
@@ -91,6 +92,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/proximanovaregular"
                     android:text="\@chagay"
+                    android:textColor="@color/blue"
                     android:textAlignment="center"
                     android:textSize="14sp" />
 
@@ -102,27 +104,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:paddingBottom="10dp">
-
+>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:gravity="center"
-                    android:padding="8dp">
+                    android:gravity="center">
 
-                    <Button
-                        android:id="@+id/ButtonFollow"
+                    <TextView
+
+                        android:id="@+id/ButtonFollowers"
                         android:layout_width="120dp"
                         android:layout_height="35dp"
-                        android:background="@drawable/circular_grey_bordersolid"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/follow_button_outline"
                         android:fontFamily="@font/proximanovaregular"
                         android:padding="10dp"
-                        android:text="Follow"
+                        android:text="FOLLOWERS"
                         android:textAlignment="center"
+                        android:textColor="@color/blue"
                         android:textSize="12sp" />
-
-                    <!--                            android:src="@drawable/tickinsidecircle" />-->
 
                 </LinearLayout>
 
@@ -130,17 +132,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:gravity="center"
-                    android:padding="8dp">
+                    android:gravity="center">
 
-                    <Button
-                        android:id="@+id/ButtonFollowers"
+                    <TextView
+                        android:id="@+id/ButtonFollowing"
                         android:layout_width="120dp"
                         android:layout_height="35dp"
-                        android:background="@drawable/circular_grey_bordersolid"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/follow_button_outline"
                         android:fontFamily="@font/proximanovaregular"
                         android:padding="10dp"
-                        android:text="Followers"
+                        android:text="FOLLOWING"
+                        android:textColor="@color/blue"
                         android:textAlignment="center"
                         android:textSize="12sp" />
 
@@ -207,31 +211,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <!--About Me Card-->
 
-            <!--Contact Details-->
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/followMenuLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/circularbordersolid"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/follow_button_outline"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            <!--Skills Details-->
-
-
-        </LinearLayout>
-
-        <!--Experience Bottom Cards-->
-        <LinearLayout
-            android:id="@+id/favorites"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-        <!--Review Bottom Cards-->
-        <LinearLayout
-            android:id="@+id/recipes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+                    <TextView
+                        android:id="@+id/followBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:fontFamily="@font/proximanovaregular"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Follow"
+                        android:textAllCaps="true"
+                        android:textColor="@color/blue"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -253,6 +269,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:textColor="@color/blue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/proximanovaregular"
@@ -278,6 +295,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:textColor="@color/blue"
                     android:id="@+id/aboutMeTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

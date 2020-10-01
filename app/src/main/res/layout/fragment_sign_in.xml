@@ -8,17 +8,17 @@
     android:background="@color/lightgrey"
     tools:context=".fragment.SignInFragment">
 
+
     <LinearLayout
         android:id="@+id/linearLayoutSignin"
         android:layout_width="match_parent"
-        android:layout_height="340dp"
+        android:layout_height="440dp"
         android:background="@color/kas"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </LinearLayout>
-
 
     <ImageView
         app:layout_constraintTop_toTopOf="@id/linearLayoutSignin"
@@ -107,20 +107,30 @@
             app:layout_constraintTop_toBottomOf="@id/userNameEditText"
             app:layout_constraintVertical_chainStyle="packed" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <Button
-        android:fontFamily="@font/proximanovaregular"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:elevation="35dp"
-        android:id="@+id/signInBtn"
-        android:background="@drawable/circularbordersolid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sign_in"
+        android:background="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintInnerSignIn"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+        app:layout_constraintVertical_bias="0.5">
+
+        <Button
+            android:fontFamily="@font/proximanovaregular"
+            android:id="@+id/signInBtn"
+            android:background="@drawable/circularbordersolid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in"
+            android:textColor="#808080"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
