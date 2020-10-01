@@ -9,7 +9,11 @@
         android:id="@+id/homeFragment"
         android:name="com.example.chefi.fragment.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_profileOther"
+            app:destination="@id/profileOtherFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.chefi.fragment.ProfileFragment"
@@ -79,7 +83,7 @@
         android:name="com.example.chefi.fragment.ProfileOtherFragment"
         android:label="ProfileOtherFragment" >
         <action
-            android:id="@+id/action_profileOtherFragment_to_followersFragment"
+            android:id="@+id/action_profileOther_to_followers"
             app:destination="@id/followersFragment" />
         <argument
             android:name="curUser"

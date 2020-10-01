@@ -3,11 +3,13 @@ package com.example.chefi.adapters
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
@@ -17,18 +19,9 @@ import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.database.User
 import com.example.chefi.fragment.ProfileFragmentDirections
+import com.example.chefi.fragment.ProfileOtherFragmentDirections
 import com.squareup.picasso.Picasso
 
-
-// we need to create an adapter that extends RecyclerView.Adapter
-// and is generic of our custom type of view holder
-// the adapter needs to implement 3 methods:
-//      - getItemCount() to tell the amount of items
-//      - onCreateViewHolder() to create a new view holder
-//      - onBindViewHolder() to customize a view holder with the position
-//
-// also, we created the interface OnToDoItemClickListener so that the adapter could
-// tell anyone who wants to listen whenever a "person" view was clicked
 
 class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -54,6 +47,12 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
         tempUser = ((user ?: appContext.getCurrUser()) as User)
         if(viewType == TYPE_HEADER){
             view = LayoutInflater.from(context).inflate(R.layout.profile_header, parent, false)
+            if(otherFlag){ //if not user
+                val editAboutMe:TextView = view.findViewById(R.id.textViewAboutMeEdit)
+                val editMainCard:TextView = view.findViewById(R.id.TextViewEditMainCard)
+                editAboutMe.visibility = View.GONE
+                editMainCard.visibility = View.GONE
+            }
             return ProfileHeaderHolder(view)
         }
         else{
@@ -96,8 +95,6 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
         holder.aboutMeTextView.text = tempUser.aboutMe
         holder.nameTextView.text = tempUser.name
         holder.usernameTextView.text = "@" + tempUser.userName
-        if(!otherFlag){holder.followingButton.text = "Following"}
-        // TODO: observer
         _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
         if(tempUser.imageUrl != null){
             Picasso.with(appContext)
@@ -128,21 +125,20 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
                 holder.recipesButton.setTextColor(holder.greyColor)
                 recipesFlag = false
                 _items = if (otherFlag) ArrayList() else appContext.getUserFavorites()
+                notifyDataSetChanged()
             })
             holder.recipesButton.setOnClickListener(View.OnClickListener {
                 holder.favoritesButton.setTextColor(holder.greyColor)
                 holder.recipesButton.setTextColor(holder.blueColor)
                 recipesFlag = true
                 _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
+                notifyDataSetChanged()
             })
         }
     }
 
     private fun setEditButtons(holder: ProfileHeaderHolder) {
-        if(otherFlag){ //if not user
-            holder.editAboutMe.visibility = View.GONE
-            holder.editMainCard.visibility = View.GONE
-        }else{
+        if(!otherFlag){
 
             holder.editAboutMe.setOnClickListener(){
                 val alertDialog = AlertDialog.Builder(it.context)
@@ -180,15 +176,19 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
 
     private fun setOtherButtons(holder: ProfileHeaderHolder){
         holder.followingButton.setOnClickListener {
-            if (user != null) {
-                appContext.follow(user)
-            }else{
-                val action = ProfileFragmentDirections.actionProfileToFollowers(false, user)
-                it.findNavController().navigate(action)
+            val action = if (otherFlag) {
+                ProfileOtherFragmentDirections.actionProfileOtherToFollowers(false, user)
+            }else {
+                ProfileFragmentDirections.actionProfileToFollowers(false, user)
             }
+            it.findNavController().navigate(action)
         }
         holder.followersButton.setOnClickListener {
-            val action = ProfileFragmentDirections.actionProfileToFollowers(true, user)
+            val action = if (otherFlag) {
+                ProfileOtherFragmentDirections.actionProfileOtherToFollowers(true, user)
+            }else {
+                ProfileFragmentDirections.actionProfileToFollowers(true, user)
+            }
             it.findNavController().navigate(action)
         }
     }
@@ -229,6 +229,11 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
                 }
                 true
             }
+        }
+
+
+        fun convertToJason(user: User){
+
         }
     }
 }

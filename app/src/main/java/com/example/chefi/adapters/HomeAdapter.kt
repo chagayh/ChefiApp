@@ -4,11 +4,13 @@ package com.example.chefi.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.listeners.RecipeClickListener
 import com.example.chefi.database.User
+import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.holders.FollowerHolder
 import com.example.chefi.holders.HomeHolder
 import com.squareup.picasso.Picasso
@@ -52,5 +54,21 @@ class HomeAdapter(): RecyclerView.Adapter<HomeHolder>() {
 //        Picasso.with(appContext) // ToDO: check with Chagai if appContext it's OK
 //            .load(item.imageUrl)
 //            .into(holder.image)
+//        setNavigateToProfileComponents(holder, itemCount.user)
+    }
+
+    fun setNavigateToProfileComponents(holder: HomeHolder, user: User){
+        holder.userImage.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeToProfileOther(user)
+            it.findNavController().navigate(action)
+        }
+        holder.userTitleName.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeToProfileOther(user)
+            it.findNavController().navigate(action)
+        }
+        holder.userNameSubTitle.setOnClickListener {
+            val action = HomeFragmentDirections.actionHomeToProfileOther(user)
+            it.findNavController().navigate(action)
+        }
     }
 }
