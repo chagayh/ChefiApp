@@ -6,19 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
-import com.example.chefi.database.User
-import com.google.firebase.database.FirebaseDatabase
 
 /**
  * A simple [Fragment] subclass.
@@ -64,7 +58,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun setUsersObserver() {
-        LiveDataHolder.getUsersLiveData().observe(viewLifecycleOwner,
+        LiveDataHolder.getUsersListLiveData().observe(viewLifecycleOwner,
             Observer { usersList ->
                 for (user in usersList) {
                     Log.d(TAG_SEARCH_FRAGMENT, "name = ${user.name}")

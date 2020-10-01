@@ -51,7 +51,7 @@ class RecipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recipe, container, false)
-        imageUrl = args.imageUrlAsString
+        imageUrl = args.imageUrl
 
         textViewName = view.findViewById(R.id.textViewName)
         textViewDirections = view.findViewById(R.id.textViewDirections)
@@ -78,11 +78,11 @@ class RecipeFragment : Fragment() {
             { value ->
                 if (value.outputData.size() != 0) {
                     Log.d(TAG_RECIPE_FRAGMENT, "value.outputData = ${value.outputData}")
-                    val recipeAsJson = value.outputData.getString(getString(R.string.keyRecipeType))
+                    val recipeAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipeType))
                     val recipeType = object : TypeToken<Recipe>() {}.type
 
                     val returnedRecipe = Gson().fromJson<Recipe>(recipeAsJson, recipeType)
-                    Log.d(TAG_RECIPE_FRAGMENT, "recipe_profile = $returnedRecipe")
+                    Log.d("change_url", "in recipeFragment in setWorkObserver, recipe image url = ${returnedRecipe.imageUrl}")
                     Toast.makeText(appContext, "recipe_profile ${returnedRecipe.name} CREATED", Toast.LENGTH_SHORT)
                         .show()
                     // TODO - maybe add a preview page
@@ -97,13 +97,13 @@ class RecipeFragment : Fragment() {
             .addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     Log.d(TAG_RECIPE_FRAGMENT, "delete the recipe_profile from storage and database")
+                    Log.d("change_url", "in setCustomOnBackPressed of recipeFragment, imageUrl = $imageUrl")
                     appContext.deleteImage(imageUrl, null)
                     if (isEnabled) {
                         isEnabled = false
                         requireActivity().onBackPressed()
                     }
                 }
-
             })
     }
 }

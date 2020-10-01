@@ -6,27 +6,20 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.app.Notification
-import android.content.Intent
 import android.net.Uri
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
-import androidx.core.content.ContextCompat
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
+import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
-import com.example.chefi.activities.LoginActivity
-import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.SetOptions
@@ -37,7 +30,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @SuppressLint("Registered")
-class AppDb : Application() {
+class AppDb {
 
     // Declare an instance of FirebaseAuth
     private val auth: FirebaseAuth = Firebase.auth
@@ -243,7 +236,7 @@ class AppDb : Application() {
 
     private fun postUsersList(usersList: ArrayList<User>) {
         Log.d(TAG_APP_DB, "usersList.size = ${usersList.size}")
-        LiveDataHolder.getUsersMutableLiveData().postValue(usersList)
+        LiveDataHolder.getUsersListMutableLiveData().postValue(usersList)
     }
 
     private fun postNotificationList(notificationList: ArrayList<Notification>) {
@@ -336,8 +329,9 @@ class AppDb : Application() {
                     if (downloadUri.isSuccessful) {
                         val url = downloadUri.result.toString()
                         Log.d(TAG_APP_DB, "url upload image - $url")
-                        Log.d("change_url", "in uploadImageToStorage image url = $url")
-                        LiveDataHolder.getStringMutableLiveData().postValue(url)
+                        Log.d("change_url", "in appDb in uploadImageToStorage image url = $url")
+//                        LiveDataHolder.getStringMutableLiveData().postValue(url)
+                        LiveDataHolder.getStringMutableLiveData().value = ObserveWrapper(url)
                     } else {
                         Log.d(TAG_APP_DB, "downloadUri.isSuccessful = false")
                     }
@@ -371,11 +365,11 @@ class AppDb : Application() {
                             userRecipesList.add(recipe)
                         }
                     }
-                    postRecipes(userRecipesList)   // TODO - check if needed
                     if (user == null) {
                         userRecipes = ArrayList()
                         userRecipes = userRecipesList
                     }
+                    postRecipes(userRecipesList)   // TODO - check if needed
                 }
         }
     }
@@ -421,12 +415,12 @@ class AppDb : Application() {
                             followingList.add(currUser)
                         }
                     }
-                    postUsersList(followingList)   // TODO - check if needed
                     Log.e(TAG_APP_DB, "followingList.size = ${followingList.size} last")
                     if (user == null) {
                         userFollowing = ArrayList()
                         userFollowing = followingList
                     }
+                    postUsersList(followingList)   // TODO - check if needed
                 }
         }
     }
@@ -449,12 +443,12 @@ class AppDb : Application() {
                             followersList.add(currUser)
                         }
                     }
-                    postUsersList(followersList)
                     Log.e(TAG_APP_DB, "followingList.size = ${followersList.size} last")
                     if (user == null) {
                         userFollowers = ArrayList()
                         userFollowers = followersList
                     }
+                    postUsersList(followersList)
                 }
         }
     }

@@ -10,6 +10,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
+import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
 import com.example.chefi.database.DatabaseImage
 import com.google.common.util.concurrent.ListenableFuture
@@ -22,7 +23,7 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
         get() = applicationContext as Chefi
 
     private val TAG_UPLOAD_IMAGE_WORKER = "uploadImageWorker"
-    private var observer : Observer<String>? = null
+    private var observer : Observer<ObserveWrapper<String>>? = null
 
     override fun startWork(): ListenableFuture<Result> {
         // 1. here we create the future and store the callback for later use
@@ -42,16 +43,17 @@ class UploadImageWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun setObserver() {
-        observer = Observer<String> { imageUrl ->
-            Log.d(TAG_UPLOAD_IMAGE_WORKER, "in set observer image url = $imageUrl")
-            Log.d("change_url", "in setObserver image url = $imageUrl")
-
-            val outPutData = Data.Builder()
-                .putString(appContext.getString(R.string.keyUrl), imageUrl)
-                .build()
-            Log.d(TAG_UPLOAD_IMAGE_WORKER, "value = $imageUrl")
-            LiveDataHolder.getStringLiveData().removeObserver(observer!!)
-            this.callback?.set(Result.success(outPutData))
+        observer = Observer<ObserveWrapper<String>> {
+            it.getContentIfNotHandled()?.let { imageUrl ->
+                Log.d(TAG_UPLOAD_IMAGE_WORKER, "in set observer image url = $imageUrl")
+                Log.d("change_url", "in setObserver in UploadImageWorker image url = $imageUrl")
+                val outPutData = Data.Builder()
+                    .putString(appContext.getString(R.string.keyUrl), imageUrl)
+                    .build()
+                Log.d(TAG_UPLOAD_IMAGE_WORKER, "value = $imageUrl")
+                LiveDataHolder.getStringLiveData().removeObserver(observer!!)
+                this.callback?.set(Result.success(outPutData))
+            }
         }
         LiveDataHolder.getStringLiveData().observeForever(observer!!)
     }

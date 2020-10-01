@@ -3,7 +3,6 @@ package com.example.chefi
 import android.app.Notification
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.chefi.database.DatabaseImage
 import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
 
@@ -23,11 +22,11 @@ object LiveDataHolder {
         MutableLiveData<Recipe>()
     }
 
-    private val stringLiveData : MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
+    private val stringLiveData : MutableLiveData<ObserveWrapper<String>> by lazy {
+        MutableLiveData<ObserveWrapper<String>>()
     }
 
-    private val usersLiveData : MutableLiveData<MutableList<User>> by lazy {
+    private val usersListLiveData : MutableLiveData<MutableList<User>> by lazy {
         MutableLiveData<MutableList<User>>()
     }
 
@@ -37,12 +36,12 @@ object LiveDataHolder {
 
     // funs
 
-    fun getUsersLiveData() : LiveData<MutableList<User>>{
-        return usersLiveData
+    fun getUsersListLiveData() : LiveData<MutableList<User>>{
+        return usersListLiveData
     }
 
-    fun getUsersMutableLiveData() : MutableLiveData<MutableList<User>>{
-        return usersLiveData
+    fun getUsersListMutableLiveData() : MutableLiveData<MutableList<User>>{
+        return usersListLiveData
     }
 
     fun getNotificationsLiveData() : LiveData<MutableList<Notification>>{
@@ -53,11 +52,11 @@ object LiveDataHolder {
         return notificationsLiveData
     }
 
-    fun getStringLiveData() : LiveData<String>{
+    fun getStringLiveData() : LiveData<ObserveWrapper<String>>{
         return stringLiveData
     }
 
-    fun getStringMutableLiveData() : MutableLiveData<String>{
+    fun getStringMutableLiveData() : MutableLiveData<ObserveWrapper<String>>{
         return stringLiveData
     }
 

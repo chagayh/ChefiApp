@@ -49,10 +49,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "user ${value.name} connected", Toast.LENGTH_SHORT)
                     .show()
                 appContext.loadRecipes(null)
-                appContext.loadFavoritesFirstTime()
-                appContext.loadFollowersFirstTime(null)
-                appContext.loadFollowingFirstTime(null)
-                appContext.loadNotificationsFirstTime()
+                appContext.loadFavorites()
+                appContext.loadFollowers(null)
+                appContext.loadFollowing(null)
+                appContext.loadNotifications()
             }
         }
         LiveDataHolder.getUserLiveData().observe (this, observer)
