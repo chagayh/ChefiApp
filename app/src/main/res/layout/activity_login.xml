@@ -6,17 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
 
-    <FrameLayout
-        android:id="@+id/quick_log_frame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+<!--    <FrameLayout-->
+<!--        android:id="@+id/quick_log_frame"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        tools:ignore="MissingConstraints" />-->
 
     <FrameLayout
         android:id="@+id/user_email_frame"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/quick_log_frame" />
+        app:layout_constraintBottom_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

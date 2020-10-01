@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         this.supportFragmentManager
             .beginTransaction()
             .replace(R.id.user_email_frame, UserEmailFragment())
-            .replace(R.id.quick_log_frame, QuickLogFragment())
+//            .replace(R.id.quick_log_frame, QuickLogFragment())
             .commit()
     }
 
