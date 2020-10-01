@@ -24,6 +24,7 @@ class FollowersAdapter(isFollowers: Boolean, curUser:User?): RecyclerView.Adapte
 
     // public method to show a new list of items
     fun setItems(items: ArrayList<User>?){
+        Log.e("FA", items?.size.toString())
         _items.clear()
         if (items != null) {
             _items.addAll(items)
@@ -55,7 +56,6 @@ class FollowersAdapter(isFollowers: Boolean, curUser:User?): RecyclerView.Adapte
             .load(item.imageUrl)
             .into(holder.image)
         holder.image.setOnClickListener {
-            Log.e("FollwersAdapter", "Kas")
             val action = FollowersFragmentDirections.actionFollowersToProfileOther(item)
             it.findNavController().navigate(action)
         }

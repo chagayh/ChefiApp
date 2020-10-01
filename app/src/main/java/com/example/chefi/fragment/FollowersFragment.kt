@@ -52,6 +52,8 @@ class FollowersFragment : Fragment() {
             }
         }else{
             // TODO: observer
+            Log.e("Amnon1", curUser.name.toString())
+            Log.e("Amnon2", isFollowers.toString())
             if(isFollowers) {
                 appContext.loadFollowers(curUser)
             }else{
@@ -59,11 +61,22 @@ class FollowersFragment : Fragment() {
             }
             val observer = Observer<MutableList<User>> { value ->
                 if (value != null){
+                    Log.e("Amnon3", value.size.toString())
                     followersAdapter.setItems(ArrayList(value))
+                }
+                else{
+                    followersAdapter.setItems(ArrayList())
                 }
             }
             LiveDataHolder.getUsersListLiveData().observe(viewLifecycleOwner, observer)
         }
         return view
     }
+
+    override fun onPause() {
+        super.onPause()
+        followersAdapter.setItems(ArrayList())
+    }
+
+
 }
