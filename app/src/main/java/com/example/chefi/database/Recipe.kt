@@ -3,6 +3,7 @@ package com.example.chefi.database
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 
 data class Recipe(
     var uid: String? = null,
@@ -12,7 +13,9 @@ data class Recipe(
     var comments: ArrayList<DocumentReference>? = null,
     var directions: ArrayList<String>? = null, // TODO - new
     var ingredients: ArrayList<String>? = null, // TODO - new
-    var status: Int? = null // TODO - new
+    var status: Int? = null, // TODO - new
+    var owners: DocumentReference? = null, // TODO - new
+    var timestamp: String? = null // TODO - new
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
