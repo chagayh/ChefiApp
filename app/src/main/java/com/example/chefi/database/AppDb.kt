@@ -206,43 +206,37 @@ class AppDb {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Int?,
-        owner: User?
+        status: Int?
     )  {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
-        val userCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
         val newDocument = firestore.collection(recipeCollectionPath).document()
-        firestore.collection(userCollectionPath).document(owner?.uid!!)
-            .get()
-            .addOnSuccessListener { documentSnapShot ->
-                val recipe = Recipe(
-                    uid = newDocument.id,
-                    name = recipeName,
-                    likes = 0,
-                    imageUrl = imageUrl,
-                    comments = ArrayList(),
-                    directions = direction,
-                    ingredients = ingredients,
-                    status = status,
-                    owner = documentSnapShot.reference,
-                    timestamp = null    // TODO
-                )
+        val recipe = Recipe(
+            uid = newDocument.id,
+            name = recipeName,
+            likes = 0,
+            imageUrl = imageUrl,
+            comments = ArrayList(),
+            directions = direction,
+            ingredients = ingredients,
+            status = status,
+            owner = currUser?.uid,
+            timestamp = null
+        )    // TODO
 
-                if (userRecipes == null) {
-                    userRecipes = ArrayList()
-                }
-                newDocument.set(recipe)
-                    .addOnSuccessListener {
-                        Log.d(TAG_APP_DB, "in success of addRecipeToRecipesCollection")
-                        userRecipes?.add(recipe)
-                        addRecipeToLocalCurrUserObject(newDocument)
-                        updateUserInUsersCollection(null)
-                        postSingleRecipe(recipe)    // the worker observe to this post
+        if (userRecipes == null) {
+            userRecipes = ArrayList()
+        }
+        newDocument.set(recipe)
+            .addOnSuccessListener {
+                Log.d(TAG_APP_DB, "in success of addRecipeToRecipesCollection")
+                userRecipes?.add(recipe)
+                addRecipeToLocalCurrUserObject(newDocument)
+                updateUserInUsersCollection(null)
+                postSingleRecipe(recipe)    // the worker observe to this post
 //                Log.d(TAG_APP_DB, "in addRecipeToRecipesCollection userRecipes.size = ${userRecipes!!.size}")
-                    }
-                    .addOnFailureListener {
-                        Log.d(TAG_APP_DB, "in failure")
-                    }
+            }
+            .addOnFailureListener {
+                Log.d(TAG_APP_DB, "in failure")
             }
     }
 
@@ -423,6 +417,7 @@ class AppDb {
         val tasks = ArrayList<Task<DocumentSnapshot>>()
         val userRecipesList = ArrayList<Recipe>()
 
+        Log.d("bigZ", "loadRecipesFromReferenceList start type = $type")
         if (recipesList != null) {
             for (recipeRef in recipesList) {
                 val docTask = recipeRef.get()
@@ -439,17 +434,19 @@ class AppDb {
                     if (isCurrUser) {
                         when (type!!) {
                             "recipes" -> {
+                                Log.d("bigZ", "loadRecipesFromReferenceLis type = $type mid")
                                 userRecipes = ArrayList()
                                 userRecipes = userRecipesList
                             }
                             "favorites" -> {
+                                Log.d("bigZ", "loadRecipesFromReferenceLis type = $type mid1")
                                 userFavorites = ArrayList()
                                 userFavorites = userRecipesList
                             }
                         }
 
                     }
-                    postRecipes(userRecipesList)   // TODO - check if needed
+                    postRecipes(userRecipesList)
                 }
         }
     }
@@ -671,6 +668,20 @@ class AppDb {
         }
         if (!(userFollowing?.contains(userToFollow))!!) {
             userFollowing!!.add(userToFollow)
+        }
+    }
+
+    fun getUser(userId: String?) {
+        if (userId != null) {
+            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(userId)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot != null) {
+                        val user = documentSnapshot.toObject<User>()
+                        postUser(user)
+                    }
+                }
         }
     }
 

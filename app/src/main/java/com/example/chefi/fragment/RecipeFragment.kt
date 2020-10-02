@@ -64,9 +64,7 @@ class RecipeFragment : Fragment() {
                                               imageUrl,
                                               arrayListOf(textViewDirections.text.toString()),
                                               arrayListOf(textViewIngredients.text.toString()),
-                                              Integer.parseInt(textViewStatus.text.toString()),
-                                              //TODO - add user owner)
-
+                                              Integer.parseInt(textViewStatus.text.toString()))
             setWorkObserver(workId)
         }
 //        Log.d(TAG_RECIPE_FRAGMENT, "imgeUrl = $url, databaseId= $imageDatabaseId")

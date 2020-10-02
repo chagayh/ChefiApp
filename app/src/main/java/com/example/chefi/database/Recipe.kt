@@ -14,7 +14,7 @@ data class Recipe(
     var directions: ArrayList<String>? = null, // TODO - new
     var ingredients: ArrayList<String>? = null, // TODO - new
     var status: Int? = null, // TODO - new
-    var owner: DocumentReference? = null, // TODO - new
+    var owner: String? = null, // TODO - new
     var timestamp: String? = null // TODO - new
 ): Parcelable {
     constructor(parcel: Parcel) : this(

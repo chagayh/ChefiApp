@@ -92,10 +92,9 @@ class Chefi : Application() {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Int?,
-        owner: User?
+        status: Int?
     ) {
-        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status, owner)
+        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status)
     }
 
     fun addRecipe(
@@ -103,8 +102,7 @@ class Chefi : Application() {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Int,
-        owner: User
+        status: Int
     ) : UUID {
         val workId = UUID.randomUUID()
         val constraints = Constraints.Builder()
@@ -117,7 +115,6 @@ class Chefi : Application() {
                 getString(R.string.keyRecipeTimeStamp),
                 DateFormat.getDateTimeInstance().format(Date())
             )
-            .putString(getString(R.string.keyRecipeOwner), Gson().toJson(owner))
             .putString(getString(R.string.keyRecipeDirections), Gson().toJson(direction))
             .putString(getString(R.string.keyRecipeIngredients), Gson().toJson(ingredients))
             .putInt(getString(R.string.keyRecipeStatus), status)
@@ -175,6 +172,10 @@ class Chefi : Application() {
 
     fun signOut(){
         appDb.signOut()
+    }
+
+    fun getUser(userId: String?) {
+        appDb.getUser(userId)
     }
 
     fun getUserRecipes() : ArrayList<Recipe>? {

@@ -55,8 +55,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
                                  imageUrl=recipeImageUrl,
                                  direction=recipeDirections,
                                  ingredients=recipeIngredients,
-                                 status=recipeStatus,
-                                 owner=owner)
+                                 status=recipeStatus)
 
         return future
     }
@@ -66,8 +65,9 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
             Log.d(TAG_ADD_RECIPE_WORKER, "in set observer")
             val content = value.getContentIfNotHandled()
             if (content != null) {
+                val type = object: TypeToken<Recipe>(){}.type
                 val outPutData = Data.Builder()
-                    .putString(appContext.getString(R.string.keyRecipeType), Gson().toJson(value))
+                    .putString(appContext.getString(R.string.keyRecipeType), Gson().toJson(content))
                     .build()
                 LiveDataHolder.getRecipeLiveData().removeObserver(observer!!)
                 Log.d(TAG_ADD_RECIPE_WORKER, "in set observer recipe = $value")
