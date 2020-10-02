@@ -430,12 +430,14 @@ class AppDb {
         }
     }
 
-    fun loadFollowing(user: User?){
-        val userFollowingList = currUser?.following
+    private fun loadUsersListFromReferenceList(list: ArrayList<DocumentReference>?,
+                                       type: String?,
+                                       isCurrUser: Boolean) {
+
         val tasks = ArrayList<Task<DocumentSnapshot>>()
         val followingList = ArrayList<User>()
-        if (userFollowingList != null) {
-            for (userRef in userFollowingList) {
+        if (list != null) {
+            for (userRef in list) {
                 val docTask = userRef.get()
                 tasks.add(docTask)
             }
@@ -448,42 +450,85 @@ class AppDb {
                         }
                     }
                     Log.e(TAG_APP_DB, "followingList.size = ${followingList.size} last")
-                    if (user == null) {
-                        userFollowing = ArrayList()
-                        userFollowing = followingList
+                    if (isCurrUser) {
+                        when (type) {
+                            "following" -> {
+                                userFollowing = ArrayList()
+                                userFollowing = followingList
+                            }
+                            "followers" -> {
+                                userFollowers = ArrayList()
+                                userFollowers = followingList
+                            }
+                        }
                     }
                     postUsersList(followingList)   // TODO - check if needed
+                }
+        }
+
+    }
+
+    fun loadFollowing(user: User?){
+        if (user == null) {
+            val userFollowingList = currUser?.following
+            loadUsersListFromReferenceList(userFollowingList, "following", true)
+        } else {
+            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(user.uid!!)
+                .get()
+                .addOnSuccessListener { documentSnapShot ->
+                    if (documentSnapShot != null) {
+                        val otherUser = documentSnapShot.toObject<User>()
+                        loadUsersListFromReferenceList(otherUser?.following, "following", false)
+                    }
                 }
         }
     }
 
     fun loadFollowers(user: User?){
-        val userFollowersList = currUser?.followers
-        val tasks = ArrayList<Task<DocumentSnapshot>>()
-        val followersList = ArrayList<User>()
-        if (userFollowersList != null) {
-//            userFollowers = ArrayList()
-            for (userRef in userFollowersList) {
-                val docTask = userRef.get()
-                tasks.add(docTask)
-            }
-            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
-                .addOnSuccessListener { value ->
-                    for (userDoc in value) {
-                        val currUser = userDoc.toObject<User>()
-                        if (currUser != null) {
-                            followersList.add(currUser)
-                        }
+        if (user == null) {
+            val userFollowingList = currUser?.followers
+            loadUsersListFromReferenceList(userFollowingList, "followers", true)
+        } else {
+            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(user.uid!!)
+                .get()
+                .addOnSuccessListener { documentSnapShot ->
+                    if (documentSnapShot != null) {
+                        val otherUser = documentSnapShot.toObject<User>()
+                        loadUsersListFromReferenceList(otherUser?.followers, "followers", false)
                     }
-                    Log.e(TAG_APP_DB, "followingList.size = ${followersList.size} last")
-                    if (user == null) {
-                        userFollowers = ArrayList()
-                        userFollowers = followersList
-                    }
-                    postUsersList(followersList)
                 }
         }
     }
+
+//    fun loadFollowers_1(user: User?){
+//        val userFollowersList = currUser?.followers
+//        val tasks = ArrayList<Task<DocumentSnapshot>>()
+//        val followersList = ArrayList<User>()
+//        if (userFollowersList != null) {
+////            userFollowers = ArrayList()
+//            for (userRef in userFollowersList) {
+//                val docTask = userRef.get()
+//                tasks.add(docTask)
+//            }
+//            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+//                .addOnSuccessListener { value ->
+//                    for (userDoc in value) {
+//                        val currUser = userDoc.toObject<User>()
+//                        if (currUser != null) {
+//                            followersList.add(currUser)
+//                        }
+//                    }
+//                    Log.e(TAG_APP_DB, "followingList.size = ${followersList.size} last")
+//                    if (user == null) {
+//                        userFollowers = ArrayList()
+//                        userFollowers = followersList
+//                    }
+//                    postUsersList(followersList)
+//                }
+//        }
+//    }
 
     fun loadNotificationsFirstTime(){
         val userNotificationsList = currUser?.notifications
