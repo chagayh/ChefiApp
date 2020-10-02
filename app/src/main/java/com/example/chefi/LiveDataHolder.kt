@@ -10,45 +10,45 @@ object LiveDataHolder {
 
     // lists init
 
-    private val mutableUserLiveData : MutableLiveData<User> by lazy {
-        MutableLiveData<User>()
+    private val mutableUserLiveData : MutableLiveData<ObserveWrapper<User>> by lazy {
+        MutableLiveData<ObserveWrapper<User>>()
     }
 
-    private val mutableRecipesLiveData : MutableLiveData<MutableList<Recipe>> by lazy {
-        MutableLiveData<MutableList<Recipe>>()
+    private val mutableRecipesLiveData : MutableLiveData<ObserveWrapper<MutableList<Recipe>>> by lazy {
+        MutableLiveData<ObserveWrapper<MutableList<Recipe>>>()
     }
 
-    private val recipesLiveData : MutableLiveData<Recipe> by lazy {
-        MutableLiveData<Recipe>()
+    private val recipesLiveData : MutableLiveData<ObserveWrapper<Recipe>> by lazy {
+        MutableLiveData<ObserveWrapper<Recipe>>()
     }
 
     private val stringLiveData : MutableLiveData<ObserveWrapper<String>> by lazy {
         MutableLiveData<ObserveWrapper<String>>()
     }
 
-    private val usersListLiveData : MutableLiveData<MutableList<User>> by lazy {
-        MutableLiveData<MutableList<User>>()
+    private val usersListLiveData : MutableLiveData<ObserveWrapper<MutableList<User>>> by lazy {
+        MutableLiveData<ObserveWrapper<MutableList<User>>>()
     }
 
-    private val notificationsLiveData : MutableLiveData<MutableList<Notification>> by lazy {
-        MutableLiveData<MutableList<Notification>>()
+    private val notificationsLiveData : MutableLiveData<ObserveWrapper<MutableList<Notification>>> by lazy {
+        MutableLiveData<ObserveWrapper<MutableList<Notification>>>()
     }
 
     // funs
 
-    fun getUsersListLiveData() : LiveData<MutableList<User>>{
+    fun getUsersListLiveData() : LiveData<ObserveWrapper<MutableList<User>>>{
         return usersListLiveData
     }
 
-    fun getUsersListMutableLiveData() : MutableLiveData<MutableList<User>>{
+    fun getUsersListMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<User>>>{
         return usersListLiveData
     }
 
-    fun getNotificationsLiveData() : LiveData<MutableList<Notification>>{
+    fun getNotificationsLiveData() : LiveData<ObserveWrapper<MutableList<Notification>>>{
         return notificationsLiveData
     }
 
-    fun getNotificationsMutableLiveData() : MutableLiveData<MutableList<Notification>>{
+    fun getNotificationsMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<Notification>>>{
         return notificationsLiveData
     }
 
@@ -60,27 +60,27 @@ object LiveDataHolder {
         return stringLiveData
     }
 
-    fun getRecipeLiveData() : LiveData<Recipe>{
+    fun getRecipeLiveData() : LiveData<ObserveWrapper<Recipe>>{
         return recipesLiveData
     }
 
-    fun getRecipeMutableLiveData() : MutableLiveData<Recipe>{
+    fun getRecipeMutableLiveData() : MutableLiveData<ObserveWrapper<Recipe>>{
         return recipesLiveData
     }
 
-    fun getUserLiveData() : LiveData<User>{
+    fun getUserLiveData() : LiveData<ObserveWrapper<User>>{
         return mutableUserLiveData
     }
 
-    fun getUserMutableLiveData() : MutableLiveData<User>{
+    fun getUserMutableLiveData() : MutableLiveData<ObserveWrapper<User>>{
         return mutableUserLiveData
     }
 
-    fun getRecipeListLiveData() : LiveData<MutableList<Recipe>>{
+    fun getRecipeListLiveData() : LiveData<ObserveWrapper<MutableList<Recipe>>>{
         return mutableRecipesLiveData
     }
 
-    fun getRecipeListMutableLiveData() : MutableLiveData<MutableList<Recipe>>{
+    fun getRecipeListMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<Recipe>>>{
         return mutableRecipesLiveData
     }
 

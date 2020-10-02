@@ -13,6 +13,7 @@ import com.example.chefi.database.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.lifecycle.Observer
 import com.example.chefi.LiveDataHolder
+import com.example.chefi.ObserveWrapper
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,11 +43,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setObserver() {
         // data class User observer
-        val observer = Observer<User> { value ->
-            if (value == null){
+        val observer = Observer<ObserveWrapper<User>> { value ->
+            val content = value.getContentIfNotHandled()
+            if (content == null){
                 Log.d(TAG_MAIN_ACTIVITY, "null user, live data")
             } else {
-                Toast.makeText(this, "user ${value.name} connected", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "user ${content.name} connected", Toast.LENGTH_SHORT)
                     .show()
                 appContext.loadRecipes(null)
                 appContext.loadFavorites()

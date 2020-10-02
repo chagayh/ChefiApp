@@ -59,9 +59,12 @@ class SearchFragment : Fragment() {
 
     private fun setUsersObserver() {
         LiveDataHolder.getUsersListLiveData().observe(viewLifecycleOwner,
-            Observer { usersList ->
-                for (user in usersList) {
-                    Log.d(TAG_SEARCH_FRAGMENT, "name = ${user.name}")
+            Observer { usersListWrapper ->
+                val content = usersListWrapper.getContentIfNotHandled()
+                if (content != null) {
+                    for (user in content) {
+                        Log.d(TAG_SEARCH_FRAGMENT, "name = ${user.name}")
+                    }
                 }
             })
     }

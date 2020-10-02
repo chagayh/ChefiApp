@@ -10,6 +10,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import androidx.lifecycle.Observer
 import androidx.work.Data
 import com.example.chefi.Chefi
+import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
 import com.example.chefi.database.Recipe
 import com.google.gson.reflect.TypeToken
@@ -24,7 +25,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
         get() = applicationContext as Chefi
 
     private val TAG_ADD_RECIPE_WORKER = "addRecipeWorker"
-    private var observer : Observer<Recipe>? = null
+    private var observer : Observer<ObserveWrapper<Recipe>>? = null
 
     override fun startWork(): ListenableFuture<Result> {
         // 1. here we create the future and store the callback for later use
@@ -56,15 +57,17 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun setObserver() {
-        observer = Observer<Recipe> { value ->
+        observer = Observer<ObserveWrapper<Recipe>> { value ->
             Log.d(TAG_ADD_RECIPE_WORKER, "in set observer")
-
-            val outPutData = Data.Builder()
-                .putString(appContext.getString(R.string.keyRecipeType), Gson().toJson(value))
-                .build()
-            LiveDataHolder.getRecipeLiveData().removeObserver(observer!!)
-            Log.d(TAG_ADD_RECIPE_WORKER, "in set observer recipe = $value")
-            this.callback?.set(Result.success(outPutData))
+            val content = value.getContentIfNotHandled()
+            if (content != null) {
+                val outPutData = Data.Builder()
+                    .putString(appContext.getString(R.string.keyRecipeType), Gson().toJson(value))
+                    .build()
+                LiveDataHolder.getRecipeLiveData().removeObserver(observer!!)
+                Log.d(TAG_ADD_RECIPE_WORKER, "in set observer recipe = $value")
+                this.callback?.set(Result.success(outPutData))
+            }
         }
         LiveDataHolder.getRecipeLiveData().observeForever(observer!!)
     }

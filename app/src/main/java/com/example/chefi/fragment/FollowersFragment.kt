@@ -18,6 +18,7 @@ import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 import androidx.lifecycle.Observer
 import com.example.chefi.LiveDataHolder
+import com.example.chefi.ObserveWrapper
 
 
 class FollowersFragment : Fragment() {
@@ -59,10 +60,11 @@ class FollowersFragment : Fragment() {
             }else{
                 appContext.loadFollowing(curUser)
             }
-            val observer = Observer<MutableList<User>> { value ->
-                if (value != null){
-                    Log.e("Amnon3", value.size.toString())
-                    followersAdapter.setItems(ArrayList(value))
+            val observer = Observer<ObserveWrapper<MutableList<User>>> { value ->
+                val content = value.getContentIfNotHandled()
+                if (content != null){
+                    Log.e("Amnon3", content.size.toString())
+                    followersAdapter.setItems(ArrayList(content))
                 }
                 else{
                     followersAdapter.setItems(ArrayList())

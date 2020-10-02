@@ -240,25 +240,30 @@ class AppDb {
     }
 
     private fun postSingleRecipe(recipe: Recipe) {
-        LiveDataHolder.getRecipeMutableLiveData().postValue(recipe)
+//        LiveDataHolder.getRecipeMutableLiveData().postValue(recipe)
+        LiveDataHolder.getRecipeMutableLiveData().value = ObserveWrapper(recipe)
     }
 
     private fun postUser(user: User?) {
-        LiveDataHolder.getUserMutableLiveData().postValue(user)
+//        LiveDataHolder.getUserMutableLiveData().postValue(user)
+        LiveDataHolder.getUserMutableLiveData().value = ObserveWrapper(user)
     }
 
     private fun postRecipes(recipesList: ArrayList<Recipe>) {
-        LiveDataHolder.getRecipeListMutableLiveData().postValue(recipesList)
+//        LiveDataHolder.getRecipeListMutableLiveData().postValue(recipesList)
+        LiveDataHolder.getRecipeListMutableLiveData().value = ObserveWrapper(recipesList)
     }
 
     private fun postUsersList(usersList: ArrayList<User>) {
         Log.d(TAG_APP_DB, "usersList.size = ${usersList.size}")
-        LiveDataHolder.getUsersListMutableLiveData().postValue(usersList)
+//        LiveDataHolder.getUsersListMutableLiveData().postValue(usersList)
+        LiveDataHolder.getUsersListMutableLiveData().value = ObserveWrapper(usersList)
     }
 
     private fun postNotificationList(notificationList: ArrayList<Notification>) {
         Log.d(TAG_APP_DB, "usersList.size = ${notificationList.size}")
-        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
+//        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
+        LiveDataHolder.getNotificationsMutableLiveData().value = ObserveWrapper(notificationList)
     }
 
     // TODO add on success listener and set observer
@@ -356,7 +361,9 @@ class AppDb {
                         Log.d(TAG_APP_DB, "url upload image - $url")
                         Log.d("change_url", "in appDb in uploadImageToStorage image url = $url")
 //                        LiveDataHolder.getStringMutableLiveData().postValue(url)
-                        LiveDataHolder.getStringMutableLiveData().value = ObserveWrapper(url)
+                        LiveDataHolder
+                            .getStringMutableLiveData()
+                            .value = ObserveWrapper(url)   // = .postValue(url)
                     } else {
                         Log.d(TAG_APP_DB, "downloadUri.isSuccessful = false")
                     }

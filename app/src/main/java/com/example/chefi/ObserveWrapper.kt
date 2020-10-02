@@ -1,6 +1,6 @@
 package com.example.chefi
 
-class ObserveWrapper<out T> (private val content: T) {
+class ObserveWrapper<out T> (private val content: T?) {
 
     private var hasBeenHandled = false
 
@@ -19,6 +19,5 @@ class ObserveWrapper<out T> (private val content: T) {
     /**
      * Returns the content, even if it's already been handled.
      */
-    fun peekContent(): T = content
-
+    fun peekContent(): T? = content
 }
