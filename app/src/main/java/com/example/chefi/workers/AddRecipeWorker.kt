@@ -13,6 +13,7 @@ import com.example.chefi.Chefi
 import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
 import com.example.chefi.database.Recipe
+import com.example.chefi.database.User
 import com.google.gson.reflect.TypeToken
 import com.google.gson.Gson
 
@@ -39,9 +40,12 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
 
         val recipeDirectionsAsString = inputData.getString(appContext.getString(R.string.keyRecipeDirections))
         val recipeIngredientsAsString = inputData.getString(appContext.getString(R.string.keyRecipeIngredients))
+        val ownerAsString = inputData.getString(appContext.getString(R.string.keyRecipeOwner))
         val listType = object : TypeToken<ArrayList<String>>() {}.type
+        val userType = object : TypeToken<User>() {}.type
 
         val recipeDirections = Gson().fromJson<ArrayList<String>>(recipeDirectionsAsString, listType)
+        val owner = Gson().fromJson<User>(ownerAsString, userType)
         val recipeIngredients = Gson().fromJson<ArrayList<String>>(recipeIngredientsAsString, listType)
         val recipeImageUrl = inputData.getString(appContext.getString(R.string.keyRecipeImageUrl))
         val recipeName = inputData.getString(appContext.getString(R.string.keyRecipeName))
@@ -51,7 +55,8 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
                                  imageUrl=recipeImageUrl,
                                  direction=recipeDirections,
                                  ingredients=recipeIngredients,
-                                 status=recipeStatus)
+                                 status=recipeStatus,
+                                 owner=owner)
 
         return future
     }

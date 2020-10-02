@@ -11,11 +11,12 @@ import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
+import java.text.DateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class Chefi : Application() {
     private lateinit var appDb : AppDb
@@ -57,7 +58,7 @@ class Chefi : Application() {
         appDb.uploadImageToStorage(uri, fileExtension)
     }
 
-    private fun getFileExtension(imageUri : Uri) : String? {
+    private fun getFileExtension(imageUri: Uri) : String? {
         val contentResolver = contentResolver
         val mime = MimeTypeMap.getSingleton()
         val fileExtension = mime.getExtensionFromMimeType(contentResolver?.getType(imageUri))
@@ -86,19 +87,25 @@ class Chefi : Application() {
 
     }
 
-    fun addRecipeToDb(recipeName: String?,
-                      imageUrl: String?,
-                      direction: ArrayList<String>?,
-                      ingredients: ArrayList<String>?,
-                      status: Int?) {
-        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status)
+    fun addRecipeToDb(
+        recipeName: String?,
+        imageUrl: String?,
+        direction: ArrayList<String>?,
+        ingredients: ArrayList<String>?,
+        status: Int?,
+        owner: User?
+    ) {
+        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status, owner)
     }
 
-    fun addRecipe(name: String?,
-                  imageUrl: String?,
-                  direction: ArrayList<String>?,
-                  ingredients: ArrayList<String>?,
-                  status: Int) : UUID {
+    fun addRecipe(
+        name: String?,
+        imageUrl: String?,
+        direction: ArrayList<String>?,
+        ingredients: ArrayList<String>?,
+        status: Int,
+        owner: User
+    ) : UUID {
         val workId = UUID.randomUUID()
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -106,6 +113,11 @@ class Chefi : Application() {
         val inputData = Data.Builder()
             .putString(getString(R.string.keyRecipeName), name)
             .putString(getString(R.string.keyRecipeImageUrl), imageUrl)
+            .putString(
+                getString(R.string.keyRecipeTimeStamp),
+                DateFormat.getDateTimeInstance().format(Date())
+            )
+            .putString(getString(R.string.keyRecipeOwner), Gson().toJson(owner))
             .putString(getString(R.string.keyRecipeDirections), Gson().toJson(direction))
             .putString(getString(R.string.keyRecipeIngredients), Gson().toJson(ingredients))
             .putInt(getString(R.string.keyRecipeStatus), status)
@@ -129,7 +141,7 @@ class Chefi : Application() {
         return appDb.getCurrUser()
     }
 
-    fun deleteRecipe(recipe : Recipe) {
+    fun deleteRecipe(recipe: Recipe) {
         return appDb.deleteRecipe(recipe)
     }
 
@@ -185,11 +197,11 @@ class Chefi : Application() {
         return appDb.getUserFollowers()
     }
 
-    fun follow(userToFollow : User) {
+    fun follow(userToFollow: User) {
         appDb.follow(userToFollow)
     }
 
-    fun unFollow(userToUnFollow : User) {
+    fun unFollow(userToUnFollow: User) {
         appDb.unFollow(userToUnFollow)
     }
 

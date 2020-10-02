@@ -64,7 +64,8 @@ class RecipeFragment : Fragment() {
                                               imageUrl,
                                               arrayListOf(textViewDirections.text.toString()),
                                               arrayListOf(textViewIngredients.text.toString()),
-                                              Integer.parseInt(textViewStatus.text.toString()))
+                                              Integer.parseInt(textViewStatus.text.toString()),
+                                              //TODO - add user owner)
 
             setWorkObserver(workId)
         }
