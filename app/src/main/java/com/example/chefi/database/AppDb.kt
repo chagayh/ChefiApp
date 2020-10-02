@@ -575,7 +575,9 @@ class AppDb {
         if (userFollowing == null) {
             userFollowing = ArrayList()
         }
-        userFollowing!!.add(userToFollow)
+        if (!(userFollowing?.contains(userToFollow))!!) {
+            userFollowing!!.add(userToFollow)
+        }
     }
 
     fun unFollow(userToUnFollow: User) {
