@@ -12,7 +12,7 @@ import androidx.work.Data
 import com.example.chefi.Chefi
 import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
-import com.example.chefi.database.Recipe
+import com.example.chefi.database.DbRecipe
 import com.example.chefi.database.User
 import com.google.gson.reflect.TypeToken
 import com.google.gson.Gson
@@ -26,7 +26,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
         get() = applicationContext as Chefi
 
     private val TAG_ADD_RECIPE_WORKER = "addRecipeWorker"
-    private var observer : Observer<ObserveWrapper<Recipe>>? = null
+    private var observer : Observer<ObserveWrapper<DbRecipe>>? = null
 
     override fun startWork(): ListenableFuture<Result> {
         // 1. here we create the future and store the callback for later use
@@ -61,11 +61,11 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun setObserver() {
-        observer = Observer<ObserveWrapper<Recipe>> { value ->
+        observer = Observer<ObserveWrapper<DbRecipe>> { value ->
             Log.d(TAG_ADD_RECIPE_WORKER, "in set observer")
             val content = value.getContentIfNotHandled()
             if (content != null) {
-                val type = object: TypeToken<Recipe>(){}.type
+                val type = object: TypeToken<DbRecipe>(){}.type
                 val outPutData = Data.Builder()
                     .putString(appContext.getString(R.string.keyRecipeType), Gson().toJson(content))
                     .build()

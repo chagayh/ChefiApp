@@ -16,11 +16,9 @@ import com.example.chefi.Chefi
 import com.example.chefi.R
 import java.util.*
 import androidx.navigation.fragment.findNavController
-import com.example.chefi.database.Recipe
+import com.example.chefi.database.DbRecipe
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -80,9 +78,9 @@ class RecipeFragment : Fragment() {
                 if (value.outputData.size() != 0) {
                     Log.d(TAG_RECIPE_FRAGMENT, "value.outputData = ${value.outputData}")
                     val recipeAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipeType))
-                    val recipeType = object : TypeToken<Recipe>() {}.type
+                    val recipeType = object : TypeToken<DbRecipe>() {}.type
 
-                    val returnedRecipe = Gson().fromJson<Recipe>(recipeAsJson, recipeType)
+                    val returnedRecipe = Gson().fromJson<DbRecipe>(recipeAsJson, recipeType)
                     Log.d("change_url", "in recipeFragment in setWorkObserver, recipe image url = ${returnedRecipe.imageUrl}")
                     Toast.makeText(appContext, "recipe_profile ${returnedRecipe.description} CREATED", Toast.LENGTH_SHORT)
                         .show()

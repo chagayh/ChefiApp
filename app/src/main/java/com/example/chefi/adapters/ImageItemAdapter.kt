@@ -6,16 +6,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.R
-import com.example.chefi.database.Recipe
+import com.example.chefi.database.DbRecipe
 import com.example.chefi.holders.ImageHolder
 import com.squareup.picasso.Picasso
 
 class ImageItemAdapter : RecyclerView.Adapter<ImageHolder>() {
-    private val items: MutableList<Recipe> = ArrayList()
+    private val items: MutableList<DbRecipe> = ArrayList()
     private lateinit var context: Context
     private val TAG_ADAPTER = "imageItemAdapter"
 
-    fun setItems(newItems: MutableList<Recipe>) {
+    fun setItems(newItems: MutableList<DbRecipe>) {
         items.clear()
         items.addAll(newItems)
         Log.d(TAG_ADAPTER, "items size = ${items.size}")

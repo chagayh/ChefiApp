@@ -4,7 +4,7 @@ import android.app.Notification
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.chefi.database.Comment
-import com.example.chefi.database.Recipe
+import com.example.chefi.database.DbRecipe
 import com.example.chefi.database.User
 
 object LiveDataHolder {
@@ -15,12 +15,12 @@ object LiveDataHolder {
         MutableLiveData<ObserveWrapper<User>>()
     }
 
-    private val mutableRecipesLiveData : MutableLiveData<ObserveWrapper<MutableList<Recipe>>> by lazy {
-        MutableLiveData<ObserveWrapper<MutableList<Recipe>>>()
+    private val MUTABLE_RECIPES_LIVE_DATA : MutableLiveData<ObserveWrapper<MutableList<DbRecipe>>> by lazy {
+        MutableLiveData<ObserveWrapper<MutableList<DbRecipe>>>()
     }
 
-    private val recipesLiveData : MutableLiveData<ObserveWrapper<Recipe>> by lazy {
-        MutableLiveData<ObserveWrapper<Recipe>>()
+    private val RECIPES_LIVE_DATA : MutableLiveData<ObserveWrapper<DbRecipe>> by lazy {
+        MutableLiveData<ObserveWrapper<DbRecipe>>()
     }
 
     private val stringLiveData : MutableLiveData<ObserveWrapper<String>> by lazy {
@@ -75,12 +75,12 @@ object LiveDataHolder {
         return stringLiveData
     }
 
-    fun getRecipeLiveData() : LiveData<ObserveWrapper<Recipe>>{
-        return recipesLiveData
+    fun getRecipeLiveData() : LiveData<ObserveWrapper<DbRecipe>>{
+        return RECIPES_LIVE_DATA
     }
 
-    fun getRecipeMutableLiveData() : MutableLiveData<ObserveWrapper<Recipe>>{
-        return recipesLiveData
+    fun getRecipeMutableLiveData() : MutableLiveData<ObserveWrapper<DbRecipe>>{
+        return RECIPES_LIVE_DATA
     }
 
     fun getUserLiveData() : LiveData<ObserveWrapper<User>>{
@@ -91,12 +91,12 @@ object LiveDataHolder {
         return mutableUserLiveData
     }
 
-    fun getRecipeListLiveData() : LiveData<ObserveWrapper<MutableList<Recipe>>>{
-        return mutableRecipesLiveData
+    fun getRecipeListLiveData() : LiveData<ObserveWrapper<MutableList<DbRecipe>>>{
+        return MUTABLE_RECIPES_LIVE_DATA
     }
 
-    fun getRecipeListMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<Recipe>>>{
-        return mutableRecipesLiveData
+    fun getRecipeListMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<DbRecipe>>>{
+        return MUTABLE_RECIPES_LIVE_DATA
     }
 
 }

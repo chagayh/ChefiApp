@@ -3,7 +3,6 @@ package com.example.chefi.adapters
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.database.Recipe
+import com.example.chefi.database.DbRecipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.database.User
@@ -28,13 +27,13 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
     private lateinit var appContext: Chefi
     private val TYPE_HEADER = 0
     private val TYPE_ITEM = 1
-    private var _items: ArrayList<Recipe>? = ArrayList()
+    private var _items: ArrayList<DbRecipe>? = ArrayList()
     var recipesFlag:Boolean = true
     private val otherFlag = user != null
     private lateinit var tempUser: User
 
     // public method to show a new list of items
-    fun setItems(items: ArrayList<Recipe>){
+    fun setItems(items: ArrayList<DbRecipe>){
         _items?.clear()
         _items?.addAll(items)
         notifyDataSetChanged()

@@ -7,7 +7,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 import kotlin.collections.ArrayList
 
-data class Recipe(
+data class DbRecipe(
     var uid: String? = null,
     var description: String? = null,
     var likes: Int? = 0,
@@ -44,12 +44,12 @@ data class Recipe(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Recipe> {
-        override fun createFromParcel(parcel: Parcel): Recipe {
-            return Recipe(parcel)
+    companion object CREATOR : Parcelable.Creator<DbRecipe> {
+        override fun createFromParcel(parcel: Parcel): DbRecipe {
+            return DbRecipe(parcel)
         }
 
-        override fun newArray(size: Int): Array<Recipe?> {
+        override fun newArray(size: Int): Array<DbRecipe?> {
             return arrayOfNulls(size)
         }
     }

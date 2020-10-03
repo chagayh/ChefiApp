@@ -41,11 +41,11 @@ class AppDb {
 
     // Users fields
     private var currUser: User? = null
-    private var userRecipes : ArrayList<Recipe>? = null
+    private var userDbRecipes : ArrayList<DbRecipe>? = null
     private var userFollowing : ArrayList<User>? = null
     private var userFollowers : ArrayList<User>? = null
     private var userNotification : ArrayList<Notification>? = null
-    private var userFavorites : ArrayList<Recipe>? = null
+    private var userFavorites : ArrayList<DbRecipe>? = null
 
     companion object {
         // TAGS
@@ -60,11 +60,11 @@ class AppDb {
         return auth
     }
 
-    fun getUserRecipes() : ArrayList<Recipe>? {
-        return userRecipes
+    fun getUserRecipes() : ArrayList<DbRecipe>? {
+        return userDbRecipes
     }
 
-    fun getUserFavorites() : ArrayList<Recipe>? {
+    fun getUserFavorites() : ArrayList<DbRecipe>? {
         return userFavorites
     }
 
@@ -86,7 +86,7 @@ class AppDb {
 
     private fun initCurrUser(){
         currUser = null
-        userRecipes = null
+        userDbRecipes = null
         userFavorites = null
         userFollowers = null
         userFollowing = null
@@ -104,7 +104,7 @@ class AppDb {
                 Log.d(TAG_APP_DB, "user?.name = ${user?.name} in updateCurrentUser")
                 if (user != null) {
                     currUser = user
-                    userRecipes = null
+                    userDbRecipes = null
                     userFavorites = null
                     userFollowers = null
                     userFollowing = null
@@ -207,7 +207,7 @@ class AppDb {
     )  {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
         val newDocument = firestore.collection(recipeCollectionPath).document()
-        val recipe = Recipe(
+        val recipe = DbRecipe(
             uid = newDocument.id,
             description = recipeName,
             likes = 0,
@@ -219,13 +219,13 @@ class AppDb {
             owner = currUser?.uid
         )
 
-        if (userRecipes == null) {
-            userRecipes = ArrayList()
+        if (userDbRecipes == null) {
+            userDbRecipes = ArrayList()
         }
         newDocument.set(recipe)
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "in success of addRecipeToRecipesCollection")
-                userRecipes?.add(recipe)
+                userDbRecipes?.add(recipe)
                 addRecipeToLocalCurrUserObject(newDocument)
                 updateUserInUsersCollection(null)
                 postSingleRecipe(recipe)    // the worker observe to this post
@@ -236,9 +236,9 @@ class AppDb {
             }
     }
 
-    private fun postSingleRecipe(recipe: Recipe) {
+    private fun postSingleRecipe(dbRecipe: DbRecipe) {
 //        LiveDataHolder.getRecipeMutableLiveData().postValue(recipe)
-        LiveDataHolder.getRecipeMutableLiveData().value = ObserveWrapper(recipe)
+        LiveDataHolder.getRecipeMutableLiveData().value = ObserveWrapper(dbRecipe)
     }
 
     private fun postUser(user: User?) {
@@ -246,7 +246,7 @@ class AppDb {
         LiveDataHolder.getUserMutableLiveData().value = ObserveWrapper(user)
     }
 
-    private fun postRecipes(recipesList: ArrayList<Recipe>) {
+    private fun postRecipes(recipesList: ArrayList<DbRecipe>) {
 //        LiveDataHolder.getRecipeListMutableLiveData().postValue(recipesList)
         LiveDataHolder.getRecipeListMutableLiveData().value = ObserveWrapper(recipesList)
     }
@@ -275,23 +275,23 @@ class AppDb {
         auth.signOut()
     }
 
-    fun deleteRecipe(recipe: Recipe){
+    fun deleteRecipe(dbRecipe: DbRecipe){
         // delete from local array
-        if (userRecipes?.contains(recipe)!!) {
-            userRecipes?.remove(recipe)
+        if (userDbRecipes?.contains(dbRecipe)!!) {
+            userDbRecipes?.remove(dbRecipe)
         } else {
             Log.d(TAG_APP_DB, "in deleteRecipe, local recipe list not contains")
         }
         // delete from storage and data base
-        val imageUrl = recipe.imageUrl
-        deleteImageFromStorage(imageUrl, recipe)
+        val imageUrl = dbRecipe.imageUrl
+        deleteImageFromStorage(imageUrl, dbRecipe)
     }
 
-    fun deleteImageFromStorage(imageUrl: String?, recipe: Recipe?){
+    fun deleteImageFromStorage(imageUrl: String?, dbRecipe: DbRecipe?){
         FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl!!).delete()
             .addOnSuccessListener {
-                if (recipe != null) {
-                    deleteRecipeFromCollection(recipe)
+                if (dbRecipe != null) {
+                    deleteRecipeFromCollection(dbRecipe)
                 }
             }
             .addOnFailureListener { exception ->
@@ -299,9 +299,9 @@ class AppDb {
             }
     }
 
-    private fun deleteRecipeFromUserDocument(recipe: Recipe) {
+    private fun deleteRecipeFromUserDocument(dbRecipe: DbRecipe) {
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
-            .document(recipe.uid!!)
+            .document(dbRecipe.uid!!)
             .get()
             .addOnSuccessListener { documentSnapShot ->
                 if (documentSnapShot != null) {
@@ -319,13 +319,13 @@ class AppDb {
             }
     }
 
-    private fun deleteRecipeFromCollection(recipe: Recipe) {
+    private fun deleteRecipeFromCollection(dbRecipe: DbRecipe) {
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
-            .document(recipe.uid!!)
+            .document(dbRecipe.uid!!)
             .delete()
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "recipe deleted")
-                deleteRecipeFromUserDocument(recipe)
+                deleteRecipeFromUserDocument(dbRecipe)
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG_APP_DB, "exception ${exception.message}")
@@ -417,9 +417,8 @@ class AppDb {
                                              isCurrUser: Boolean) {
 
         val tasks = ArrayList<Task<DocumentSnapshot>>()
-        val userRecipesList = ArrayList<Recipe>()
+        val userRecipesList = ArrayList<DbRecipe>()
 
-        Log.d("bigZ", "loadRecipesFromReferenceList start type = $type")
         if (recipesList != null) {
             for (recipeRef in recipesList) {
                 val docTask = recipeRef.get()
@@ -428,7 +427,7 @@ class AppDb {
             Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
                 .addOnSuccessListener { value ->
                     for (recipeDoc in value) {
-                        val recipe = recipeDoc.toObject<Recipe>()
+                        val recipe = recipeDoc.toObject<DbRecipe>()
                         if (recipe != null) {
                             userRecipesList.add(recipe)
                         }
@@ -436,12 +435,10 @@ class AppDb {
                     if (isCurrUser) {
                         when (type!!) {
                             "recipes" -> {
-                                Log.d("bigZ", "loadRecipesFromReferenceLis type = $type mid")
-                                userRecipes = ArrayList()
-                                userRecipes = userRecipesList
+                                userDbRecipes = ArrayList()
+                                userDbRecipes = userRecipesList
                             }
                             "favorites" -> {
-                                Log.d("bigZ", "loadRecipesFromReferenceLis type = $type mid1")
                                 userFavorites = ArrayList()
                                 userFavorites = userRecipesList
                             }
@@ -602,8 +599,8 @@ class AppDb {
         }
     }
 
-    fun loadRecipesComments(recipe: Recipe) {
-        val recipeCommentsList = recipe.comments
+    fun loadRecipesComments(dbRecipe: DbRecipe) {
+        val recipeCommentsList = dbRecipe.comments
         val tasks = ArrayList<Task<DocumentSnapshot>>()
         if (recipeCommentsList != null) {
             val commentsList = ArrayList<Comment>()
@@ -636,12 +633,12 @@ class AppDb {
         updateUserInUsersCollection(null)
     }
 
-    fun updateRecipeFields(recipe: Recipe, fieldName: String, content: String) {
+    fun updateRecipeFields(dbRecipe: DbRecipe, fieldName: String, content: String) {
         // TODO - updates options - like, comment per recipe
         when (fieldName) {
-            "likes" -> recipe.likes = recipe.likes?.plus(1)
+            "likes" -> dbRecipe.likes = dbRecipe.likes?.plus(1)
             "name" -> {
-                recipe.description = content
+                dbRecipe.description = content
                 currUser?.name_lowerCase = content.toLowerCase(Locale.ROOT)
             }
             "imageUrl" -> currUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
@@ -780,8 +777,8 @@ class AppDb {
         }
     }
 
-    fun addRecipeToFavorites(recipe: Recipe) {
-        val recipeId = recipe.uid
+    fun addRecipeToFavorites(dbRecipe: DbRecipe) {
+        val recipeId = dbRecipe.uid
 
         if (recipeId != null) {
             firestore.collection(
@@ -804,11 +801,11 @@ class AppDb {
         if (userFavorites == null) {
             userFavorites = ArrayList()
         }
-        userFavorites!!.add(recipe)
+        userFavorites!!.add(dbRecipe)
     }
 
-    fun removeRecipeFromFavorites(recipe: Recipe) {
-        val recipeId = recipe.uid
+    fun removeRecipeFromFavorites(dbRecipe: DbRecipe) {
+        val recipeId = dbRecipe.uid
 
         if (recipeId != null) {
             firestore.collection(
@@ -838,8 +835,8 @@ class AppDb {
         if (userFavorites == null) {
             Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list = null")
         }
-        if (userFavorites?.contains(recipe)!!) {
-            userFavorites!!.remove(recipe)
+        if (userFavorites?.contains(dbRecipe)!!) {
+            userFavorites!!.remove(dbRecipe)
         } else {
             Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list not contains")
         }

@@ -7,11 +7,10 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.AppDb
-import com.example.chefi.database.Recipe
+import com.example.chefi.database.DbRecipe
 import com.example.chefi.database.User
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
@@ -138,11 +137,11 @@ class Chefi : Application() {
         return appDb.getCurrUser()
     }
 
-    fun deleteRecipe(recipe: Recipe) {
-        return appDb.deleteRecipe(recipe)
+    fun deleteRecipe(dbRecipe: DbRecipe) {
+        return appDb.deleteRecipe(dbRecipe)
     }
 
-    fun deleteImage(imageUrl: String?, recipe: Recipe?) {
+    fun deleteImage(imageUrl: String?, dbRecipe: DbRecipe?) {
         appDb.deleteImageFromStorage(imageUrl, null)
     }
 
@@ -178,11 +177,11 @@ class Chefi : Application() {
         appDb.getUser(userId)
     }
 
-    fun loadRecipeComments(recipe: Recipe) {
-        appDb.loadRecipesComments(recipe)
+    fun loadRecipeComments(dbRecipe: DbRecipe) {
+        appDb.loadRecipesComments(dbRecipe)
     }
 
-    fun getUserRecipes() : ArrayList<Recipe>? {
+    fun getUserRecipes() : ArrayList<DbRecipe>? {
         return appDb.getUserRecipes()
     }
 
@@ -190,7 +189,7 @@ class Chefi : Application() {
         return appDb.getFirebaseAuth()
     }
 
-    fun getUserFavorites() : ArrayList<Recipe>? {
+    fun getUserFavorites() : ArrayList<DbRecipe>? {
         return appDb.getUserFavorites()
     }
 
@@ -210,12 +209,12 @@ class Chefi : Application() {
         appDb.unFollow(userToUnFollow)
     }
 
-    fun addRecipeToFavorites(recipe: Recipe) {
-        appDb.addRecipeToFavorites(recipe)
+    fun addRecipeToFavorites(dbRecipe: DbRecipe) {
+        appDb.addRecipeToFavorites(dbRecipe)
     }
 
-    fun removeRecipeFromFavorites(recipe: Recipe) {
-        appDb.removeRecipeFromFavorites(recipe)
+    fun removeRecipeFromFavorites(dbRecipe: DbRecipe) {
+        appDb.removeRecipeFromFavorites(dbRecipe)
     }
 
     fun addUserToFollowers(otherUser: User) {
