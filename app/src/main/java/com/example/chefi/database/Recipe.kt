@@ -3,14 +3,13 @@ package com.example.chefi.database
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 import kotlin.collections.ArrayList
 
 data class Recipe(
     var uid: String? = null,
-    var name: String? = null,
+    var description: String? = null,
     var likes: Int? = 0,
     var imageUrl: String? = null,
     var comments: ArrayList<DocumentReference>? = null,
@@ -19,7 +18,7 @@ data class Recipe(
     var status: Int? = null, // TODO - new
     var owner: String? = null, // TODO - new
     @ServerTimestamp
-    var timestamp: Date? = null // TODO - new
+    var timestamp: Date? = null
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -35,7 +34,7 @@ data class Recipe(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(uid)
-        parcel.writeString(name)
+        parcel.writeString(description)
         parcel.writeValue(likes)
         parcel.writeString(imageUrl)
         parcel.writeValue(status)

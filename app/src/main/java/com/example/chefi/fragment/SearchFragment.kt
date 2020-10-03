@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
+import com.example.chefi.database.User
 
 /**
  * A simple [Fragment] subclass.
@@ -27,6 +28,7 @@ class SearchFragment : Fragment() {
     private lateinit var searchBtn: ImageButton
     private lateinit var barEditText: EditText
     private val TAG_SEARCH_FRAGMENT: String = "searchFragment"
+    private var usersList : ArrayList<User>? = null
 
 
     override fun onCreateView(
@@ -37,11 +39,10 @@ class SearchFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
         searchBtn = view.findViewById(R.id.searchBtn)
-        searchBtn = view.findViewById(R.id.searchBtn)
         barEditText = view.findViewById(R.id.barEditText)
 
-        setSearchBtn()
         setUsersObserver()
+        setSearchBtn()
         return view
     }
 
@@ -62,6 +63,7 @@ class SearchFragment : Fragment() {
             Observer { usersListWrapper ->
                 val content = usersListWrapper.getContentIfNotHandled()
                 if (content != null) {
+                    usersList = ArrayList(content)
                     for (user in content) {
                         Log.d(TAG_SEARCH_FRAGMENT, "name = ${user.name}")
                     }

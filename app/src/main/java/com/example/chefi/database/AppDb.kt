@@ -23,7 +23,6 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.type.Date
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -210,7 +209,7 @@ class AppDb {
         val newDocument = firestore.collection(recipeCollectionPath).document()
         val recipe = Recipe(
             uid = newDocument.id,
-            name = recipeName,
+            description = recipeName,
             likes = 0,
             imageUrl = imageUrl,
             comments = ArrayList(),
@@ -218,7 +217,7 @@ class AppDb {
             ingredients = ingredients,
             status = status,
             owner = currUser?.uid
-        )   
+        )
 
         if (userRecipes == null) {
             userRecipes = ArrayList()
@@ -637,18 +636,18 @@ class AppDb {
         updateUserInUsersCollection(null)
     }
 
-    // TODO - check if needed
-//    fun updateRecipeFields(recipe: Recipe, fieldName: String, content: String) {
-//        when (fieldName) {
-//            "likes" -> recipe.likes = recipe.likes?.plus(1)
-//            "name" -> {
-//                recipe.name = content
-//                currUser?.name_lowerCase = content.toLowerCase(Locale.ROOT)
-//            }
-//            "imageUrl" -> currUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
-//        }
+    fun updateRecipeFields(recipe: Recipe, fieldName: String, content: String) {
+        // TODO - updates options - like, comment per recipe
+        when (fieldName) {
+            "likes" -> recipe.likes = recipe.likes?.plus(1)
+            "name" -> {
+                recipe.description = content
+                currUser?.name_lowerCase = content.toLowerCase(Locale.ROOT)
+            }
+            "imageUrl" -> currUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
+        }
 //        updateRecipeInRecipesCollection(recipe)
-//    }
+    }
 
     fun addUserToFollowers(otherUser: User) {
         val currUserId = currUser?.uid

@@ -1,5 +1,10 @@
 package com.example.chefi.database
 
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ServerTimestamp
+import java.util.*
+
 enum class NotificationType{
     LIKE{
         override fun toString(): String {
@@ -24,23 +29,24 @@ enum class NotificationType{
     }
 }
 
-data class NotificationItem(
-    var userName: String? = null,
+data class NotificationItem (
+    var user: DocumentReference? = null,
     var notificationContent: String? = null,
-    var userImageUrl: String? = null,
-    var notificationType: NotificationType = NotificationType.DEFAULT
+    var notificationType: NotificationType = NotificationType.DEFAULT,
+    @ServerTimestamp
+    var timestamp: Date? = null
 ){
-    override fun toString(): String {
-        return when (notificationType) {
-            NotificationType.DEFAULT -> {
-                super.toString()
-            }
-            NotificationType.COMMENT -> {
-                String.format(notificationType.toString(), userName, notificationContent)
-            }
-            else -> {
-                String.format(notificationType.toString(), userName)
-            }
-        }
-    }
+//    override fun toString(): String {
+//        return when (notificationType) {
+//            NotificationType.DEFAULT -> {
+//                super.toString()
+//            }
+//            NotificationType.COMMENT -> {
+//                String.format(notificationType.toString(), user, notificationContent)
+//            }
+//            else -> {
+//                String.format(notificationType.toString(), user)
+//            }
+//        }
+//    }
 }

@@ -33,7 +33,7 @@ class ImageItemAdapter : RecyclerView.Adapter<ImageHolder>() {
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
         val item = items[position]
         Log.d(TAG_ADAPTER, "item url = ${item.imageUrl}")
-        holder.name.text = item.name
+        holder.name.text = item.description
         Picasso.with(context)
             .load(item.imageUrl)
             .fit()

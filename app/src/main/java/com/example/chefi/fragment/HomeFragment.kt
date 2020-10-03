@@ -15,6 +15,8 @@ import com.example.chefi.R
 import com.example.chefi.activities.LoginActivity
 import com.example.chefi.adapters.FollowersAdapter
 import com.example.chefi.adapters.HomeAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

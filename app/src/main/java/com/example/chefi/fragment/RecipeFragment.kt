@@ -19,6 +19,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.chefi.database.Recipe
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -82,7 +84,7 @@ class RecipeFragment : Fragment() {
 
                     val returnedRecipe = Gson().fromJson<Recipe>(recipeAsJson, recipeType)
                     Log.d("change_url", "in recipeFragment in setWorkObserver, recipe image url = ${returnedRecipe.imageUrl}")
-                    Toast.makeText(appContext, "recipe_profile ${returnedRecipe.name} CREATED", Toast.LENGTH_SHORT)
+                    Toast.makeText(appContext, "recipe_profile ${returnedRecipe.description} CREATED", Toast.LENGTH_SHORT)
                         .show()
                     // TODO - maybe add a preview page
                     findNavController().navigate(R.id.addFragment)
