@@ -3,6 +3,7 @@ package com.example.chefi
 import android.app.Notification
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.chefi.database.Comment
 import com.example.chefi.database.Recipe
 import com.example.chefi.database.User
 
@@ -34,6 +35,12 @@ object LiveDataHolder {
         MutableLiveData<ObserveWrapper<MutableList<Notification>>>()
     }
 
+    private val commentsLiveData : MutableLiveData<ObserveWrapper<MutableList<Comment>>> by lazy {
+        MutableLiveData<ObserveWrapper<MutableList<Comment>>>()
+    }
+
+    // getCommentsMutableLiveData
+
     // funs
 
     fun getUsersListLiveData() : LiveData<ObserveWrapper<MutableList<User>>>{
@@ -50,6 +57,14 @@ object LiveDataHolder {
 
     fun getNotificationsMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<Notification>>>{
         return notificationsLiveData
+    }
+
+    fun getCommentsLiveData() : LiveData<ObserveWrapper<MutableList<Comment>>>{
+        return commentsLiveData
+    }
+
+    fun getCommentsMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<Comment>>>{
+        return commentsLiveData
     }
 
     fun getStringLiveData() : LiveData<ObserveWrapper<String>>{

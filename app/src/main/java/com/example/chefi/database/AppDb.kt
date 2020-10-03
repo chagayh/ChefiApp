@@ -19,13 +19,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.type.Date
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -219,9 +217,8 @@ class AppDb {
             directions = direction,
             ingredients = ingredients,
             status = status,
-            owner = currUser?.uid,
-            timestamp = null
-        )    // TODO
+            owner = currUser?.uid
+        )   
 
         if (userRecipes == null) {
             userRecipes = ArrayList()
@@ -265,6 +262,12 @@ class AppDb {
         Log.d(TAG_APP_DB, "usersList.size = ${notificationList.size}")
 //        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
         LiveDataHolder.getNotificationsMutableLiveData().value = ObserveWrapper(notificationList)
+    }
+
+    private fun postCommentsList(commentsList: ArrayList<Comment>) {
+        Log.d(TAG_APP_DB, "usersList.size = ${commentsList.size}")
+//        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
+        LiveDataHolder.getCommentsMutableLiveData().value = ObserveWrapper(commentsList)
     }
 
     // TODO add on success listener and set observer
@@ -600,6 +603,28 @@ class AppDb {
         }
     }
 
+    fun loadRecipesComments(recipe: Recipe) {
+        val recipeCommentsList = recipe.comments
+        val tasks = ArrayList<Task<DocumentSnapshot>>()
+        if (recipeCommentsList != null) {
+            val commentsList = ArrayList<Comment>()
+            for (commentRef in recipeCommentsList) {
+                val docTask = commentRef.get()
+                tasks.add(docTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                .addOnSuccessListener { value ->
+                    for (commentDoc in value) {
+                        val comment = commentDoc.toObject<Comment>()
+                        if (comment != null) {
+                            commentsList.add(comment)
+                        }
+                    }
+                    postCommentsList(commentsList)
+                }
+        }
+    }
+
     fun updateUserFields(fieldName: String, content: String) {
         when (fieldName) {
             "aboutMe" -> currUser?.aboutMe = content
@@ -611,6 +636,19 @@ class AppDb {
         }
         updateUserInUsersCollection(null)
     }
+
+    // TODO - check if needed
+//    fun updateRecipeFields(recipe: Recipe, fieldName: String, content: String) {
+//        when (fieldName) {
+//            "likes" -> recipe.likes = recipe.likes?.plus(1)
+//            "name" -> {
+//                recipe.name = content
+//                currUser?.name_lowerCase = content.toLowerCase(Locale.ROOT)
+//            }
+//            "imageUrl" -> currUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
+//        }
+//        updateRecipeInRecipesCollection(recipe)
+//    }
 
     fun addUserToFollowers(otherUser: User) {
         val currUserId = currUser?.uid

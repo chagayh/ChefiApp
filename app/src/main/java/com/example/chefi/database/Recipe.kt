@@ -4,6 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ServerTimestamp
+import java.util.*
+import kotlin.collections.ArrayList
 
 data class Recipe(
     var uid: String? = null,
@@ -15,7 +18,8 @@ data class Recipe(
     var ingredients: ArrayList<String>? = null, // TODO - new
     var status: Int? = null, // TODO - new
     var owner: String? = null, // TODO - new
-    var timestamp: String? = null // TODO - new
+    @ServerTimestamp
+    var timestamp: Date? = null // TODO - new
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

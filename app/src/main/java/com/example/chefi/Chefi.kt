@@ -178,6 +178,10 @@ class Chefi : Application() {
         appDb.getUser(userId)
     }
 
+    fun loadRecipeComments(recipe: Recipe) {
+        appDb.loadRecipesComments(recipe)
+    }
+
     fun getUserRecipes() : ArrayList<Recipe>? {
         return appDb.getUserRecipes()
     }
