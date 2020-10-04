@@ -926,8 +926,8 @@ class AppDb {
         userFavorites!!.add(dbRecipe)
     }
 
-    fun removeRecipeFromFavorites(dbRecipe: DbRecipe) {
-        val recipeId = dbRecipe.uid
+    fun removeRecipeFromFavorites(appRecipe: AppRecipe) {
+        val recipeId = appRecipe.uid
 
         if (recipeId != null) {
             firestore.collection(
@@ -957,8 +957,8 @@ class AppDb {
         if (userFavorites == null) {
             Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list = null")
         }
-        if (userFavorites?.contains(dbRecipe)!!) {
-            userFavorites!!.remove(dbRecipe)
+        if (userFavorites?.contains(appRecipe)!!) {
+            userFavorites!!.remove(appRecipe)
         } else {
             Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list not contains")
         }

@@ -211,8 +211,8 @@ class Chefi : Application() {
         appDb.addRecipeToFavorites(dbRecipe)
     }
 
-    fun removeRecipeFromFavorites(dbRecipe: DbRecipe) {
-        appDb.removeRecipeFromFavorites(dbRecipe)
+    fun removeRecipeFromFavorites(appRecipe: AppRecipe) {
+        appDb.removeRecipeFromFavorites(appRecipe)
     }
 
     fun addUserToFollowers(otherDbUser: DbUser) {
