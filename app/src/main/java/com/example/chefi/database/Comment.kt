@@ -8,5 +8,6 @@ data class Comment (
     var name: String? = null,
     var commentContent: String? = null,
     @ServerTimestamp
-    var timestamp: Date? = null
+    var timestamp: Date? = null,
+    var uid: String? = null
 )

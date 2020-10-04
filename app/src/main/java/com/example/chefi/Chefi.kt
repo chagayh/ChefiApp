@@ -175,8 +175,16 @@ class Chefi : Application() {
         appDb.getUser(userId)
     }
 
-    fun loadRecipeComments(dbRecipe: DbRecipe) {
-        appDb.loadRecipesComments(dbRecipe)
+    fun loadRecipeComments(appRecipe: AppRecipe) {
+        appDb.loadRecipesComments(appRecipe)
+    }
+
+    fun addComment(comment: Comment, recipeId: String) {
+        appDb.addComment(comment, recipeId)
+    }
+
+    fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String, content: String?) {
+        appDb.updateRecipeFields(appRecipe, fieldName, content)
     }
 
     fun getUserRecipes() : ArrayList<AppRecipe>? {
@@ -207,8 +215,8 @@ class Chefi : Application() {
         appDb.unFollow(dbUserToUnFollow)
     }
 
-    fun addRecipeToFavorites(dbRecipe: DbRecipe) {
-        appDb.addRecipeToFavorites(dbRecipe)
+    fun addRecipeToFavorites(appRecipe: AppRecipe) {
+        appDb.addRecipeToFavorites(appRecipe)
     }
 
     fun removeRecipeFromFavorites(appRecipe: AppRecipe) {

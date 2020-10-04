@@ -38,7 +38,7 @@
     //Firestore collections keys
     <string name="usersCollection">users_collection</string>
     <string name="recipesCollection">recipes_collection</string>
-    <string name="recipesCommentsCollection">recipes_comments_collection</string>
+    <string name="commentsCollection">recipes_comments_collection</string>
 
     //Firebase Storage keys
     <string name="imageUpload">uploads/images_upload</string>
@@ -82,5 +82,18 @@
     <string name="keyCapturedPhotoUri">CAPTURED_PHOTO_URI_KEY</string>
     <string name="keyPathPhoto">CAPTURED_PHOTO_PATH_KEY</string>
     <string name="yitzchak">yitzchak</string>
+
+    // Recipe fields keys
+    <string name="keyUid">uid</string>
+    <string name="keyDescription">description</string>
+    <string name="keyLikes">likes</string>
+    <string name="keyImageUrl">imageUrl</string>
+    <string name="keyComments">comments</string>
+    <string name="keyDirections">directions</string>
+    <string name="keyIngredients">ingredients</string>
+    <string name="keyStatus">status</string>
+    <string name="keyTimestamp">timestamp</string>
+
+
 
 </resources>

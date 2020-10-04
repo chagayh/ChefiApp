@@ -26,7 +26,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
         get() = applicationContext as Chefi
 
     private val TAG_ADD_RECIPE_WORKER = "addRecipeWorker"
-    private var observer : Observer<ObserveWrapper<DbRecipe>>? = null
+    private var observer : Observer<ObserveWrapper<AppRecipe>>? = null
 
     override fun startWork(): ListenableFuture<Result> {
         // 1. here we create the future and store the callback for later use
@@ -45,7 +45,6 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
         val userType = object : TypeToken<AppRecipe>() {}.type
 
         val recipeDirections = Gson().fromJson<ArrayList<String>>(recipeDirectionsAsString, listType)
-        val owner = Gson().fromJson<AppRecipe>(ownerAsString, userType)
         val recipeIngredients = Gson().fromJson<ArrayList<String>>(recipeIngredientsAsString, listType)
         val recipeImageUrl = inputData.getString(appContext.getString(R.string.keyRecipeImageUrl))
         val recipeName = inputData.getString(appContext.getString(R.string.keyRecipeName))
@@ -61,13 +60,21 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun setObserver() {
-        observer = Observer<ObserveWrapper<DbRecipe>> { value ->
+        observer = Observer<ObserveWrapper<AppRecipe>> { value ->
             Log.d(TAG_ADD_RECIPE_WORKER, "in set observer")
             val content = value.getContentIfNotHandled()
             if (content != null) {
-                val type = object: TypeToken<DbRecipe>(){}.type
+                val gson = Gson()
                 val outPutData = Data.Builder()
-                    .putString(appContext.getString(R.string.keyRecipeType), Gson().toJson(content))
+                    .putString(appContext.getString(R.string.keyUid), content.uid)
+                    .putString(appContext.getString(R.string.keyDescription), content.description)
+                    .putInt(appContext.getString(R.string.keyLikes), content.likes!!)
+                    .putString(appContext.getString(R.string.keyImageUrl), content.imageUrl)
+                    .putString(appContext.getString(R.string.keyComments), gson.toJson(content.comments))
+                    .putString(appContext.getString(R.string.keyDirections), gson.toJson(content.directions))
+                    .putString(appContext.getString(R.string.keyIngredients), gson.toJson(content.ingredients))
+                    .putInt(appContext.getString(R.string.keyStatus), content.status!!)
+                    .putString(appContext.getString(R.string.keyTimestamp), gson.toJson(content.timestamp))
                     .build()
                 LiveDataHolder.getRecipeLiveData().removeObserver(observer!!)
                 Log.d(TAG_ADD_RECIPE_WORKER, "in set observer recipe = $value")

@@ -16,9 +16,11 @@ import com.example.chefi.Chefi
 import com.example.chefi.R
 import java.util.*
 import androidx.navigation.fragment.findNavController
-import com.example.chefi.database.DbRecipe
+import com.example.chefi.database.AppRecipe
+import com.google.firebase.firestore.DocumentReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -60,6 +62,7 @@ class RecipeFragment : Fragment() {
         addBtn = view.findViewById(R.id.addBtn)
 
         addBtn.setOnClickListener {
+            Log.d(TAG_RECIPE_FRAGMENT, "${arrayListOf(textViewDirections.text.toString())}")
             val workId = appContext.addRecipe(textViewName.text.toString(),
                                               imageUrl,
                                               arrayListOf(textViewDirections.text.toString()),
@@ -77,12 +80,40 @@ class RecipeFragment : Fragment() {
             { value ->
                 if (value.outputData.size() != 0) {
                     Log.d(TAG_RECIPE_FRAGMENT, "value.outputData = ${value.outputData}")
-                    val recipeAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipeType))
-                    val recipeType = object : TypeToken<DbRecipe>() {}.type
+                    val gson = Gson()
 
-                    val returnedRecipe = Gson().fromJson<DbRecipe>(recipeAsJson, recipeType)
-                    Log.d("change_url", "in recipeFragment in setWorkObserver, recipe image url = ${returnedRecipe.imageUrl}")
-                    Toast.makeText(appContext, "recipe_profile ${returnedRecipe.description} CREATED", Toast.LENGTH_SHORT)
+                    val uid = value.outputData.getString(appContext.getString(R.string.keyUid))
+                    val description = value.outputData.getString(appContext.getString(R.string.keyDescription))
+                    val likes = value.outputData.getInt(appContext.getString(R.string.keyLikes), 0)
+                    val imageUrl = value.outputData.getString(appContext.getString(R.string.keyImageUrl))
+                    val commentsAsJson = value.outputData.getString(appContext.getString(R.string.keyComments))
+                    val directionsAsJson = value.outputData.getString(appContext.getString(R.string.keyUid))
+                    val ingredientsAsJson = value.outputData.getString(appContext.getString(R.string.keyUid))
+                    val status = value.outputData.getInt(appContext.getString(R.string.keyStatus), 3)
+                    val timeStampAsJson = value.outputData.getString(appContext.getString(R.string.keyTimestamp))
+
+                    val stringArrayListType = object : TypeToken<ArrayList<String>>() {}.type
+                    val referenceArrayListType = object : TypeToken<ArrayList<DocumentReference>>() {}.type
+                    val dateType = object : TypeToken<Date>() {}.type
+
+                    val appRecipeReturned = AppRecipe(uid=uid,
+                                                      description=description,
+                                                      likes=likes,
+                                                      imageUrl=imageUrl,
+                                                      comments=gson.fromJson(commentsAsJson, referenceArrayListType),
+                                                      directions=arrayListOf(textViewDirections.text.toString()),
+                                                      ingredients=arrayListOf(textViewIngredients.text.toString()),
+                                                      status=status,
+                                                      owner=null,   // curr user own the recipe
+                                                      timestamp=gson.fromJson(timeStampAsJson, dateType))
+
+
+//                    val recipeAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipeType))
+//                    val recipeType = object : TypeToken<AppRecipe>() {}.type
+//
+//                    val returnedRecipe = Gson().fromJson<AppRecipe>(recipeAsJson, recipeType)
+                    Log.d("change_url", "in recipeFragment in setWorkObserver, recipe image url = ${appRecipeReturned.imageUrl}")
+                    Toast.makeText(appContext, "recipe_profile ${appRecipeReturned.description} CREATED", Toast.LENGTH_SHORT)
                         .show()
                     // TODO - maybe add a preview page
                     findNavController().navigate(R.id.addFragment)

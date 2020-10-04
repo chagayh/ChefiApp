@@ -93,7 +93,6 @@ class AppDb {
     private fun initCurrUser(){
         currDbUser = null
         userDbRecipes = null
-        userFavorites = null
         dbUserFollowers = null
         dbUserFollowing = null
         userNotification = null
@@ -116,7 +115,6 @@ class AppDb {
                 if (user != null) {
                     currDbUser = user
                     userDbRecipes = null
-                    userFavorites = null
                     dbUserFollowers = null
                     dbUserFollowing = null
                     userNotification = null
@@ -202,6 +200,16 @@ class AppDb {
         }
     }
 
+    private fun updateRecipeInRecipesCollection(dbRecipe: DbRecipe) {
+        // update the user in the db
+        val recipeId = dbRecipe.uid
+        if (recipeId != null) {
+            firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
+                .document(recipeId)
+                .set(dbRecipe, SetOptions.merge())
+        }
+    }
+
     private fun addRecipeToLocalCurrUserObject(document: DocumentReference) {
         if (currDbUser == null) {
             Log.e(TAG_APP_DB, "current user = null")
@@ -221,7 +229,13 @@ class AppDb {
         status: Int?
     )  {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
+        val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
+
         val newDocument = firestore.collection(recipeCollectionPath).document()
+        val userDocument = firestore.collection(usersCollectionPath)
+            .document(currDbUser?.uid!!)
+        Log.d(TAG_APP_DB, "userDocument = $userDocument")
+
         val dbRecipe = DbRecipe(
             uid = newDocument.id,
             description = recipeName,
@@ -231,7 +245,7 @@ class AppDb {
             directions = direction,
             ingredients = ingredients,
             status = status,
-            owner = currDbUser?.uid
+            owner = userDocument
         )
 
         val appRecipe = AppRecipe(
@@ -259,7 +273,7 @@ class AppDb {
                 userAppRecipes?.add(appRecipe)
                 addRecipeToLocalCurrUserObject(newDocument)
                 updateUserInUsersCollection(null)
-                postSingleRecipe(dbRecipe)    // the worker observe to this post
+                postSingleRecipe(appRecipe)    // the worker observe to this post
 //                Log.d(TAG_APP_DB, "in addRecipeToRecipesCollection userRecipes.size = ${userRecipes!!.size}")
             }
             .addOnFailureListener {
@@ -267,9 +281,9 @@ class AppDb {
             }
     }
 
-    private fun postSingleRecipe(dbRecipe: DbRecipe) {
+    private fun postSingleRecipe(appRecipe: AppRecipe) {
 //        LiveDataHolder.getRecipeMutableLiveData().postValue(recipe)
-        LiveDataHolder.getRecipeMutableLiveData().value = ObserveWrapper(dbRecipe)
+        LiveDataHolder.getRecipeMutableLiveData().value = ObserveWrapper(appRecipe)
     }
 
     private fun postUser(dbUser: DbUser?) {
@@ -337,23 +351,18 @@ class AppDb {
     }
 
     private fun deleteRecipeFromUserDocument(recipe: AppRecipe) {
-        firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
+        val recipeRef = firestore
+            .collection(Chefi.getCon().getString(R.string.recipesCollection))
             .document(recipe.uid!!)
-            .get()
-            .addOnSuccessListener { documentSnapShot ->
-                if (documentSnapShot != null) {
-                    val recipeRef = documentSnapShot.reference
-                    if (currDbUser?.recipes?.contains(recipeRef)!!) {
-                        currDbUser?.recipes?.remove(recipeRef)
-                    } else {
-                        Log.d(
-                            TAG_APP_DB,
-                            "in deleteRecipeFromUserDocument currUser?.recipes? not contains recipe"
-                        )
-                    }
-                    updateUserInUsersCollection(null)
-                }
-            }
+        if (currDbUser?.recipes?.contains(recipeRef)!!) {
+            currDbUser?.recipes?.remove(recipeRef)
+        } else {
+            Log.d(
+                TAG_APP_DB,
+                "in deleteRecipeFromUserDocument currUser?.recipes? not contains recipe"
+            )
+        }
+        updateUserInUsersCollection(null)
     }
 
     private fun deleteRecipeFromCollection(recipe: AppRecipe) {
@@ -372,22 +381,16 @@ class AppDb {
     fun uploadImageToStorage(uri: Uri, fileExtension: String?) {
         val imageStorageId = System.currentTimeMillis().toString() + "." + fileExtension
         val fileRef = storageRef.child(imageStorageId)
-//        val progressBar = ProgressBar(appContext)
-//        progressBar.display     // TODO - check to switch to visibility
 
         // upload the file to firebase storage
         fileRef.putFile(uri)
             .addOnSuccessListener { uploadTask ->
-//                Toast.makeText(appContext, "File uploaded", Toast.LENGTH_SHORT)
-//                    .show()
-//                progressBar.visibility = View.GONE
                 val downloadUri = uploadTask.storage.downloadUrl
                 downloadUri.addOnSuccessListener {
                     if (downloadUri.isSuccessful) {
                         val url = downloadUri.result.toString()
                         Log.d(TAG_APP_DB, "url upload image - $url")
                         Log.d("change_url", "in appDb in uploadImageToStorage image url = $url")
-//                        LiveDataHolder.getStringMutableLiveData().postValue(url)
                         LiveDataHolder
                             .getStringMutableLiveData()
                             .value = ObserveWrapper(url)   // = .postValue(url)
@@ -483,7 +486,6 @@ class AppDb {
                     userAppFavorites = userAppRecipesList
                 }
             }
-
         } else {
             for (recipe in userDbRecipesList) {
                 val appRecipe = AppRecipe(recipe.uid,
@@ -500,38 +502,6 @@ class AppDb {
             }
         }
         postAppRecipes(userAppRecipesList)
-//        val tasks = ArrayList<Task<DocumentSnapshot>>()
-//        val visited = ArrayList<String>()
-//        for (recipe in userDbRecipesList) {
-//            val docTask = firestore
-//                .collection(Chefi.getCon().getString(R.string.usersCollection))
-//                .document(recipe.owner!!)
-//                .get()
-//            tasks.add(docTask)
-//        }
-//        Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
-//            .addOnSuccessListener { value ->
-//                for (docSnapShot in value) {
-//                    val user = docSnapShot?.toObject<DbUser>()
-//                    for (recipe in userDbRecipesList) {
-//                        if (recipe.owner == user?.uid && !(visited.contains(recipe.owner!!))) {
-//                            visited.add(user?.uid!!)
-//                            val appRecipe = AppRecipe(recipe.uid,
-//                                recipe.description,
-//                                recipe.likes,
-//                                recipe.imageUrl,
-//                                recipe.comments,
-//                                recipe.directions,
-//                                recipe.ingredients,
-//                                recipe.status,
-//                                user,
-//                                recipe.timestamp)
-//                            userAppRecipesList.add(appRecipe)
-//                        }
-//                    }
-//                    Log.d(TAG_APP_DB, "in loadOwnersToRecipe, type = $type userAppRecipesList = ${userAppRecipesList.size}")
-//                }
-//            }
     }
 
     private fun loadRecipesFromReferenceList(recipesList: ArrayList<DocumentReference>?,
@@ -721,8 +691,34 @@ class AppDb {
         }
     }
 
-    fun loadRecipesComments(dbRecipe: DbRecipe) {
-        val recipeCommentsList = dbRecipe.comments
+    fun addComment(comment: Comment, recipeId: String) {
+        // TODO - add reference to arrayList in recipe.comments, add comment to collection
+        firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+            .document(recipeId)
+            .get()
+            .addOnSuccessListener { documentSnapShot ->
+                if (documentSnapShot != null) {
+                    val dbRecipe = documentSnapShot.toObject<DbRecipe>()
+                    if (dbRecipe != null) {
+                        val newCommentRef = firestore
+                            .collection(Chefi.getCon().getString(R.string.commentsCollection))
+                            .document()
+                        comment.uid = newCommentRef.id
+                        newCommentRef
+                            .set(comment)
+                            .addOnSuccessListener {
+                                Log.d(TAG_APP_DB, "in addComment, comment added")
+                                dbRecipe.comments?.add(newCommentRef)
+                            }
+                    }
+                } else {
+                    Log.d(TAG_APP_DB, "in addComment, can't load recipe")
+                }
+            }
+    }
+
+    fun loadRecipesComments(appRecipe: AppRecipe) {
+        val recipeCommentsList = appRecipe.comments
         val tasks = ArrayList<Task<DocumentSnapshot>>()
         if (recipeCommentsList != null) {
             val commentsList = ArrayList<Comment>()
@@ -755,17 +751,25 @@ class AppDb {
         updateUserInUsersCollection(null)
     }
 
-    fun updateRecipeFields(dbRecipe: DbRecipe, fieldName: String, content: String) {
+    fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String, content: String?) {
+        val recipeFromList = userAppRecipes?.find { it.uid == appRecipe.uid }
+        recipeFromList?.likes = recipeFromList?.likes?.plus(1)
         // TODO - updates options - like, comment per recipe
-        when (fieldName) {
-            "likes" -> dbRecipe.likes = dbRecipe.likes?.plus(1)
-            "name" -> {
-                dbRecipe.description = content
-                currDbUser?.name_lowerCase = content.toLowerCase(Locale.ROOT)
+        val recipeId = appRecipe.uid
+        firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
+            .document(recipeId!!)
+            .get()
+            .addOnSuccessListener { documentSnapShot ->
+                val recipe = documentSnapShot.toObject<DbRecipe>()
+                val dbRecipeFromList = userDbRecipes?.find { it.uid == recipe?.uid }
+                dbRecipeFromList?.likes = dbRecipeFromList?.likes?.plus(1)
+                when (fieldName) {
+                    "likes" -> recipe?.likes = appRecipe.likes
+                }
+                if (recipe != null) {
+                    updateRecipeInRecipesCollection(recipe)
+                }
             }
-            "imageUrl" -> currDbUser?.imageUrl = content  // TODO - if changed maybe delete the old one ?
-        }
-//        updateRecipeInRecipesCollection(recipe)
     }
 
     fun addUserToFollowers(otherDbUser: DbUser) {
@@ -773,10 +777,8 @@ class AppDb {
         val otherUserId = otherDbUser.uid
 
         if (currUserId != null && otherUserId != null) {
-            firestore.collection(
-                Chefi.getCon()
-                    .getString(R.string.usersCollection)
-            )
+            firestore.collection(Chefi.getCon()
+                    .getString(R.string.usersCollection))
                 .document(currUserId)
                 .get()
                 .addOnSuccessListener { documentSnapShot ->
@@ -798,26 +800,18 @@ class AppDb {
         // TODO: check duplicate, write to DB
         Log.e("appDb", dbUserToFollow.name.toString())
         // add user to the firestore
-
-        firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+        val userToFollowRef = firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
             .document(dbUserToFollow.uid!!)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot != null) {
-                    if (currDbUser?.following != null) {
-                        if (!currDbUser?.following?.contains(documentSnapshot.reference)!!){
-                            currDbUser?.following?.add(documentSnapshot.reference)   // TODO check
-                        }
-                    } else {
-                        currDbUser?.following = ArrayList()
-                        currDbUser?.following?.add(documentSnapshot.reference)
-                    }
-                    updateUserInUsersCollection(null)
-                    addUserToFollowers(dbUserToFollow)
-                } else {
-                    Log.d(TAG_APP_DB, "in follow value data: null")
-                }
+        if (currDbUser?.following != null) {
+            if (!currDbUser?.following?.contains(userToFollowRef)!!){
+                currDbUser?.following?.add(userToFollowRef)   // TODO check
             }
+        } else {
+            currDbUser?.following = ArrayList()
+            currDbUser?.following?.add(userToFollowRef)
+        }
+        updateUserInUsersCollection(null)
+        addUserToFollowers(dbUserToFollow)
 
         if (dbUserFollowing == null) {
             dbUserFollowing = ArrayList()
@@ -825,6 +819,33 @@ class AppDb {
         if (!(dbUserFollowing?.contains(dbUserToFollow))!!) {
             dbUserFollowing!!.add(dbUserToFollow)
         }
+
+//        firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+//            .document(dbUserToFollow.uid!!)
+//            .get()
+//            .addOnSuccessListener { documentSnapshot ->
+//                if (documentSnapshot != null) {
+//                    if (currDbUser?.following != null) {
+//                        if (!currDbUser?.following?.contains(documentSnapshot.reference)!!){
+//                            currDbUser?.following?.add(documentSnapshot.reference)   // TODO check
+//                        }
+//                    } else {
+//                        currDbUser?.following = ArrayList()
+//                        currDbUser?.following?.add(documentSnapshot.reference)
+//                    }
+//                    updateUserInUsersCollection(null)
+//                    addUserToFollowers(dbUserToFollow)
+//                } else {
+//                    Log.d(TAG_APP_DB, "in follow value data: null")
+//                }
+//            }
+//
+//        if (dbUserFollowing == null) {
+//            dbUserFollowing = ArrayList()
+//        }
+//        if (!(dbUserFollowing?.contains(dbUserToFollow))!!) {
+//            dbUserFollowing!!.add(dbUserToFollow)
+//        }
     }
 
     fun getUser(userId: String?) {
@@ -846,121 +867,184 @@ class AppDb {
         val otherUserId = dbUserToUnFollow.uid
 
         if (currUserId != null && otherUserId != null) {
-            firestore.collection(
-                Chefi.getCon()
-                    .getString(R.string.usersCollection)
-            )
+            val userRef = firestore
+                .collection(Chefi.getCon().getString(R.string.usersCollection))
                 .document(otherUserId)
-                .get()
-                .addOnSuccessListener { documentSnapShot ->
-                    if (documentSnapShot != null) {
-                        val userRef = documentSnapShot.reference
-                        if (currDbUser?.following == null) {
-                            Log.d(TAG_APP_DB, "in unFollow currUser.following == null")
-                        }
-                        if (currDbUser?.following!!.contains(userRef)) {
-                            currDbUser?.following!!.remove(userRef)
-                        } else {
-                            Log.d(TAG_APP_DB, "in unFollow currUser.following not contains")
-                        }
-                    }
-                    // remove currUser from other user followers
-                    firestore.collection(
-                        Chefi.getCon()
-                            .getString(R.string.usersCollection)
-                    )
-                        .document(currUserId)
-                        .get()
-                        .addOnSuccessListener {
-                            val userRef = documentSnapShot.reference
-                            if (dbUserToUnFollow.followers == null) {
-                                Log.d(TAG_APP_DB, "in unFollow userToUnFollow.followers == null")
-                            }
-                            if (dbUserToUnFollow.followers!!.contains(userRef)) {
-                                dbUserToUnFollow.followers!!.remove(userRef)
-                            } else {
-                                Log.d(
-                                    TAG_APP_DB,
-                                    "in unFollow userToUnFollow.followers not contains"
-                                )
-                            }
-                        }
-                    updateUserInUsersCollection(dbUserToUnFollow)
-                    updateUserInUsersCollection(currDbUser)
-                }
-        }
-        if (dbUserFollowing == null) {
-            return
-        }
-        if (dbUserFollowing!!.contains(dbUserToUnFollow)) {
-            dbUserFollowing!!.remove(dbUserToUnFollow)
-        } else {
-            Log.d(TAG_APP_DB, "in unFollow local followers list not contains")
+            if (currDbUser?.following == null) {
+                Log.d(TAG_APP_DB, "in unFollow currUser.following == null")
+            }
+            if (currDbUser?.following!!.contains(userRef)) {
+                currDbUser?.following!!.remove(userRef)
+            } else {
+                Log.d(TAG_APP_DB, "in unFollow currUser.following not contains")
+            }
+
+            val currUserRef = firestore
+                .collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(currUserId)
+            if (dbUserToUnFollow.followers == null) {
+                Log.d(TAG_APP_DB, "in unFollow userToUnFollow.followers == null")
+            }
+            if (dbUserToUnFollow.followers!!.contains(currUserRef)) {
+                dbUserToUnFollow.followers!!.remove(currUserRef)
+            } else {
+                Log.d(
+                    TAG_APP_DB,
+                    "in unFollow userToUnFollow.followers not contains"
+                )
+            }
+            updateUserInUsersCollection(dbUserToUnFollow)
+            updateUserInUsersCollection(currDbUser)
+
+            if (dbUserFollowing == null) {
+                return
+            }
+            if (dbUserFollowing!!.contains(dbUserToUnFollow)) {
+                dbUserFollowing!!.remove(dbUserToUnFollow)
+            } else {
+                Log.d(TAG_APP_DB, "in unFollow local followers list not contains")
+            }
+
+//            firestore.collection(
+//                Chefi.getCon()
+//                    .getString(R.string.usersCollection)
+//            )
+//                .document(otherUserId)
+//                .get()
+//                .addOnSuccessListener { documentSnapShot ->
+//                    if (documentSnapShot != null) {
+//                        val userRef = documentSnapShot.reference
+//                        if (currDbUser?.following == null) {
+//                            Log.d(TAG_APP_DB, "in unFollow currUser.following == null")
+//                        }
+//                        if (currDbUser?.following!!.contains(userRef)) {
+//                            currDbUser?.following!!.remove(userRef)
+//                        } else {
+//                            Log.d(TAG_APP_DB, "in unFollow currUser.following not contains")
+//                        }
+//                    }
+//                    // remove currUser from other user followers
+//                    firestore.collection(
+//                        Chefi.getCon()
+//                            .getString(R.string.usersCollection)
+//                    )
+//                        .document(currUserId)
+//                        .get()
+//                        .addOnSuccessListener {
+//                            val userRef = documentSnapShot.reference
+//                            if (dbUserToUnFollow.followers == null) {
+//                                Log.d(TAG_APP_DB, "in unFollow userToUnFollow.followers == null")
+//                            }
+//                            if (dbUserToUnFollow.followers!!.contains(userRef)) {
+//                                dbUserToUnFollow.followers!!.remove(userRef)
+//                            } else {
+//                                Log.d(
+//                                    TAG_APP_DB,
+//                                    "in unFollow userToUnFollow.followers not contains"
+//                                )
+//                            }
+//                        }
+//                    updateUserInUsersCollection(dbUserToUnFollow)
+//                    updateUserInUsersCollection(currDbUser)
+//                }
+//        }
+//        if (dbUserFollowing == null) {
+//            return
+//        }
+//        if (dbUserFollowing!!.contains(dbUserToUnFollow)) {
+//            dbUserFollowing!!.remove(dbUserToUnFollow)
+//        } else {
+//            Log.d(TAG_APP_DB, "in unFollow local followers list not contains")
+//        }
         }
     }
 
-    fun addRecipeToFavorites(dbRecipe: DbRecipe) {
-        val recipeId = dbRecipe.uid
+    fun addRecipeToFavorites(appRecipe: AppRecipe) {
+        val recipeId = appRecipe.uid
 
         if (recipeId != null) {
-            firestore.collection(
-                Chefi.getCon()
-                    .getString(R.string.recipesCollection)
-            )
-                .document(recipeId)
-                .get()
-                .addOnSuccessListener { documentSnapShot ->
-                    if (documentSnapShot != null) {
-                        val recipeRef = documentSnapShot.reference
-                        if (currDbUser?.favorites == null) {
-                            currDbUser?.favorites = ArrayList()
-                        }
-                        currDbUser?.favorites!!.add(recipeRef)
-                    }
-                    updateUserInUsersCollection(null)
-                }
+            val recipeRef =
+                firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
+                    .document(recipeId)
+            if (currDbUser?.favorites == null) {
+                currDbUser?.favorites = ArrayList()
+            }
+            currDbUser?.favorites!!.add(recipeRef)
+            updateUserInUsersCollection(null)
+            if (userAppFavorites == null) {
+                userAppFavorites = ArrayList()
+            }
+            userAppFavorites!!.add(appRecipe)
+
+//            firestore.collection(Chefi.getCon()
+//                    .getString(R.string.recipesCollection)).document(recipeId)
+//                .get()
+//                .addOnSuccessListener { documentSnapShot ->
+//                    if (documentSnapShot != null) {
+//                        val recipeRef = documentSnapShot.reference
+//                        if (currDbUser?.favorites == null) {
+//                            currDbUser?.favorites = ArrayList()
+//                        }
+//                        currDbUser?.favorites!!.add(recipeRef)
+//                    }
+//                    updateUserInUsersCollection(null)
+//                }
+//        }
+//        if (userFavorites == null) {
+//            userFavorites = ArrayList()
+//        }
+//        userFavorites!!.add(dbRecipe)
         }
-        if (userFavorites == null) {
-            userFavorites = ArrayList()
-        }
-        userFavorites!!.add(dbRecipe)
     }
 
     fun removeRecipeFromFavorites(appRecipe: AppRecipe) {
         val recipeId = appRecipe.uid
 
         if (recipeId != null) {
-            firestore.collection(
-                Chefi.getCon()
-                    .getString(R.string.recipesCollection)
-            )
-                .document(recipeId)
-                .get()
-                .addOnSuccessListener { documentSnapShot ->
-                    if (documentSnapShot != null) {
-                        val recipeRef = documentSnapShot.reference
-                        if (currDbUser?.favorites == null) {
-                            Log.d(TAG_APP_DB, "in addRecipeToFavorites currUser?.favorites == null")
-                        }
-                        if (currDbUser?.favorites!!.contains(recipeRef)) {
-                            currDbUser?.favorites!!.remove(recipeRef)
-                        } else {
-                            Log.d(
-                                TAG_APP_DB,
-                                "in addRecipeToFavorites currUser?.favorites not contains"
-                            )
-                        }
-                    }
-                    updateUserInUsersCollection(null)
-                }
-        }
-        if (userFavorites == null) {
-            Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list = null")
-        }
-        if (userFavorites?.contains(appRecipe)!!) {
-            userFavorites!!.remove(appRecipe)
-        } else {
-            Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list not contains")
+            val recipeRef = firestore.collection(Chefi.getCon().getString(R.string.recipesCollection)).document(recipeId)
+            if (currDbUser?.favorites == null) {
+                Log.d(TAG_APP_DB, "in addRecipeToFavorites currUser?.favorites == null")
+            }
+            if (currDbUser?.favorites!!.contains(recipeRef)) {
+                currDbUser?.favorites!!.remove(recipeRef)
+            } else {
+                Log.d(
+                    TAG_APP_DB,
+                    "in addRecipeToFavorites currUser?.favorites not contains"
+                )
+            }
+            updateUserInUsersCollection(null)
+            if (userAppFavorites == null) {
+                Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list = null")
+            }
+            if (userAppFavorites?.contains(appRecipe)!!) {
+                userAppFavorites!!.remove(appRecipe)
+            } else {
+                Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list not contains")
+            }
+//            firestore.collection(
+//                Chefi.getCon()
+//                    .getString(R.string.recipesCollection)
+//            )
+//                .document(recipeId)
+//                .get()
+//                .addOnSuccessListener { documentSnapShot ->
+//                    if (documentSnapShot != null) {
+//                        val recipeRef = documentSnapShot.reference
+//                        if (currDbUser?.favorites == null) {
+//                            Log.d(TAG_APP_DB, "in addRecipeToFavorites currUser?.favorites == null")
+//                        }
+//                        if (currDbUser?.favorites!!.contains(recipeRef)) {
+//                            currDbUser?.favorites!!.remove(recipeRef)
+//                        } else {
+//                            Log.d(
+//                                TAG_APP_DB,
+//                                "in addRecipeToFavorites currUser?.favorites not contains"
+//                            )
+//                        }
+//                    }
+//                    updateUserInUsersCollection(null)
+//                }
         }
     }
 

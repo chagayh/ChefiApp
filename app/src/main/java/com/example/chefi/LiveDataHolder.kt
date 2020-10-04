@@ -20,8 +20,8 @@ object LiveDataHolder {
         MutableLiveData<ObserveWrapper<MutableList<AppRecipe>>>()
     }
 
-    private val recipeLiveData : MutableLiveData<ObserveWrapper<DbRecipe>> by lazy {
-        MutableLiveData<ObserveWrapper<DbRecipe>>()
+    private val recipeLiveData : MutableLiveData<ObserveWrapper<AppRecipe>> by lazy {
+        MutableLiveData<ObserveWrapper<AppRecipe>>()
     }
 
     private val stringLiveData : MutableLiveData<ObserveWrapper<String>> by lazy {
@@ -76,11 +76,11 @@ object LiveDataHolder {
         return stringLiveData
     }
 
-    fun getRecipeLiveData() : LiveData<ObserveWrapper<DbRecipe>>{
+    fun getRecipeLiveData() : LiveData<ObserveWrapper<AppRecipe>>{
         return recipeLiveData
     }
 
-    fun getRecipeMutableLiveData() : MutableLiveData<ObserveWrapper<DbRecipe>>{
+    fun getRecipeMutableLiveData() : MutableLiveData<ObserveWrapper<AppRecipe>>{
         return recipeLiveData
     }
 
