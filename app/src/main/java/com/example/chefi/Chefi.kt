@@ -151,6 +151,10 @@ class Chefi : Application() {
         appDb.loadRecipes(user)
     }
 
+    fun loadRecipesComments(appRecipe: AppRecipe) {
+        appDb.loadRecipesComments(appRecipe)
+    }
+
     fun loadFavorites() {
         appDb.loadFavorites()
     }

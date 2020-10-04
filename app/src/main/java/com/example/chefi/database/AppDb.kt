@@ -777,22 +777,34 @@ class AppDb {
         val otherUserId = otherDbUser.uid
 
         if (currUserId != null && otherUserId != null) {
-            firestore.collection(Chefi.getCon()
-                    .getString(R.string.usersCollection))
+            val currUserRef = firestore
+                .collection(Chefi.getCon().getString(R.string.usersCollection))
                 .document(currUserId)
-                .get()
-                .addOnSuccessListener { documentSnapShot ->
-                    if (documentSnapShot != null) {
-                        val currUserRef = documentSnapShot.reference
-                        if (otherDbUser.followers == null) {
-                            otherDbUser.followers = ArrayList()
-                        }
-                        if (!otherDbUser.followers!!.contains(currUserRef)) {
-                            otherDbUser.followers!!.add(currUserRef)
-                        }
-                    }
-                    updateUserInUsersCollection(otherDbUser)
-                }
+            if (otherDbUser.followers == null) {
+                otherDbUser.followers = ArrayList()
+            }
+            if (!otherDbUser.followers!!.contains(currUserRef)) {
+                otherDbUser.followers!!.add(currUserRef)
+            }
+            updateUserInUsersCollection(otherDbUser)
+
+
+//            firestore.collection(Chefi.getCon()
+//                    .getString(R.string.usersCollection))
+//                .document(currUserId)
+//                .get()
+//                .addOnSuccessListener { documentSnapShot ->
+//                    if (documentSnapShot != null) {
+//                        val currUserRef = documentSnapShot.reference
+//                        if (otherDbUser.followers == null) {
+//                            otherDbUser.followers = ArrayList()
+//                        }
+//                        if (!otherDbUser.followers!!.contains(currUserRef)) {
+//                            otherDbUser.followers!!.add(currUserRef)
+//                        }
+//                    }
+//                    updateUserInUsersCollection(otherDbUser)
+//                }
         }
     }
 
