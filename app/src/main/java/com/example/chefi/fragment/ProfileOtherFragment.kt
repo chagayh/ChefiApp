@@ -39,10 +39,10 @@ class ProfileOtherFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dbUser = args.curDbUser
+        dbUser = args.curUser
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerViewRecipes = view.findViewById(R.id.recyclerViewRecipes)
-        recipesAdapter = ProfileAdapter(dbUser)
+        recipesAdapter = ProfileAdapter(dbUser, viewLifecycleOwner)
         recyclerViewRecipes.adapter = recipesAdapter
 //        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 //        recyclerViewRecipes.layoutManager = lm

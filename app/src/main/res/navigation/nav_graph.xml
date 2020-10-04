@@ -71,9 +71,8 @@
             app:argType="boolean" />
         <argument
             android:name="curUser"
-            app:argType="com.example.chefi.database.User"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:argType="com.example.chefi.database.DbUser"
+            app:nullable="true" />
         <action
             android:id="@+id/action_followers_to_profileOther"
             app:destination="@id/profileOtherFragment" />
@@ -87,6 +86,6 @@
             app:destination="@id/followersFragment" />
         <argument
             android:name="curUser"
-            app:argType="com.example.chefi.database.User" />
+            app:argType="com.example.chefi.database.DbUser" />
     </fragment>
 </navigation>

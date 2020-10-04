@@ -3,39 +3,55 @@ package com.example.chefi.adapters
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.database.DbRecipe
 import com.example.chefi.holders.ProfileHeaderHolder
+import com.example.chefi.database.AppRecipe
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.ProfileFragmentDirections
 import com.example.chefi.fragment.ProfileOtherFragmentDirections
 import com.squareup.picasso.Picasso
+import androidx.lifecycle.Observer
+import com.example.chefi.LiveDataHolder
+import com.example.chefi.ObserveWrapper
 
 
-class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleOwner): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var appContext: Chefi
     private val TYPE_HEADER = 0
     private val TYPE_ITEM = 1
-    private var _items: ArrayList<DbRecipe>? = ArrayList()
+    private var _recipesItems: ArrayList<AppRecipe>? = ArrayList()
+    private var _favoritesItems: ArrayList<AppRecipe>? = ArrayList()
+    private val _viewLifecycleOwner = viewLifecycleOwner
     var recipesFlag:Boolean = true
     private val otherFlag = dbUser != null
     private lateinit var tempDbUser: DbUser
 
     // public method to show a new list of items
-    fun setItems(items: ArrayList<DbRecipe>){
-        _items?.clear()
-        _items?.addAll(items)
+    fun setItems(items: ArrayList<AppRecipe>?, isFavorites: Boolean){
+        if (isFavorites){
+            _favoritesItems?.clear()
+            if (items != null) {
+                _favoritesItems?.addAll(items)
+            }
+        }else{
+            _recipesItems?.clear()
+            if (items != null) {
+                _recipesItems?.addAll(items)
+            }
+        }
         notifyDataSetChanged()
     }
 
@@ -68,7 +84,8 @@ class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<Recycler
     }
 
     override fun getItemCount(): Int {
-        val itemsSize = (_items?.size ?: 0)
+
+        val itemsSize =  if(recipesFlag){(_recipesItems?.size ?: 0)} else {(_favoritesItems?.size ?: 0)}
         return 1 + itemsSize
     }
 
@@ -94,7 +111,7 @@ class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<Recycler
         holder.aboutMeTextView.text = tempDbUser.aboutMe
         holder.nameTextView.text = tempDbUser.name
         holder.usernameTextView.text = "@" + tempDbUser.userName
-        _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
+        _recipesItems = if (otherFlag) ArrayList() else appContext.getUserRecipes()
         if(tempDbUser.imageUrl != null){
             Picasso.with(appContext)
                 .load(tempDbUser.imageUrl)
@@ -123,15 +140,30 @@ class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<Recycler
                 holder.favoritesButton.setTextColor(holder.blueColor)
                 holder.recipesButton.setTextColor(holder.greyColor)
                 recipesFlag = false
-                _items = if (otherFlag) ArrayList() else appContext.getUserFavorites()
-                notifyDataSetChanged()
+                if(!otherFlag){
+                    _favoritesItems = appContext.getUserFavorites()
+                    setItems(_favoritesItems, true)
+                }
             })
             holder.recipesButton.setOnClickListener(View.OnClickListener {
                 holder.favoritesButton.setTextColor(holder.greyColor)
                 holder.recipesButton.setTextColor(holder.blueColor)
                 recipesFlag = true
-                _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
-                notifyDataSetChanged()
+                if (otherFlag){
+                    Log.e("Profile Adapter", dbUser?.name.toString())
+                    val observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
+                        val content = value.getContentIfNotHandled()
+                        if (content != null){
+                            _recipesItems = ArrayList(content)
+                            Log.e("Profile Adapter", content.size.toString())
+                            setItems(ArrayList(content), false)
+                        }
+                    }
+                    LiveDataHolder.getRecipeListLiveData().observe(_viewLifecycleOwner, observer)
+                }
+                else {_recipesItems = appContext.getUserRecipes()
+                    notifyDataSetChanged()
+                }
             })
         }
     }
@@ -193,7 +225,7 @@ class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<Recycler
     }
 
     private fun setRecipe(holder: RecipeHolder, position: Int){
-        val item = _items?.get(position-1)
+        val item = _recipesItems?.get(position-1)
         Picasso.with(appContext)
             .load(item?.imageUrl)
             .into(holder._image)
@@ -201,7 +233,7 @@ class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<Recycler
     }
 
     private fun setRecipeButtons(holder: RecipeHolder,  position: Int){
-        val item = _items?.get(position - 1)
+        val item = _recipesItems?.get(position - 1)
         // set a listener to know when view was clicked, and tell the listener if exists
         holder.itemView.setOnClickListener {
             // TODO: open recipe_profile page
@@ -214,25 +246,19 @@ class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<Recycler
                         val alertDialog = AlertDialog.Builder(it.context)
                         alertDialog.setTitle("Would you like to delete this recipe_profile?")
                         alertDialog.setPositiveButton("Confirm") { _: DialogInterface, _: Int ->
-                            _items?.remove(item)
+                            _recipesItems?.remove(item)
                             appContext.deleteRecipe(item)
-                            _items?.let { it1 -> setItems(it1) }
+                            _recipesItems?.let { it1 -> setItems(it1, false) }
                         }
                         alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
                         alertDialog.show()
                     }else{
-                        _items?.remove(item)
+                        _favoritesItems?.remove(item)
                         appContext.removeRecipeFromFavorites(item)
-                        _items?.let { it1 -> setItems(it1) }
+                        _favoritesItems?.let { it1 -> setItems(it1, true) }
                     }
                 }
                 true
             }
         }
-
-
-        fun convertToJason(dbUser: DbUser){
-
-        }
-    }
 }

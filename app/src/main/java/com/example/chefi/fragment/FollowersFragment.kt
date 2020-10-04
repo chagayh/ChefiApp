@@ -38,7 +38,7 @@ class FollowersFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_follwers, container, false)
         val isFollowers = args.isFollowers
-        val curUser = args.curDbUser
+        val curUser = args.curUser
         recyclerViewFollowers = view.findViewById(R.id.recyclerViewFollowers)
         followersAdapter = FollowersAdapter(isFollowers, curUser)
         recyclerViewFollowers.adapter = followersAdapter

@@ -43,7 +43,7 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
         recyclerViewRecipes = view.findViewById(R.id.recyclerViewRecipes)
-        recipesAdapter = ProfileAdapter(null)
+        recipesAdapter = ProfileAdapter(null, viewLifecycleOwner)
         recyclerViewRecipes.adapter = recipesAdapter
 //        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 //        recyclerViewRecipes.layoutManager = lm
