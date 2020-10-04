@@ -66,8 +66,8 @@ class AppDb {
         return auth
     }
 
-    fun getUserRecipes() : ArrayList<DbRecipe>? {
-        return userDbRecipes
+    fun getUserRecipes() : ArrayList<AppRecipe>? {
+        return userAppRecipes
     }
 
     fun getUserFavorites() : ArrayList<DbRecipe>? {

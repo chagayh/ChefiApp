@@ -7,6 +7,7 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.AppDb
+import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbRecipe
 import com.example.chefi.database.DbUser
 import com.example.chefi.workers.AddRecipeWorker
@@ -181,7 +182,7 @@ class Chefi : Application() {
         appDb.loadRecipesComments(dbRecipe)
     }
 
-    fun getUserRecipes() : ArrayList<DbRecipe>? {
+    fun getUserRecipes() : ArrayList<AppRecipe>? {
         return appDb.getUserRecipes()
     }
 
