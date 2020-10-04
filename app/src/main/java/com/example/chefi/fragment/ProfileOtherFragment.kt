@@ -13,9 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.adapters.ProfileAdapter
+import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.lifecycle.Observer
+import com.example.chefi.LiveDataHolder
+import com.example.chefi.ObserveWrapper
 
 
 /**
@@ -66,6 +70,20 @@ class ProfileOtherFragment : Fragment() {
         signOutButton.setOnClickListener {
             appContext.signOut()
         }
+        Log.e("POF", recipesAdapter._recipesItems?.size.toString())
+
+        appContext.loadRecipes(dbUser)
+        Log.e("Profile Fragment", dbUser?.name.toString())
+        val observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
+            val content = value.getContentIfNotHandled()
+            if (content != null){
+                Log.e("Profile Fragment", content.size.toString())
+                recipesAdapter.setItems(ArrayList(content), false)
+//                    notifyDataSetChanged()
+            }
+        }
+        LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
+        recipesAdapter.setItems(recipesAdapter._recipesItems, false)
         return view
     }
 

@@ -67,6 +67,9 @@ class ProfileFragment : Fragment() {
         signOutButton.setOnClickListener {
             appContext.signOut()
         }
+
+        recipesAdapter.setItems(appContext.getUserRecipes(), false)
+        Log.e("Profile Fragment", appContext.getUserRecipes()?.size.toString())
         return view
     }
 
