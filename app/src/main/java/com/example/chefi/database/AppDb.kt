@@ -213,7 +213,7 @@ class AppDb {
     )  {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
         val newDocument = firestore.collection(recipeCollectionPath).document()
-        val recipe = DbRecipe(
+        val dbRecipe = DbRecipe(
             uid = newDocument.id,
             description = recipeName,
             likes = 0,
@@ -225,16 +225,32 @@ class AppDb {
             owner = currDbUser?.uid
         )
 
+        val appRecipe = AppRecipe(
+            uid = newDocument.id,
+            description = recipeName,
+            likes = 0,
+            imageUrl = imageUrl,
+            comments = ArrayList(),
+            directions = direction,
+            ingredients = ingredients,
+            status = status,
+            owner = currDbUser
+        )
+
         if (userDbRecipes == null) {
             userDbRecipes = ArrayList()
         }
-        newDocument.set(recipe)
+        if (userAppRecipes == null) {
+            userAppRecipes = ArrayList()
+        }
+        newDocument.set(dbRecipe)
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "in success of addRecipeToRecipesCollection")
-                userDbRecipes?.add(recipe)
+                userDbRecipes?.add(dbRecipe)
+                userAppRecipes?.add(appRecipe)
                 addRecipeToLocalCurrUserObject(newDocument)
                 updateUserInUsersCollection(null)
-                postSingleRecipe(recipe)    // the worker observe to this post
+                postSingleRecipe(dbRecipe)    // the worker observe to this post
 //                Log.d(TAG_APP_DB, "in addRecipeToRecipesCollection userRecipes.size = ${userRecipes!!.size}")
             }
             .addOnFailureListener {
@@ -285,23 +301,23 @@ class AppDb {
         auth.signOut()
     }
 
-    fun deleteRecipe(dbRecipe: DbRecipe){
+    fun deleteRecipe(recipe: AppRecipe){
         // delete from local array
-        if (userDbRecipes?.contains(dbRecipe)!!) {
-            userDbRecipes?.remove(dbRecipe)
+        if (userAppRecipes?.contains(recipe)!!) {
+            userAppRecipes?.remove(recipe)
         } else {
             Log.d(TAG_APP_DB, "in deleteRecipe, local recipe list not contains")
         }
         // delete from storage and data base
-        val imageUrl = dbRecipe.imageUrl
-        deleteImageFromStorage(imageUrl, dbRecipe)
+        val imageUrl = recipe.imageUrl
+        deleteImageFromStorage(imageUrl, recipe)
     }
 
-    fun deleteImageFromStorage(imageUrl: String?, dbRecipe: DbRecipe?){
+    fun deleteImageFromStorage(imageUrl: String?, recipe: AppRecipe?){
         FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl!!).delete()
             .addOnSuccessListener {
-                if (dbRecipe != null) {
-                    deleteRecipeFromCollection(dbRecipe)
+                if (recipe != null) {
+                    deleteRecipeFromCollection(recipe)
                 }
             }
             .addOnFailureListener { exception ->
@@ -309,9 +325,9 @@ class AppDb {
             }
     }
 
-    private fun deleteRecipeFromUserDocument(dbRecipe: DbRecipe) {
+    private fun deleteRecipeFromUserDocument(recipe: AppRecipe) {
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
-            .document(dbRecipe.uid!!)
+            .document(recipe.uid!!)
             .get()
             .addOnSuccessListener { documentSnapShot ->
                 if (documentSnapShot != null) {
@@ -329,13 +345,13 @@ class AppDb {
             }
     }
 
-    private fun deleteRecipeFromCollection(dbRecipe: DbRecipe) {
+    private fun deleteRecipeFromCollection(recipe: AppRecipe) {
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
-            .document(dbRecipe.uid!!)
+            .document(recipe.uid!!)
             .delete()
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "recipe deleted")
-                deleteRecipeFromUserDocument(dbRecipe)
+                deleteRecipeFromUserDocument(recipe)
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG_APP_DB, "exception ${exception.message}")
@@ -380,14 +396,14 @@ class AppDb {
         Log.d(TAG_APP_DB, "image url = ${fileRef.downloadUrl}")
     }
 
-    fun loadRecipes(dbUser: DbUser?){
+    fun loadRecipes(user: AppUser?){
 
-        if (dbUser == null) {
+        if (user == null) {
             val recipesRefList = currDbUser?.recipes
             loadRecipesFromReferenceList(recipesRefList, "recipes", true)
         } else {
             firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
-                .document(dbUser.uid!!)
+                .document(user.uid!!)
                 .get()
                 .addOnSuccessListener { documentSnapShot ->
                     if (documentSnapShot != null) {

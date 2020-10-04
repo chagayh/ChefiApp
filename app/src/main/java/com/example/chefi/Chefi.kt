@@ -6,10 +6,7 @@ import android.net.Uri
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.work.*
-import com.example.chefi.database.AppDb
-import com.example.chefi.database.AppRecipe
-import com.example.chefi.database.DbRecipe
-import com.example.chefi.database.DbUser
+import com.example.chefi.database.*
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
@@ -138,8 +135,8 @@ class Chefi : Application() {
         return appDb.getCurrUser()
     }
 
-    fun deleteRecipe(dbRecipe: DbRecipe) {
-        return appDb.deleteRecipe(dbRecipe)
+    fun deleteRecipe(recipe: AppRecipe) {
+        return appDb.deleteRecipe(recipe)
     }
 
     fun deleteImage(imageUrl: String?, dbRecipe: DbRecipe?) {
@@ -150,8 +147,8 @@ class Chefi : Application() {
         appDb.updateUserFields(fieldName, content)
     }
 
-    fun loadRecipes(dbUser: DbUser?) {
-        appDb.loadRecipes(dbUser)
+    fun loadRecipes(user: AppUser?) {
+        appDb.loadRecipes(user)
     }
 
     fun loadFavorites() {
