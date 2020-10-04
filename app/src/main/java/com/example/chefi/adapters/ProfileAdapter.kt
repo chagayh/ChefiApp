@@ -111,7 +111,21 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         holder.aboutMeTextView.text = tempDbUser.aboutMe
         holder.nameTextView.text = tempDbUser.name
         holder.usernameTextView.text = "@" + tempDbUser.userName
-        _recipesItems = if (otherFlag) ArrayList() else appContext.getUserRecipes()
+        if(!otherFlag){
+            _recipesItems = appContext.getUserRecipes()
+        }else{
+            Log.e("Profile Adapter", dbUser?.name.toString())
+            val observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
+                val content = value.getContentIfNotHandled()
+                if (content != null){
+                    Log.e("Profile Adapter", content.size.toString())
+                    _recipesItems = ArrayList(content)
+//                    notifyDataSetChanged()
+                }
+            }
+            LiveDataHolder.getRecipeListLiveData().observe(_viewLifecycleOwner, observer)
+        }
+
         if(tempDbUser.imageUrl != null){
             Picasso.with(appContext)
                 .load(tempDbUser.imageUrl)
@@ -133,37 +147,20 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                     holder.followButton.text = "UNFOLLOW"
                 }
             })
-
         }
         else{
             holder.favoritesButton.setOnClickListener(View.OnClickListener {
                 holder.favoritesButton.setTextColor(holder.blueColor)
                 holder.recipesButton.setTextColor(holder.greyColor)
                 recipesFlag = false
-                if(!otherFlag){
-                    _favoritesItems = appContext.getUserFavorites()
-                    setItems(_favoritesItems, true)
-                }
+                _favoritesItems = appContext.getUserFavorites()
+                setItems(_favoritesItems, true)
             })
             holder.recipesButton.setOnClickListener(View.OnClickListener {
                 holder.favoritesButton.setTextColor(holder.greyColor)
                 holder.recipesButton.setTextColor(holder.blueColor)
                 recipesFlag = true
-                if (otherFlag){
-                    Log.e("Profile Adapter", dbUser?.name.toString())
-                    val observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
-                        val content = value.getContentIfNotHandled()
-                        if (content != null){
-                            _recipesItems = ArrayList(content)
-                            Log.e("Profile Adapter", content.size.toString())
-                            setItems(ArrayList(content), false)
-                        }
-                    }
-                    LiveDataHolder.getRecipeListLiveData().observe(_viewLifecycleOwner, observer)
-                }
-                else {_recipesItems = appContext.getUserRecipes()
-                    notifyDataSetChanged()
-                }
+                setItems(appContext.getUserRecipes(), false)
             })
         }
     }
@@ -229,36 +226,36 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         Picasso.with(appContext)
             .load(item?.imageUrl)
             .into(holder._image)
-        setRecipeButtons(holder, position)
+//        setRecipeButtons(holder, position)
     }
 
-    private fun setRecipeButtons(holder: RecipeHolder,  position: Int){
-        val item = _recipesItems?.get(position - 1)
-        // set a listener to know when view was clicked, and tell the listener if exists
-        holder.itemView.setOnClickListener {
-            // TODO: open recipe_profile page
-        }
-        // set a long listener to know when view was clicked, and tell the listener if exists
-        if (!otherFlag){
-            holder.itemView.setOnLongClickListener {
-                if (item != null) {
-                    if(recipesFlag){
-                        val alertDialog = AlertDialog.Builder(it.context)
-                        alertDialog.setTitle("Would you like to delete this recipe_profile?")
-                        alertDialog.setPositiveButton("Confirm") { _: DialogInterface, _: Int ->
-                            _recipesItems?.remove(item)
-                            appContext.deleteRecipe(item)
-                            _recipesItems?.let { it1 -> setItems(it1, false) }
-                        }
-                        alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
-                        alertDialog.show()
-                    }else{
-                        _favoritesItems?.remove(item)
-                        appContext.removeRecipeFromFavorites(item)
-                        _favoritesItems?.let { it1 -> setItems(it1, true) }
-                    }
-                }
-                true
-            }
-        }
+//    private fun setRecipeButtons(holder: RecipeHolder,  position: Int){
+//        val item = _recipesItems?.get(position - 1)
+//        // set a listener to know when view was clicked, and tell the listener if exists
+//        holder.itemView.setOnClickListener {
+//            // TODO: open recipe_profile page
+//        }
+//        // set a long listener to know when view was clicked, and tell the listener if exists
+//        if (!otherFlag){
+//            holder.itemView.setOnLongClickListener {
+//                if (item != null) {
+//                    if(recipesFlag){
+//                        val alertDialog = AlertDialog.Builder(it.context)
+//                        alertDialog.setTitle("Would you like to delete this recipe_profile?")
+//                        alertDialog.setPositiveButton("Confirm") { _: DialogInterface, _: Int ->
+//                            _recipesItems?.remove(item)
+//                            appContext.deleteRecipe(item)
+//                            _recipesItems?.let { it1 -> setItems(it1, false) }
+//                        }
+//                        alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
+//                        alertDialog.show()
+//                    }else{
+//                        _favoritesItems?.remove(item)
+//                        appContext.removeRecipeFromFavorites(item)
+//                        _favoritesItems?.let { it1 -> setItems(it1, true) }
+//                    }
+//                }
+//                true
+//            }
+//        }
 }
