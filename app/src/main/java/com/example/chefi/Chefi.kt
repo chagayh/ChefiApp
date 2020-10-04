@@ -190,7 +190,7 @@ class Chefi : Application() {
         return appDb.getFirebaseAuth()
     }
 
-    fun getUserFavorites() : ArrayList<DbRecipe>? {
+    fun getUserFavorites() : ArrayList<AppRecipe>? {
         return appDb.getUserFavorites()
     }
 

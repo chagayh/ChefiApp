@@ -70,8 +70,8 @@ class AppDb {
         return userAppRecipes
     }
 
-    fun getUserFavorites() : ArrayList<DbRecipe>? {
-        return userFavorites
+    fun getUserFavorites() : ArrayList<AppRecipe>? {
+        return userAppFavorites
     }
 
     fun getUserFollowing() : ArrayList<DbUser>? {
