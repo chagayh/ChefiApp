@@ -22,9 +22,6 @@ import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.ProfileFragmentDirections
 import com.example.chefi.fragment.ProfileOtherFragmentDirections
 import com.squareup.picasso.Picasso
-import androidx.lifecycle.Observer
-import com.example.chefi.LiveDataHolder
-import com.example.chefi.ObserveWrapper
 
 
 class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleOwner): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -212,7 +209,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         Picasso.with(appContext)
             .load(item?.imageUrl)
             .into(holder._image)
-//        setRecipeButtons(holder, position)
+        setRecipeButtons(holder, position)
     }
 
     private fun setRecipeButtons(holder: RecipeHolder,  position: Int){
@@ -244,4 +241,5 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                 true
             }
         }
+    }
 }

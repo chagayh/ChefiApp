@@ -52,9 +52,13 @@ class FollowersAdapter(isFollowers: Boolean, curDbUser:DbUser?): RecyclerView.Ad
         val item = _items[position]
         holder.name.text = item.name
         holder.username.text = "@" + item.userName
-        Picasso.with(appContext)
-            .load(item.imageUrl)
-            .into(holder.image)
+        if(item.imageUrl != null) {
+            Picasso.with(appContext)
+                .load(item.imageUrl)
+                .into(holder.image)
+        }else{
+            holder.image.setImageResource(R.drawable.defpp)
+        }
         holder.image.setOnClickListener {
             val action = FollowersFragmentDirections.actionFollowersToProfileOther(item)
             it.findNavController().navigate(action)

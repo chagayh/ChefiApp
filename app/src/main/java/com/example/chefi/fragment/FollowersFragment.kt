@@ -50,9 +50,6 @@ class FollowersFragment : Fragment() {
                 followersAdapter.setItems(appContext.getUserFollowing())
             }
         }else{
-            // TODO: observer
-            Log.e("Amnon1", curUser.name.toString())
-            Log.e("Amnon2", isFollowers.toString())
             if(isFollowers) {
                 appContext.loadFollowers(curUser)
             }else{
@@ -61,7 +58,6 @@ class FollowersFragment : Fragment() {
             val observer = Observer<ObserveWrapper<MutableList<DbUser>>> { value ->
                 val content = value.getContentIfNotHandled()
                 if (content != null){
-                    Log.e("Amnon3", content.size.toString())
                     followersAdapter.setItems(ArrayList(content))
                 }
                 else{
@@ -77,6 +73,4 @@ class FollowersFragment : Fragment() {
         super.onPause()
         followersAdapter.setItems(ArrayList())
     }
-
-
 }
