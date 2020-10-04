@@ -143,9 +143,144 @@
             app:layout_constraintTop_toTopOf="@id/textViewUsername"
             app:layout_constraintVertical_bias="0" />
 
+
+        <TextView
+            android:id="@+id/textViewCommentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="View all 92 comments"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@id/endSpace"
+            app:layout_constraintLeft_toLeftOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintRight_toRightOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintTop_toBottomOf="@id/textViewUsername"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/textViewCommentOneUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="erlich_123"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@id/endSpace"
+            app:layout_constraintLeft_toLeftOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintRight_toRightOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintTop_toBottomOf="@id/textViewCommentTitle"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/textViewCommentOneContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="Yitzchak the king!"
+            android:textSize="12sp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintRight_toRightOf="@id/recipeHomeRecipeCard"
+            app:layout_constraintBottom_toBottomOf="@id/textViewCommentOneUsername"
+            app:layout_constraintLeft_toRightOf="@id/textViewCommentOneUsername"
+            app:layout_constraintTop_toTopOf="@id/textViewCommentOneUsername"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/textViewCommentTwoUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="_slamiX"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@id/endSpace"
+            app:layout_constraintLeft_toLeftOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintRight_toRightOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintTop_toBottomOf="@id/textViewCommentOneUsername"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/textViewCommentTwoContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="Chagay ya egg..."
+            android:textSize="12sp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintRight_toRightOf="@id/recipeHomeRecipeCard"
+            app:layout_constraintBottom_toBottomOf="@id/textViewCommentTwoUsername"
+            app:layout_constraintLeft_toRightOf="@id/textViewCommentTwoUsername"
+            app:layout_constraintTop_toTopOf="@id/textViewCommentTwoUsername"
+            app:layout_constraintVertical_bias="0" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutComment"
+            android:gravity="start"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintBottom_toTopOf="@id/endSpace"
+            app:layout_constraintLeft_toLeftOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintRight_toRightOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintTop_toBottomOf="@id/textViewCommentTwoUsername"
+            app:layout_constraintVertical_bias="0"
+            android:weightSum="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editTextPostComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/follow_button_outline"
+                android:fontFamily="@font/proximanovaregular"
+                android:hint="  Add a comment"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:layout_marginLeft="2dp"
+
+                app:layout_constraintHorizontal_chainStyle="packed"
+                android:textColor="#808080"
+                android:textSize="11sp">
+
+            </EditText>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/textViewPostCommentBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="2dp"
+                android:textColor="#808080"
+                android:background="@drawable/follow_button_outline"
+                android:fontFamily="@font/proximanovaregular"
+                android:padding="3dp"
+                android:text="  Post  "
+                android:textSize="11sp" />
+        </LinearLayout>
+
         <Space
             android:id="@+id/endSpace"
-            app:layout_constraintTop_toBottomOf="@id/textViewUsername"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutComment"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:layout_height="10dp" />

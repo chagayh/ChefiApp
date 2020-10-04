@@ -8,12 +8,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.listeners.RecipeClickListener
 import com.example.chefi.database.User
 import com.example.chefi.fragment.HomeFragmentDirections
-import com.example.chefi.holders.FollowerHolder
 import com.example.chefi.holders.HomeHolder
-import com.squareup.picasso.Picasso
 
 class HomeAdapter(): RecyclerView.Adapter<HomeHolder>() {
 
@@ -62,11 +59,11 @@ class HomeAdapter(): RecyclerView.Adapter<HomeHolder>() {
             val action = HomeFragmentDirections.actionHomeToProfileOther(user)
             it.findNavController().navigate(action)
         }
-        holder.userTitleName.setOnClickListener {
+        holder.userNameUp.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeToProfileOther(user)
             it.findNavController().navigate(action)
         }
-        holder.userNameSubTitle.setOnClickListener {
+        holder.userNameDown.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeToProfileOther(user)
             it.findNavController().navigate(action)
         }

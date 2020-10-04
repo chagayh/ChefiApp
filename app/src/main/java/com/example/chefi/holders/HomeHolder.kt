@@ -9,9 +9,15 @@ import com.example.chefi.R
 
 class HomeHolder(view: View): RecyclerView.ViewHolder(view) {
     val userImage: ImageView = view.findViewById(R.id.recipeHomeUserImageView)
-    val userTitleName: TextView = view.findViewById(R.id.textViewRecipeHome)
+    val userNameUp: TextView = view.findViewById(R.id.textViewRecipeHome)
     val recipeImage: ImageView = view.findViewById(R.id.recipeHomeRecipeImageView)
     val likesTitle: TextView = view.findViewById(R.id.textViewLikes)
-    val userNameSubTitle: TextView = view.findViewById(R.id.textViewUsername)
-    val postContent: TextView = view.findViewById(R.id.textViewContent)
+    val userNameDown: TextView = view.findViewById(R.id.textViewUsername)
+    val postDescription: TextView = view.findViewById(R.id.textViewContent)
+    val commentTitle: TextView = view.findViewById(R.id.textViewCommentTitle)
+    val commentOneUsername: TextView = view.findViewById(R.id.textViewCommentOneUsername)
+    val commentOneContent: TextView = view.findViewById(R.id.textViewCommentOneContent)
+    val commentTwoUsername: TextView = view.findViewById(R.id.textViewCommentTwoUsername)
+    val commentTwoContent: TextView = view.findViewById(R.id.textViewCommentTwoContent)
+    val commentPostBtn: TextView = view.findViewById(R.id.textViewPostCommentBtn)
 }
