@@ -7,19 +7,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.listeners.RecipeClickListener
-import com.example.chefi.database.User
-import com.example.chefi.holders.FollowerHolder
+import com.example.chefi.database.DbUser
 import com.example.chefi.holders.NotificationHolder
-import com.squareup.picasso.Picasso
 
 class NotificationAdapter(): RecyclerView.Adapter<NotificationHolder>() {
 
     private lateinit var appContext: Chefi
-    private var _items: ArrayList<User> = ArrayList()
+    private var _items: ArrayList<DbUser> = ArrayList()
 
     // public method to show a new list of items
-    fun setItems(items: ArrayList<User>){
+    fun setItems(items: ArrayList<DbUser>){
         _items.clear()
         _items.addAll(items)
         notifyDataSetChanged()

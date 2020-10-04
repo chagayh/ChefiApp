@@ -16,21 +16,21 @@ import com.example.chefi.R
 import com.example.chefi.database.DbRecipe
 import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.holders.RecipeHolder
-import com.example.chefi.database.User
+import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.ProfileFragmentDirections
 import com.example.chefi.fragment.ProfileOtherFragmentDirections
 import com.squareup.picasso.Picasso
 
 
-class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProfileAdapter(private val dbUser: DbUser?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var appContext: Chefi
     private val TYPE_HEADER = 0
     private val TYPE_ITEM = 1
     private var _items: ArrayList<DbRecipe>? = ArrayList()
     var recipesFlag:Boolean = true
-    private val otherFlag = user != null
-    private lateinit var tempUser: User
+    private val otherFlag = dbUser != null
+    private lateinit var tempDbUser: DbUser
 
     // public method to show a new list of items
     fun setItems(items: ArrayList<DbRecipe>){
@@ -43,7 +43,7 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
         val context = parent.context
         val view: View
         appContext = context.applicationContext as Chefi
-        tempUser = ((user ?: appContext.getCurrUser()) as User)
+        tempDbUser = ((dbUser ?: appContext.getCurrUser()) as DbUser)
         if(viewType == TYPE_HEADER){
             view = LayoutInflater.from(context).inflate(R.layout.profile_header, parent, false)
             if(otherFlag){ //if not user
@@ -91,13 +91,13 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
 
     @SuppressLint("SetTextI18n")
     private fun customizeComponents(holder: ProfileHeaderHolder){
-        holder.aboutMeTextView.text = tempUser.aboutMe
-        holder.nameTextView.text = tempUser.name
-        holder.usernameTextView.text = "@" + tempUser.userName
+        holder.aboutMeTextView.text = tempDbUser.aboutMe
+        holder.nameTextView.text = tempDbUser.name
+        holder.usernameTextView.text = "@" + tempDbUser.userName
         _items = if (otherFlag) ArrayList() else appContext.getUserRecipes()
-        if(tempUser.imageUrl != null){
+        if(tempDbUser.imageUrl != null){
             Picasso.with(appContext)
-                .load(tempUser.imageUrl)
+                .load(tempDbUser.imageUrl)
                 .into(holder.image)
         }
         else{
@@ -111,8 +111,8 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
             holder.menuLinear.visibility = View.GONE
             holder.followMenuLinear.visibility = View.VISIBLE
             holder.followButton.setOnClickListener(View.OnClickListener {
-                if (user != null) {
-                    appContext.follow(user)
+                if (dbUser != null) {
+                    appContext.follow(dbUser)
                     holder.followButton.text = "UNFOLLOW"
                 }
             })
@@ -176,17 +176,17 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
     private fun setOtherButtons(holder: ProfileHeaderHolder){
         holder.followingButton.setOnClickListener {
             val action = if (otherFlag) {
-                ProfileOtherFragmentDirections.actionProfileOtherToFollowers(false, user)
+                ProfileOtherFragmentDirections.actionProfileOtherToFollowers(false, dbUser)
             }else {
-                ProfileFragmentDirections.actionProfileToFollowers(false, user)
+                ProfileFragmentDirections.actionProfileToFollowers(false, dbUser)
             }
             it.findNavController().navigate(action)
         }
         holder.followersButton.setOnClickListener {
             val action = if (otherFlag) {
-                ProfileOtherFragmentDirections.actionProfileOtherToFollowers(true, user)
+                ProfileOtherFragmentDirections.actionProfileOtherToFollowers(true, dbUser)
             }else {
-                ProfileFragmentDirections.actionProfileToFollowers(true, user)
+                ProfileFragmentDirections.actionProfileToFollowers(true, dbUser)
             }
             it.findNavController().navigate(action)
         }
@@ -231,7 +231,7 @@ class ProfileAdapter(private val user: User?): RecyclerView.Adapter<RecyclerView
         }
 
 
-        fun convertToJason(user: User){
+        fun convertToJason(dbUser: DbUser){
 
         }
     }

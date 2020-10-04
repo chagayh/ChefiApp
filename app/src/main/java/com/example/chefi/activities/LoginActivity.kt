@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.example.chefi.*
-import com.example.chefi.database.User
+import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.*
 import com.google.firebase.auth.FirebaseAuth
 
@@ -15,7 +15,7 @@ class LoginActivity : AppCompatActivity() {
     private val appContext: Chefi
         get() = applicationContext as Chefi
 
-    private lateinit var observer: Observer<User>
+    private lateinit var observer: Observer<DbUser>
     private lateinit var authStateListener : FirebaseAuth.AuthStateListener
 
     companion object {

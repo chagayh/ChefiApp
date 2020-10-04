@@ -8,7 +8,7 @@ import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.AppDb
 import com.example.chefi.database.DbRecipe
-import com.example.chefi.database.User
+import com.example.chefi.database.DbUser
 import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
@@ -133,7 +133,7 @@ class Chefi : Application() {
         return appDb.getFirebaseCurrUser()
     }
 
-    fun getCurrUser() : User? {
+    fun getCurrUser() : DbUser? {
         return appDb.getCurrUser()
     }
 
@@ -149,20 +149,20 @@ class Chefi : Application() {
         appDb.updateUserFields(fieldName, content)
     }
 
-    fun loadRecipes(user: User?) {
-        appDb.loadRecipes(user)
+    fun loadRecipes(dbUser: DbUser?) {
+        appDb.loadRecipes(dbUser)
     }
 
     fun loadFavorites() {
         appDb.loadFavorites()
     }
 
-    fun loadFollowing(user: User?) {
-        appDb.loadFollowing(user)
+    fun loadFollowing(dbUser: DbUser?) {
+        appDb.loadFollowing(dbUser)
     }
 
-    fun loadFollowers(user: User?) {
-        appDb.loadFollowers(user)
+    fun loadFollowers(dbUser: DbUser?) {
+        appDb.loadFollowers(dbUser)
     }
 
     fun loadNotifications() {
@@ -193,20 +193,20 @@ class Chefi : Application() {
         return appDb.getUserFavorites()
     }
 
-    fun getUserFollowing() : ArrayList<User>? {
+    fun getUserFollowing() : ArrayList<DbUser>? {
         return appDb.getUserFollowing()
     }
 
-    fun getUserFollowers() : ArrayList<User>?  {
+    fun getUserFollowers() : ArrayList<DbUser>?  {
         return appDb.getUserFollowers()
     }
 
-    fun follow(userToFollow: User) {
-        appDb.follow(userToFollow)
+    fun follow(dbUserToFollow: DbUser) {
+        appDb.follow(dbUserToFollow)
     }
 
-    fun unFollow(userToUnFollow: User) {
-        appDb.unFollow(userToUnFollow)
+    fun unFollow(dbUserToUnFollow: DbUser) {
+        appDb.unFollow(dbUserToUnFollow)
     }
 
     fun addRecipeToFavorites(dbRecipe: DbRecipe) {
@@ -217,9 +217,9 @@ class Chefi : Application() {
         appDb.removeRecipeFromFavorites(dbRecipe)
     }
 
-    fun addUserToFollowers(otherUser: User) {
+    fun addUserToFollowers(otherDbUser: DbUser) {
         // adding currUser to followers list of otherUser
-        appDb.addUserToFollowers(otherUser)
+        appDb.addUserToFollowers(otherDbUser)
     }
 
     // TODO - delete, for debug only

@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
-import com.example.chefi.database.User
+import com.example.chefi.database.DbUser
 
 /**
  * A simple [Fragment] subclass.
@@ -28,7 +28,7 @@ class SearchFragment : Fragment() {
     private lateinit var searchBtn: ImageButton
     private lateinit var barEditText: EditText
     private val TAG_SEARCH_FRAGMENT: String = "searchFragment"
-    private var usersList : ArrayList<User>? = null
+    private var usersList : ArrayList<DbUser>? = null
 
 
     override fun onCreateView(

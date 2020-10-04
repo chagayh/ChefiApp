@@ -9,7 +9,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.database.User
+import com.example.chefi.database.DbUser
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.lifecycle.Observer
 import com.example.chefi.LiveDataHolder
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setObserver() {
         // data class User observer
-        val observer = Observer<ObserveWrapper<User>> { value ->
+        val observer = Observer<ObserveWrapper<DbUser>> { value ->
             val content = value.getContentIfNotHandled()
             if (content == null){
                 Log.d(TAG_MAIN_ACTIVITY, "null user, live data")

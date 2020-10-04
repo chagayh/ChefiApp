@@ -29,8 +29,8 @@ enum class NotificationType{
     }
 }
 
-data class NotificationItem (
-    var user: DocumentReference? = null,
+data class DbNotificationItem (
+    var userId: String? = null,
     var notificationContent: String? = null,
     var notificationType: NotificationType = NotificationType.DEFAULT,
     @ServerTimestamp

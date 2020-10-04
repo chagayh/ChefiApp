@@ -9,21 +9,21 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.database.User
+import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.FollowersFragmentDirections
 import com.example.chefi.holders.FollowerHolder
 import com.squareup.picasso.Picasso
 
 
-class FollowersAdapter(isFollowers: Boolean, curUser:User?): RecyclerView.Adapter<FollowerHolder>() {
+class FollowersAdapter(isFollowers: Boolean, curDbUser:DbUser?): RecyclerView.Adapter<FollowerHolder>() {
 
     private lateinit var appContext: Chefi
-    private var _items: ArrayList<User> = ArrayList()
-    private val _curUser = curUser
+    private var _items: ArrayList<DbUser> = ArrayList()
+    private val _curUser = curDbUser
     private  val _isFollowers = isFollowers
 
     // public method to show a new list of items
-    fun setItems(items: ArrayList<User>?){
+    fun setItems(items: ArrayList<DbUser>?){
         Log.e("FA", items?.size.toString())
         _items.clear()
         if (items != null) {

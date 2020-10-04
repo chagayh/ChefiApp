@@ -12,10 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.adapters.FollowersAdapter
-import com.example.chefi.database.User
-import java.util.*
+import com.example.chefi.database.DbUser
 import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 import androidx.lifecycle.Observer
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.ObserveWrapper
@@ -40,7 +38,7 @@ class FollowersFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_follwers, container, false)
         val isFollowers = args.isFollowers
-        val curUser = args.curUser
+        val curUser = args.curDbUser
         recyclerViewFollowers = view.findViewById(R.id.recyclerViewFollowers)
         followersAdapter = FollowersAdapter(isFollowers, curUser)
         recyclerViewFollowers.adapter = followersAdapter
@@ -60,7 +58,7 @@ class FollowersFragment : Fragment() {
             }else{
                 appContext.loadFollowing(curUser)
             }
-            val observer = Observer<ObserveWrapper<MutableList<User>>> { value ->
+            val observer = Observer<ObserveWrapper<MutableList<DbUser>>> { value ->
                 val content = value.getContentIfNotHandled()
                 if (content != null){
                     Log.e("Amnon3", content.size.toString())

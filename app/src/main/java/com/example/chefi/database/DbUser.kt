@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentReference
 
-data class User(
+data class DbUser(
     var uid: String? = null,
     var email: String? = null,
     var imageUrl: String? = null,
@@ -44,12 +44,12 @@ data class User(
         TODO("Not yet implemented")
     }
 
-    companion object CREATOR : Parcelable.Creator<User> {
-        override fun createFromParcel(parcel: Parcel): User {
-            return User(parcel)
+    companion object CREATOR : Parcelable.Creator<DbUser> {
+        override fun createFromParcel(parcel: Parcel): DbUser {
+            return DbUser(parcel)
         }
 
-        override fun newArray(size: Int): Array<User?> {
+        override fun newArray(size: Int): Array<DbUser?> {
             return arrayOfNulls(size)
         }
     }

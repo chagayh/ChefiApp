@@ -8,17 +8,17 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import com.example.chefi.database.User
+import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.holders.HomeHolder
 
 class HomeAdapter(): RecyclerView.Adapter<HomeHolder>() {
 
     private lateinit var appContext: Chefi
-    private var _items: ArrayList<User> = ArrayList()
+    private var _items: ArrayList<DbUser> = ArrayList()
 
     // public method to show a new list of items
-    fun setItems(items: ArrayList<User>){
+    fun setItems(items: ArrayList<DbUser>){
         _items.clear()
         _items.addAll(items)
         notifyDataSetChanged()
@@ -54,17 +54,17 @@ class HomeAdapter(): RecyclerView.Adapter<HomeHolder>() {
 //        setNavigateToProfileComponents(holder, itemCount.user)
     }
 
-    fun setNavigateToProfileComponents(holder: HomeHolder, user: User){
+    fun setNavigateToProfileComponents(holder: HomeHolder, dbUser: DbUser){
         holder.userImage.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeToProfileOther(user)
+            val action = HomeFragmentDirections.actionHomeToProfileOther(dbUser)
             it.findNavController().navigate(action)
         }
         holder.userNameUp.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeToProfileOther(user)
+            val action = HomeFragmentDirections.actionHomeToProfileOther(dbUser)
             it.findNavController().navigate(action)
         }
         holder.userNameDown.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeToProfileOther(user)
+            val action = HomeFragmentDirections.actionHomeToProfileOther(dbUser)
             it.findNavController().navigate(action)
         }
     }

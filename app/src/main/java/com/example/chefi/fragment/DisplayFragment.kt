@@ -13,6 +13,7 @@ import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
 import com.example.chefi.adapters.ImageItemAdapter
 import androidx.lifecycle.Observer
+import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbRecipe
 
 /**
@@ -62,7 +63,7 @@ class DisplayFragment : Fragment() {
                 Log.d(TAG_DISPLAY_FRAGMENT, "null recipe_profile, live data")
             } else {
                 Log.d(TAG_DISPLAY_FRAGMENT, "new recipes, recipes.size = ${content.size}")
-                imageItemAdapter.setItems(ArrayList<DbRecipe>(content))
+                imageItemAdapter.setItems(ArrayList<AppRecipe>(content))
             }
         })
     }
