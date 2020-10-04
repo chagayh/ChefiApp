@@ -396,7 +396,7 @@ class AppDb {
         Log.d(TAG_APP_DB, "image url = ${fileRef.downloadUrl}")
     }
 
-    fun loadRecipes(user: AppUser?){
+    fun loadRecipes(user: DbUser?){
 
         if (user == null) {
             val recipesRefList = currDbUser?.recipes

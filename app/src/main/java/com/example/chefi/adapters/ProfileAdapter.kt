@@ -106,14 +106,17 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         setOtherButtons(holder)
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "LongLogTag")
     private fun customizeComponents(holder: ProfileHeaderHolder){
         holder.aboutMeTextView.text = tempDbUser.aboutMe
         holder.nameTextView.text = tempDbUser.name
         holder.usernameTextView.text = "@" + tempDbUser.userName
         if(!otherFlag){
             _recipesItems = appContext.getUserRecipes()
+            Log.e("Profile Adapter: items", _recipesItems?.size.toString())
+            Log.e("Profile Adapter: appContext", appContext.getUserRecipes()?.size.toString())
         }else{
+            appContext.loadRecipes(dbUser)
             Log.e("Profile Adapter", dbUser?.name.toString())
             val observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
                 val content = value.getContentIfNotHandled()

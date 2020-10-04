@@ -147,7 +147,7 @@ class Chefi : Application() {
         appDb.updateUserFields(fieldName, content)
     }
 
-    fun loadRecipes(user: AppUser?) {
+    fun loadRecipes(user: DbUser?) {
         appDb.loadRecipes(user)
     }
 
