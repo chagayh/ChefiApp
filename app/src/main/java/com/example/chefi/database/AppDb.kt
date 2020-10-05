@@ -6,7 +6,6 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 
 
 import android.annotation.SuppressLint
-import android.app.Notification
 import android.net.Uri
 import android.util.Log
 import com.example.chefi.Chefi
@@ -44,14 +43,14 @@ class AppDb {
     private var userDbRecipes : ArrayList<DbRecipe>? = null
     private var dbUserFollowing : ArrayList<DbUser>? = null
     private var dbUserFollowers : ArrayList<DbUser>? = null
-    private var userNotification : ArrayList<Notification>? = null  // TODO CHANGE!!
+    private var userNotification : ArrayList<DbNotificationItem>? = null  // TODO CHANGE!!
     private var userFavorites : ArrayList<DbRecipe>? = null
 
 
     //App Objects
     private var userAppRecipes : ArrayList<AppRecipe>? = null
     private var userAppFavorites : ArrayList<AppRecipe>? = null
-    private var userAppNotification : ArrayList<Notification>? = null
+    private var userAppNotification : ArrayList<AppNotification>? = null
 
     companion object {
         // TAGS
@@ -60,6 +59,7 @@ class AppDb {
 
     init {
         updateCurrentUserField()
+        createNotificationsLiveQuery()
     }
 
     fun getFirebaseAuth() : FirebaseAuth {
@@ -310,7 +310,7 @@ class AppDb {
         LiveDataHolder.getUsersListMutableLiveData().value = ObserveWrapper(usersList)
     }
 
-    private fun postNotificationList(notificationList: ArrayList<Notification>) {
+    private fun postNotificationList(notificationList: ArrayList<AppNotification>) {
         Log.d(TAG_APP_DB, "usersList.size = ${notificationList.size}")
 //        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
         LiveDataHolder.getNotificationsMutableLiveData().value = ObserveWrapper(notificationList)
@@ -675,35 +675,8 @@ class AppDb {
         }
     }
 
-//    fun loadFollowers_1(user: User?){
-//        val userFollowersList = currUser?.followers
-//        val tasks = ArrayList<Task<DocumentSnapshot>>()
-//        val followersList = ArrayList<User>()
-//        if (userFollowersList != null) {
-////            userFollowers = ArrayList()
-//            for (userRef in userFollowersList) {
-//                val docTask = userRef.get()
-//                tasks.add(docTask)
-//            }
-//            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
-//                .addOnSuccessListener { value ->
-//                    for (userDoc in value) {
-//                        val currUser = userDoc.toObject<User>()
-//                        if (currUser != null) {
-//                            followersList.add(currUser)
-//                        }
-//                    }
-//                    Log.e(TAG_APP_DB, "followingList.size = ${followersList.size} last")
-//                    if (user == null) {
-//                        userFollowers = ArrayList()
-//                        userFollowers = followersList
-//                    }
-//                    postUsersList(followersList)
-//                }
-//        }
-//    }
-
-    fun loadNotificationsFirstTime(){
+    fun loadNotifications(){
+        // TODO - add live query on the notification collection
         val userNotificationsList = currDbUser?.notifications
         val tasks = ArrayList<Task<DocumentSnapshot>>()
 
@@ -716,14 +689,74 @@ class AppDb {
             Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
                 .addOnSuccessListener { value ->
                     for (notificationDoc in value) {
-                        val notification = notificationDoc.toObject<Notification>()
+                        val notification = notificationDoc.toObject<DbNotificationItem>()
                         if (notification != null) {
                             userNotification?.add(notification)
                         }
                     }
-                    postNotificationList(userNotification!!)   // TODO - check if needed
+                    loadOwnersToNotifications()
+
                     Log.e(TAG_APP_DB, "userNotification.size = ${userNotification?.size} last")
                 }
+        }
+    }
+
+    fun addNotification(userDestId: String, content: String, type : NotificationType) {
+        val notificationRef = firestore
+            .collection(Chefi.getCon().getString(R.string.notificationsCollection))
+            .document()
+        val dbNotificationItem = DbNotificationItem(notificationRef.id, currDbUser?.uid, content, type)
+        notificationRef
+            .set(dbNotificationItem)
+            .addOnSuccessListener {
+                Log.d(TAG_APP_DB, "notification added")
+                // add the notification to the user dest notification list
+                firestore
+                    .collection(Chefi.getCon().getString(R.string.usersCollection))
+                    .document(userDestId)
+                    .get()
+                    .addOnSuccessListener { documentSnapShot ->
+                        val user = documentSnapShot.toObject<DbUser>()
+                        user?.notifications?.add(notificationRef)
+                    }
+            }
+    }
+
+    private fun loadOwnersToNotifications() {
+        if (userAppNotification == null) {
+            userAppNotification = ArrayList()
+        }
+        if (userNotification != null) {
+            val tasks = ArrayList<Task<DocumentSnapshot>>()
+            for (notification in userNotification!!) {
+                val notTask = firestore
+                    .collection(Chefi.getCon().getString(R.string.usersCollection))
+                    .document(notification.userId!!)
+                    .get()
+                tasks.add(notTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
+                .addOnSuccessListener { value ->
+                    if (value != null) {
+                        for (userDoc in value) {
+                            val user = userDoc.toObject<DbUser>()
+                            val notification = userNotification!!.find{ it.userId == user?.uid }
+                            if (notification != null) {
+                                val appNotificationItem = AppNotification(user,
+                                    notification.notificationContent,
+                                    notification.notificationType,
+                                    notification.timestamp)
+                                userAppNotification?.add(appNotificationItem)
+                            } else {
+                                Log.w(TAG_APP_DB, "in loadOwnersToNotifications notification = null")
+                            }
+                        }
+                    }
+                    postNotificationList(userAppNotification!!)
+                }
+
+        } else {
+            Log.w(TAG_APP_DB, "in loadOwnersToNotifications userNotification = null")
         }
     }
 
@@ -1123,6 +1156,58 @@ class AppDb {
                     postUsersList(ansUsers)
                 }
             }
+    }
+
+    // after calling this method, there will be a live query that firestore will trigger
+    // every time the collection "pets" is changed
+    // (e.g. when a document in this collection gets created, deleted, or getting its data changed)
+    private fun createNotificationsLiveQuery(){
+
+        val referenceToCollection = firestore.collection(Chefi.getCon().getString(R.string.notificationsCollection))
+        // we could also add "constraints" to this reference
+        // for example, if we wanted a live query for {all the items in collection "pets" that
+        // have their string field "animalType" equals "dog"}
+        // we could have written this:
+        // {val referenceToCollection = firestore.collection("pets").whereEqualTo("animalType", "dog")}
+        // but we want to get all the documents in this collection without any constraint
+
+
+        // the code in ".addSnapshotListener {}" will execute in the future, first time when firestore
+        // will finish downloading the collection to the phone,
+        // and then each time when documents in the collection get changed
+        val liveQuery = referenceToCollection.addSnapshotListener { value, exception ->
+            if (exception != null) {
+                // problems...
+                Log.d(TAG_APP_DB, "exception in snapshot :(" + exception.message)
+                return@addSnapshotListener
+            }
+
+            if (value == null) {
+                // no data...
+                Log.d(TAG_APP_DB, "value is null :(")
+                return@addSnapshotListener
+            }
+
+            Log.e(TAG_APP_DB, "reached here? we got data! yay :)")
+            // reached here? we got data! yay :)
+            // let's refresh the local arrayList
+            for (document: QueryDocumentSnapshot in value) {
+                val dbNotification = document.toObject(DbNotificationItem::class.java) // convert to item
+                if (!userNotification?.contains(dbNotification)!!) {
+                    userNotification?.add(dbNotification)
+                }
+            }
+        }
+        referenceToCollection.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                loadOwnersToNotifications()
+            }
+        }
+
+        // NOTICE: the live-query (also called "snapshot") stored in the variable "liveQuery",
+        // will continue to listen until you will call "liveQuery.remove()"
+        // you can just ignore the variable and the live-query will continue listening forever
+        // (or at least until your application process will be killed by the OS)
     }
 }
 

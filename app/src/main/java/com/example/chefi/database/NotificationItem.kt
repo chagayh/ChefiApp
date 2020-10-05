@@ -30,6 +30,7 @@ enum class NotificationType{
 }
 
 data class DbNotificationItem (
+    var uid: String? = null,
     var userId: String? = null,
     var notificationContent: String? = null,
     var notificationType: NotificationType = NotificationType.DEFAULT,

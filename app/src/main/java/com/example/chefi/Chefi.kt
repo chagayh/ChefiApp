@@ -168,7 +168,7 @@ class Chefi : Application() {
     }
 
     fun loadNotifications() {
-        appDb.loadNotificationsFirstTime()
+        appDb.loadNotifications()
     }
 
     fun signOut(){
@@ -185,6 +185,10 @@ class Chefi : Application() {
 
     fun deleteComment(comment: Comment, appRecipe: AppRecipe) {
         appDb.deleteComment(comment, appRecipe)
+    }
+
+    fun addNotification(userDestId: String, content: String, type : NotificationType) {
+        appDb.addNotification(userDestId, content, type)
     }
 
     fun addComment(content: String, recipeId: String) {
