@@ -136,8 +136,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                 holder.favoritesButton.setTextColor(holder.blueColor)
                 holder.recipesButton.setTextColor(holder.greyColor)
                 recipesFlag = false
-                _favoritesItems = appContext.getUserFavorites()
-                setItems(_favoritesItems, true)
+                setItems(appContext.getUserFavorites(), true)
             })
             holder.recipesButton.setOnClickListener(View.OnClickListener {
                 holder.favoritesButton.setTextColor(holder.greyColor)

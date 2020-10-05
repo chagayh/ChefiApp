@@ -55,6 +55,19 @@
             app:layout_constraintTop_toTopOf="@id/recipeHomeUserCard"
             app:layout_constraintVertical_bias="0.5" />
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/innerConstraintBig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circularbordersolid"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recipeHomeUserCard"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0">
+
         <androidx.cardview.widget.CardView
             android:id="@+id/recipeHomeRecipeCard"
             android:layout_width="match_parent"
@@ -68,7 +81,7 @@
             app:cardCornerRadius="15dp"
             app:cardElevation="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recipeHomeUserCard"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -79,8 +92,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
-                app:srcCompat="@drawable/yitzpp" />
+                app:srcCompat="@drawable/pasta3" />
+
+            <ImageView
+                android:id="@+id/imageViewHomeFavorites"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_favorites" />
+
         </androidx.cardview.widget.CardView>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <ImageView
             android:id="@+id/imageViewHomeRecipeLike"
@@ -92,8 +122,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toLeftOf="@id/recipeHomeUserCard"
-            app:layout_constraintRight_toRightOf="@id/recipeHomeRecipeCard"
-            app:layout_constraintTop_toBottomOf="@id/recipeHomeRecipeCard"
+            app:layout_constraintRight_toRightOf="@id/innerConstraintBig"
+            app:layout_constraintTop_toBottomOf="@id/innerConstraintBig"
             app:layout_constraintVertical_bias="1"
             app:srcCompat="@drawable/ic_like" />
 
@@ -103,12 +133,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:fontFamily="@font/proximanovaregular"
-            android:text="248 people likes this recipe"
+            android:text="%s people likes this recipe"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@id/imageViewHomeRecipeLike"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintLeft_toRightOf="@id/imageViewHomeRecipeLike"
-            app:layout_constraintRight_toRightOf="@id/recipeHomeRecipeCard"
+            app:layout_constraintRight_toRightOf="@id/innerConstraintBig"
             app:layout_constraintTop_toTopOf="@id/imageViewHomeRecipeLike"
             app:layout_constraintVertical_bias="0.5" />
 
@@ -137,7 +167,7 @@
             android:text="Kas on the World!"
             android:textSize="12sp"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintRight_toRightOf="@id/recipeHomeRecipeCard"
+            app:layout_constraintRight_toRightOf="@id/innerConstraintBig"
             app:layout_constraintBottom_toBottomOf="@id/textViewUsername"
             app:layout_constraintLeft_toRightOf="@id/textViewUsername"
             app:layout_constraintTop_toTopOf="@id/textViewUsername"
@@ -150,7 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:fontFamily="@font/proximanovaregular"
-            android:text="View all 92 comments"
+            android:text="View all %s comments"
             android:textSize="12sp"
             android:layout_marginTop="2dp"
             app:layout_constraintHorizontal_bias="0"
@@ -164,18 +194,17 @@
             android:id="@+id/textViewCommentOneUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
+            android:layout_marginTop="2dp"
             android:fontFamily="@font/proximanovaregular"
             android:text="erlich_123"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:layout_marginTop="2dp"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toTopOf="@id/endSpace"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@id/imageViewHomeRecipeLike"
             app:layout_constraintRight_toRightOf="@id/imageViewHomeRecipeLike"
             app:layout_constraintTop_toBottomOf="@id/textViewCommentTitle"
-            app:layout_constraintVertical_bias="0" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textViewCommentOneContent"
@@ -183,10 +212,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:fontFamily="@font/proximanovaregular"
-            android:text="Yitzchak the king!"
+            android:text="Looks delicious!"
             android:textSize="12sp"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintRight_toRightOf="@id/recipeHomeRecipeCard"
+            app:layout_constraintRight_toRightOf="@id/innerConstraintBig"
             app:layout_constraintBottom_toBottomOf="@id/textViewCommentOneUsername"
             app:layout_constraintLeft_toRightOf="@id/textViewCommentOneUsername"
             app:layout_constraintTop_toTopOf="@id/textViewCommentOneUsername"
@@ -214,7 +243,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="3dp"
             android:fontFamily="@font/proximanovaregular"
-            android:text="Chagay ya egg..."
+            android:text="Best recipe ever!"
             android:textSize="12sp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintRight_toRightOf="@id/recipeHomeRecipeCard"
