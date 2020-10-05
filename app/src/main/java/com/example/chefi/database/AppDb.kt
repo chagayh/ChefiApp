@@ -45,6 +45,7 @@ class AppDb {
     private var dbUserFollowers : ArrayList<DbUser>? = null
     private var userNotification : ArrayList<DbNotificationItem>? = null  // TODO CHANGE!!
     private var userFavorites : ArrayList<DbRecipe>? = null
+    private var unseenNotification: Int = 0
 
 
     //App Objects
@@ -60,6 +61,14 @@ class AppDb {
     init {
         updateCurrentUserField()
         createNotificationsLiveQuery()
+    }
+
+    fun setUnseenNotification(num : Int) {
+        unseenNotification = num
+    }
+
+    fun getUnseenNotification() : Int {
+        return unseenNotification
     }
 
     fun getFirebaseAuth() : FirebaseAuth {
@@ -761,13 +770,15 @@ class AppDb {
     }
 
     fun addComment(content: String, recipeId: String) {
-        firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+        Log.d("addComment", "start of addComment")
+        firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
             .document(recipeId)
             .get()
             .addOnSuccessListener { documentSnapShot ->
                 if (documentSnapShot != null) {
                     val dbRecipe = documentSnapShot.toObject<DbRecipe>()
                     if (dbRecipe != null) {
+                        Log.d("addComment", "dbRecipe = ${dbRecipe.description}")
                         val newCommentRef = firestore
                             .collection(Chefi.getCon().getString(R.string.commentsCollection))
                             .document()
@@ -782,6 +793,7 @@ class AppDb {
                             .addOnSuccessListener {
                                 Log.d(TAG_APP_DB, "in addComment, comment added")
                                 dbRecipe.comments?.add(newCommentRef)
+                                updateRecipeInRecipesCollection(dbRecipe)
                             }
                     }
                 } else {
@@ -834,12 +846,15 @@ class AppDb {
             .get()
             .addOnSuccessListener { documentSnapShot ->
                 val recipe = documentSnapShot.toObject<DbRecipe>()
-                val dbRecipeFromList = userDbRecipes?.find { it.uid == recipe?.uid }
-                dbRecipeFromList?.likes = dbRecipeFromList?.likes?.plus(1)
-                when (fieldName) {
-                    "likes" -> recipe?.likes = appRecipe.likes
-                }
                 if (recipe != null) {
+                    val dbRecipeFromList = userDbRecipes?.find { it.uid == recipe.uid }
+                    val appRecipeFromList = userAppRecipes?.find { it.uid == recipe.uid }
+                    dbRecipeFromList?.likes = appRecipe.likes
+                    appRecipeFromList?.likes = appRecipe.likes
+                    when (fieldName) {
+                        "likes" -> recipe.likes = appRecipe.likes
+                    }
+                    // TODO - check likes correct
                     updateRecipeInRecipesCollection(recipe)
                 }
             }
@@ -1046,20 +1061,21 @@ class AppDb {
 
     fun addRecipeToFavorites(appRecipe: AppRecipe) {
         val recipeId = appRecipe.uid
-
-        if (recipeId != null) {
-            val recipeRef =
-                firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
-                    .document(recipeId)
-            if (currDbUser?.favorites == null) {
-                currDbUser?.favorites = ArrayList()
-            }
-            currDbUser?.favorites!!.add(recipeRef)
-            updateUserInUsersCollection(null)
-            if (userAppFavorites == null) {
-                userAppFavorites = ArrayList()
-            }
-            userAppFavorites!!.add(appRecipe)
+        if (userAppFavorites != null && !userAppFavorites?.contains(appRecipe)!!)
+        {
+            if (recipeId != null) {
+                val recipeRef =
+                    firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
+                        .document(recipeId)
+                if (currDbUser?.favorites == null) {
+                    currDbUser?.favorites = ArrayList()
+                }
+                currDbUser?.favorites!!.add(recipeRef)
+                updateUserInUsersCollection(null)
+                if (userAppFavorites == null) {
+                    userAppFavorites = ArrayList()
+                }
+                userAppFavorites!!.add(appRecipe)
 
 //            firestore.collection(Chefi.getCon()
 //                    .getString(R.string.recipesCollection)).document(recipeId)
@@ -1079,6 +1095,8 @@ class AppDb {
 //            userFavorites = ArrayList()
 //        }
 //        userFavorites!!.add(dbRecipe)
+            }
+
         }
     }
 
@@ -1193,7 +1211,7 @@ class AppDb {
             // let's refresh the local arrayList
             for (document: QueryDocumentSnapshot in value) {
                 val dbNotification = document.toObject(DbNotificationItem::class.java) // convert to item
-                if (!userNotification?.contains(dbNotification)!!) {
+                if ((userNotification != null) && !userNotification?.contains(dbNotification)!!) {
                     userNotification?.add(dbNotification)
                 }
             }

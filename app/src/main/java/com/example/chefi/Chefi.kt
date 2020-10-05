@@ -187,6 +187,14 @@ class Chefi : Application() {
         appDb.deleteComment(comment, appRecipe)
     }
 
+    fun setUnseenNotification(num : Int) {
+        appDb.setUnseenNotification(num)
+    }
+
+    fun getUnseenNotification() : Int {
+        return appDb.getUnseenNotification()
+    }
+
     fun addNotification(userDestId: String, content: String, type : NotificationType) {
         appDb.addNotification(userDestId, content, type)
     }
