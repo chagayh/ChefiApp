@@ -156,12 +156,14 @@ class AppDb {
         Log.d(TAG_APP_DB, "in add to collection, uid = ${dbUser?.uid}")
         if (dbUser?.uid != null) {
             Log.d(TAG_APP_DB, "in add to collection")
-            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
+            val myReference = firestore
+                .collection(Chefi.getCon().getString(R.string.usersCollection))
                 .document(dbUser.uid!!)
-                .set(dbUser)
+            dbUser.myReference = myReference
+            myReference.set(dbUser)
                 .addOnSuccessListener {
-                    updateCurrentUserField()
-                }
+                updateCurrentUserField()
+            }
         }
     }
 
@@ -338,6 +340,40 @@ class AppDb {
         deleteImageFromStorage(imageUrl, recipe)
     }
 
+    fun deleteComment(comment: Comment, appRecipe: AppRecipe){
+        val commentRef = firestore
+            .collection(Chefi.getCon().getString(R.string.commentsCollection))
+            .document(comment.uid!!)
+        if (appRecipe.comments?.contains(commentRef)!!) {
+            appRecipe.comments?.remove(commentRef)
+        } else {
+            Log.w(TAG_APP_DB, "in deleteRecipe appRecipe.comments does not contain the comment")
+        }
+        firestore
+            .collection(Chefi.getCon().getString(R.string.recipesCollection))
+            .document(appRecipe.uid!!)
+            .get()
+            .addOnSuccessListener { documentSnapShot ->
+                val dbRecipe = documentSnapShot.toObject<DbRecipe>()
+                if (dbRecipe != null){
+                    if (dbRecipe.comments?.contains(commentRef)!!) {
+                        dbRecipe.comments?.remove(commentRef)
+                        updateRecipeInRecipesCollection(dbRecipe)
+                        commentRef
+                            .delete()
+                            .addOnSuccessListener {
+                                Log.d(TAG_APP_DB, "comment deleted")
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d(TAG_APP_DB, "exception ${exception.message}")
+                            }
+                    } else {
+                        Log.w(TAG_APP_DB, "in deleteRecipe dbRecipe.comments does not contain the comment")
+                    }
+                }
+            }
+    }
+
     fun deleteImageFromStorage(imageUrl: String?, recipe: AppRecipe?){
         FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl!!).delete()
             .addOnSuccessListener {
@@ -459,10 +495,10 @@ class AppDb {
 
     private fun loadOwnersToRecipe(userDbRecipesList : ArrayList<DbRecipe>,
                                    type: String?,
-                                   dbUser: DbUser?) {
+                                   user: DbUser?) {
         val userAppRecipesList = ArrayList<AppRecipe>()
 
-        if (dbUser == null) {
+        if (user == null) {
             for (recipe in userDbRecipesList) {
                 val appRecipe = AppRecipe(recipe.uid,
                     recipe.description,
@@ -496,7 +532,7 @@ class AppDb {
                     recipe.directions,
                     recipe.ingredients,
                     recipe.status,
-                    dbUser,
+                    user,
                     recipe.timestamp)
                 userAppRecipesList.add(appRecipe)
             }
@@ -691,8 +727,7 @@ class AppDb {
         }
     }
 
-    fun addComment(comment: Comment, recipeId: String) {
-        // TODO - add reference to arrayList in recipe.comments, add comment to collection
+    fun addComment(content: String, recipeId: String) {
         firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
             .document(recipeId)
             .get()
@@ -703,7 +738,12 @@ class AppDb {
                         val newCommentRef = firestore
                             .collection(Chefi.getCon().getString(R.string.commentsCollection))
                             .document()
-                        comment.uid = newCommentRef.id
+
+                        val comment = Comment(currDbUser?.userName,
+                            currDbUser?.name,
+                            content,
+                            newCommentRef.id)
+
                         newCommentRef
                             .set(comment)
                             .addOnSuccessListener {

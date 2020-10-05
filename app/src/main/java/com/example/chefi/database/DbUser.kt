@@ -17,7 +17,8 @@ data class DbUser(
     var notifications: ArrayList<DocumentReference>? = null,
     var favorites: ArrayList<DocumentReference>? = null,
     var following: ArrayList<DocumentReference>? = null,
-    var followers: ArrayList<DocumentReference>? = null
+    var followers: ArrayList<DocumentReference>? = null,
+    var myReference: DocumentReference? = null
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

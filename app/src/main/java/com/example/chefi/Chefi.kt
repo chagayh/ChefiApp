@@ -183,8 +183,12 @@ class Chefi : Application() {
         appDb.loadRecipesComments(appRecipe)
     }
 
-    fun addComment(comment: Comment, recipeId: String) {
-        appDb.addComment(comment, recipeId)
+    fun deleteComment(comment: Comment, appRecipe: AppRecipe) {
+        appDb.deleteComment(comment, appRecipe)
+    }
+
+    fun addComment(content: String, recipeId: String) {
+        appDb.addComment(content, recipeId)
     }
 
     fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String, content: String?) {

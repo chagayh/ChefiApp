@@ -137,7 +137,7 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         holder.commentPostBtn.setOnClickListener {
             val inputText = holder.commentContent.text
             if (inputText.toString().trim().isNotEmpty()){
-                appContext.addComment(Comment(), appRecipe?.uid!!)
+                appContext.addComment(inputText.toString(), appRecipe?.uid!!)
                 holder.commentContent.text.clear()
             }
         }

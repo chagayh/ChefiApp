@@ -7,7 +7,7 @@ data class Comment (
     var userName: String? = null,
     var name: String? = null,
     var commentContent: String? = null,
+    var uid: String? = null,
     @ServerTimestamp
-    var timestamp: Date? = null,
-    var uid: String? = null
+    var timestamp: Date? = null
 )
