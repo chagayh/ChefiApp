@@ -26,7 +26,7 @@
             android:gravity="center"
             android:layout_gravity="top"
             android:layout_weight="0.5"
-            android:layout_margin="25dp"
+            android:layout_margin="50dp"
             android:fontFamily="@font/proximanovaregular"
             android:background="@drawable/circularbordersolid"
             android:text="Gallery"/>
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="0.5"
-            android:layout_margin="25dp"
+            android:layout_margin="50dp"
             android:fontFamily="@font/proximanovaregular"
             android:background="@drawable/circularbordersolid"
             android:text="Camera" />

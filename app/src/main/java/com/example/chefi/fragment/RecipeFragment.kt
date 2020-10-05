@@ -38,7 +38,7 @@ class RecipeFragment : Fragment() {
     private lateinit var textViewIngredients: EditText
     private lateinit var textViewStatus: EditText
     private lateinit var imageUrl: String
-    private lateinit var addBtn: Button
+    private lateinit var addBtn: EditText
 
     // TODO - can't have empty fields
     // TODO - add progress bar
@@ -55,9 +55,9 @@ class RecipeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_recipe, container, false)
         imageUrl = args.imageUrl
 
-        textViewName = view.findViewById(R.id.textViewName)
-        textViewDirections = view.findViewById(R.id.textViewDirections)
-        textViewIngredients = view.findViewById(R.id.textViewIngredients)
+        textViewName = view.findViewById(R.id.editTextDescription)
+        textViewDirections = view.findViewById(R.id.editTextDirections)
+        textViewIngredients = view.findViewById(R.id.editTextIngredients)
         textViewStatus = view.findViewById(R.id.textViewStatus)
         addBtn = view.findViewById(R.id.addBtn)
 
