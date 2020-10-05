@@ -153,7 +153,7 @@ class AddFragment : Fragment() {
                 if (value.outputData.size() != 0) {
                     val imageUrl =
                         value.outputData.getString(getString(R.string.keyUrl))
-                    val action = AddFragmentDirections.actionAddFragmentToRecipeFragment2(imageUrl!!)
+                    val action = AddFragmentDirections.actionAddToAddRecipeDetails(imageUrl!!)
                     view?.findNavController()?.navigate(action)
                 }
             })

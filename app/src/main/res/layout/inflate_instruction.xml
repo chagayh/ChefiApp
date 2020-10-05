@@ -11,4 +11,4 @@
     android:hint="Insert recipe instruction"
     android:padding="10dp"
     android:textColor="@color/blue"
-    android:textSize="14sp" />
+    android:textSize="12sp" />

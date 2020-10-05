@@ -21,7 +21,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/LinearLayoutDescriptionDetails"
+                android:id="@+id/LinearLayoutDescription"
                 android:orientation="vertical"
                 android:gravity="left"
                 android:layout_margin="10dp"
@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textViewDescriptionDetails"
+                    android:id="@+id/textViewDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circularbordersolid"
@@ -40,20 +40,21 @@
                     android:padding="10dp"
                     android:textSize="12sp"/>
 
-                <TextView
-                    android:id="@+id/editTextDescriptionDetails"
+                <EditText
+                    android:id="@+id/editTextDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/blue"
                     android:layout_marginTop="5dp"
                     android:padding="10dp"
                     android:background="@drawable/circularbordersolid"
+                    android:hint="Insert recipe description here"
                     android:fontFamily="@font/proximanovaregular"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/LinearLayoutIngredientsDetails"
+                android:id="@+id/LinearLayoutIngredients"
                 android:orientation="vertical"
                 android:gravity="left"
                 android:layout_marginTop="40dp"
@@ -67,40 +68,55 @@
                     android:layout_height="wrap_content"
                     android:weightSum="1"
                     android:orientation="horizontal">
+
                     <TextView
-                        android:id="@+id/textViewIngredientsDetails"
+                        android:id="@+id/textViewIngredients"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/proximanovaregular"
-                        android:textColor="@color/blue"
                         android:background="@drawable/circularbordersolid"
-                        android:textSize="12sp"
+                        android:fontFamily="@font/proximanovaregular"
                         android:padding="10dp"
+                        android:text="Ingredients"
                         android:textStyle="bold"
-                        android:text="Ingredients"/>
+                        android:textColor="@color/blue"
+                        android:textSize="12sp" />
 
                     <Space
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
+                    <ImageButton
+                        android:id="@+id/plusIngredientsBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/circle_plus"
+                        android:padding="10dp"
+                        android:layout_weight="1"/>
+
+
                 </LinearLayout>
 
 
-                <TextView
-                    android:id="@+id/editTextIngredientsDetails"
+                <EditText
+                    android:id="@+id/editTextIngredients"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/circularbordersolid"
                     android:fontFamily="@font/proximanovaregular"
+
+                    android:hint="Insert recipe ingredient"
                     android:padding="10dp"
                     android:textColor="@color/blue"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/LinearLayoutDirectionsDetails"
+                android:id="@+id/LinearLayoutDirections"
                 android:orientation="vertical"
                 android:gravity="left"
                 android:layout_marginTop="40dp"
@@ -116,7 +132,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textViewDirectionsDetails"
+                        android:id="@+id/textViewDirections"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/circularbordersolid"
@@ -132,17 +148,82 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
+                    <ImageButton
+                        android:id="@+id/plusDirectionsBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/circle_plus"
+                        android:padding="10dp"
+                        android:layout_weight="1"/>
+
 
                 </LinearLayout>
 
 
-                <TextView
+                <EditText
                     android:id="@+id/editTextDirections"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/circularbordersolid"
                     android:fontFamily="@font/proximanovaregular"
+
+                    android:hint="Insert recipe instruction"
+                    android:padding="10dp"
+                    android:textColor="@color/blue"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LinearLayoutStatus"
+                android:orientation="vertical"
+                android:gravity="left"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circularbordersolid"
+                        android:fontFamily="@font/proximanovaregular"
+                        android:padding="10dp"
+                        android:text="Status"
+                        android:textStyle="bold"
+                        android:textColor="@color/blue"
+                        android:textSize="12sp" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+
+
+                </LinearLayout>
+
+
+                <EditText
+                    android:id="@+id/editTextStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/circularbordersolid"
+                    android:fontFamily="@font/proximanovaregular"
+
+                    android:hint="Insert recipe instruction"
                     android:padding="10dp"
                     android:textColor="@color/blue"
                     android:textSize="12sp" />
@@ -169,18 +250,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circularbordersolid"
-                    android:paddingRight="20dp"
                     android:paddingLeft="20dp"
                     android:paddingTop="10dp"
+                    android:paddingRight="20dp"
                     android:paddingBottom="10dp"
-                    android:text="SPEECH"
+                    android:text="ADD"
                     android:fontFamily="@font/proximanovaregular"
                     android:textStyle="bold"
                     android:textColor="@color/blue"
-                    android:textSize="12sp"  />
+                    android:textSize="12sp" />
             </LinearLayout>
 
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="10dp" />
         </LinearLayout>
 
     </ScrollView>
+
+
+
+
+
+
 </RelativeLayout>

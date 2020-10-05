@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
@@ -214,7 +215,14 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         val item = _recipesItems?.get(position - 1)
         // set a listener to know when view was clicked, and tell the listener if exists
         holder.itemView.setOnClickListener {
-            // TODO: open recipe_profile page
+            if (item != null){
+                val action: NavDirections = if (otherFlag) {
+                    ProfileOtherFragmentDirections.actionProfileOtherToRecipe(item)
+                }else {
+                    ProfileFragmentDirections.actionProfileToRecipe(item)
+                }
+                it.findNavController().navigate(action)
+            }
         }
         // set a long listener to know when view was clicked, and tell the listener if exists
         if (!otherFlag){
