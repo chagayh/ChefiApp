@@ -155,6 +155,11 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
             }
             true
         }
+
+        holder.recipeImage.setOnClickListener{
+            val action = HomeFragmentDirections.actionHomeToRecipeDetails(appRecipe)
+            it.findNavController().navigate(action)
+        }
     }
 
 }

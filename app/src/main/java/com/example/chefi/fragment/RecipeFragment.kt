@@ -7,9 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.navArgs
 import com.example.chefi.Chefi
@@ -38,7 +36,16 @@ class RecipeFragment : Fragment() {
     private lateinit var textViewIngredients: EditText
     private lateinit var textViewStatus: EditText
     private lateinit var imageUrl: String
-    private lateinit var addBtn: EditText
+    private lateinit var addBtn: TextView
+    private lateinit var addIngredientBtn: ImageButton
+    private lateinit var linearLayoutIngredients: LinearLayout
+    private lateinit var addDirectionsBtn: ImageButton
+    private lateinit var linearLayoutDirections: LinearLayout
+
+    private val ingredientsViewsList = ArrayList<View>()
+    private val directionsViewsList = ArrayList<View>()
+
+
 
     // TODO - can't have empty fields
     // TODO - add progress bar
@@ -58,19 +65,36 @@ class RecipeFragment : Fragment() {
         textViewName = view.findViewById(R.id.editTextDescription)
         textViewDirections = view.findViewById(R.id.editTextDirections)
         textViewIngredients = view.findViewById(R.id.editTextIngredients)
-        textViewStatus = view.findViewById(R.id.textViewStatus)
-        addBtn = view.findViewById(R.id.addBtn)
+        textViewStatus = view.findViewById(R.id.editTextStatus)
+        addBtn = view.findViewById(R.id.addRecipeBtn)
+
+        addIngredientBtn = view.findViewById(R.id.plusIngredientsBtn)
+        linearLayoutIngredients =  view.findViewById(R.id.LinearLayoutIngredients)
+        addDirectionsBtn = view.findViewById(R.id.plusDirectionsBtn)
+        linearLayoutDirections =  view.findViewById(R.id.LinearLayoutDirections)
 
         addBtn.setOnClickListener {
             Log.d(TAG_RECIPE_FRAGMENT, "${arrayListOf(textViewDirections.text.toString())}")
             val workId = appContext.addRecipe(textViewName.text.toString(),
                                               imageUrl,
-                                              arrayListOf(textViewDirections.text.toString()),
-                                              arrayListOf(textViewIngredients.text.toString()),
+                                              convertViewArrayToStringsArray(false),
+                                              convertViewArrayToStringsArray(true),
                                               Integer.parseInt(textViewStatus.text.toString()))
             setWorkObserver(workId)
         }
-//        Log.d(TAG_RECIPE_FRAGMENT, "imgeUrl = $url, databaseId= $imageDatabaseId")
+
+
+        addIngredientBtn.setOnClickListener(){
+            val tempEditText = inflater.inflate(R.layout.inflate_ingredient, container, false)
+            ingredientsViewsList.add(tempEditText)
+            linearLayoutIngredients.addView(tempEditText)
+        }
+
+        addDirectionsBtn.setOnClickListener(){
+            val tempEditText = inflater.inflate(R.layout.inflate_instruction, container, false)
+            directionsViewsList.add(tempEditText)
+            linearLayoutDirections.addView(tempEditText)
+        }
         return view
     }
 
@@ -135,5 +159,20 @@ class RecipeFragment : Fragment() {
                     }
                 }
             })
+    }
+
+    private fun convertViewArrayToStringsArray(isIngredients: Boolean): ArrayList<String>{
+        val result = ArrayList<String>()
+        val iterArray = if(isIngredients) ingredientsViewsList else directionsViewsList
+        if (isIngredients){
+            result.add(textViewIngredients.text.toString())
+        }else{
+            result.add(textViewDirections.text.toString())
+        }
+        for (tempView in iterArray){
+            val tempEditText: EditText = tempView.findViewById(R.id.editTextIngredientsTemp)
+            result.add(tempEditText.text.toString())
+        }
+        return result
     }
 }

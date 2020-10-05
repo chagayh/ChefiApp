@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_home_to_comment"
             app:destination="@id/commentFragment" />
+        <action
+            android:id="@+id/action_home_to_recipeDetails"
+            app:destination="@id/recipeDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -100,6 +103,15 @@
         android:name="com.example.chefi.fragment.CommentFragment"
         android:label="fragment_comment"
         tools:layout="@layout/fragment_comment" >
+        <argument
+            android:name="curRecipe"
+            app:argType="com.example.chefi.database.AppRecipe"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/recipeDetailsFragment"
+        android:name="com.example.chefi.fragment.RecipeDetailsFragment"
+        android:label="RecipeDetailsFragment" >
         <argument
             android:name="curRecipe"
             app:argType="com.example.chefi.database.AppRecipe"

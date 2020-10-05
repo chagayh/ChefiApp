@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.chefi.Chefi
 import com.example.chefi.R
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -36,6 +37,7 @@ class SignInFragment : Fragment() {
         emailEditText = view.findViewById(R.id.emailEditText)
         passwordEditText = view.findViewById(R.id.passwordEditText)
         nameEditText = view.findViewById(R.id.userNameEditText)
+        nameEditText.setText(nameEditText.text.toString().toLowerCase(Locale.ROOT))
         signInBtn = view.findViewById(R.id.signInBtn)
 
         setComponents()
