@@ -38,6 +38,7 @@ class CommentFragment : Fragment() {
         commentAdapter = CommentAdapter(curRecipe)
         recyclerViewComment.adapter = commentAdapter
         recyclerViewComment.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        commentAdapter.setItems(curRecipe?.comments)
         return view
     }
 

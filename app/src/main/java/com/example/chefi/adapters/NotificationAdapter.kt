@@ -32,7 +32,7 @@ class NotificationAdapter(): RecyclerView.Adapter<NotificationHolder>() {
         appContext = context.applicationContext as Chefi
         // TODO: get list
 //        _items = appContext.getUserFollowers()
-        view = LayoutInflater.from(context).inflate(R.layout.notification_item, parent, false)
+        view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false)
         return NotificationHolder(view)
     }
 

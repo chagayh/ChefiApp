@@ -48,7 +48,11 @@
         android:id="@+id/searchFragment"
         android:name="com.example.chefi.fragment.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_search_to_profileOther"
+            app:destination="@id/profileOtherFragment" />
+    </fragment>
     <fragment
         android:id="@+id/recipeFragment"
         android:name="com.example.chefi.fragment.RecipeFragment"

@@ -15,15 +15,10 @@ import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.holders.HomeHolder
 import com.squareup.picasso.Picasso
-import androidx.lifecycle.Observer
-import com.example.chefi.LiveDataHolder
-import com.example.chefi.ObserveWrapper
-import com.example.chefi.database.Comment
 
 class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<HomeHolder>() {
 
     private lateinit var appContext: Chefi
-    private val _viewLifecycleOwner = viewLifecycleOwner
     private var _items: ArrayList<AppRecipe> = ArrayList()
 
     // public method to show a new list of items
@@ -41,7 +36,7 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         val context = parent.context
         val view: View
         appContext = context.applicationContext as Chefi
-        view = LayoutInflater.from(context).inflate(R.layout.recipe_home, parent, false)
+        view = LayoutInflater.from(context).inflate(R.layout.item_recipe_home, parent, false)
         return HomeHolder(view)
     }
 
@@ -51,7 +46,6 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
 
 
     override fun onBindViewHolder(holder: HomeHolder, position: Int) {
-//        holder.image.setImageResource(R.drawable.chagaipp)
         customizeComponents(holder, position)
     }
 
@@ -84,26 +78,22 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         holder.postDescription.text = item.description
         holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), item.likes)
         // comment details
-//        appContext.loadRecipesComments(item)
-        val observer = Observer<ObserveWrapper<MutableList<Comment>>> { value ->
-            val content = value.getContentIfNotHandled()
-            if (content != null){
-                holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), content.size)
-                setNavigateToCommentComponents(holder, item, content)
-                if(content.size > 0)
-                {
-                    var tempComment = content[0]
-                    holder.commentOneUsername.text = tempComment.userName
-                    holder.commentOneContent.text = tempComment.commentContent
-                    if (content.size > 1){
-                        tempComment = content[1]
-                        holder.commentTwoUsername.text = tempComment.userName
-                        holder.commentTwoContent.text = tempComment.commentContent
-                    }
+//        holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), 0)
+        if (item.comments != null){
+            holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), item.comments!!.size)
+            setNavigateToCommentComponents(holder, item)
+            if(item.comments!!.size > 0)
+            {
+                var tempComment = item.comments!![0]
+                holder.commentOneUsername.text = tempComment.userName
+                holder.commentOneContent.text = tempComment.commentContent
+                if (item.comments!!.size > 1){
+                    tempComment = item.comments!![1]
+                    holder.commentTwoUsername.text = tempComment.userName
+                    holder.commentTwoContent.text = tempComment.commentContent
                 }
             }
         }
-        LiveDataHolder.getCommentsLiveData().observe(_viewLifecycleOwner, observer)
         setAddCommentButton(holder, item, position)
         if (curUser != null) {
             setNavigateToProfileComponents(holder, curUser)
@@ -126,10 +116,12 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         }
     }
 
-    private fun setNavigateToCommentComponents(holder: HomeHolder, appRecipe: AppRecipe?, comments: MutableList<Comment>){
+    private fun setNavigateToCommentComponents(holder: HomeHolder, appRecipe: AppRecipe?){
         holder.commentTitle.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeToComment(appRecipe)
-            it.findNavController().navigate(action)
+            if (appRecipe?.comments?.size!! > 0){
+                val action = HomeFragmentDirections.actionHomeToComment(appRecipe)
+                it.findNavController().navigate(action)
+            }
         }
     }
 

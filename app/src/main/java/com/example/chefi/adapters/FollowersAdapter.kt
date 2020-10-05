@@ -36,7 +36,7 @@ class FollowersAdapter(isFollowers: Boolean, curDbUser:DbUser?): RecyclerView.Ad
         val context = parent.context
         val view: View
         appContext = context.applicationContext as Chefi
-        view = LayoutInflater.from(context).inflate(R.layout.follower, parent, false)
+        view = LayoutInflater.from(context).inflate(R.layout.item_follower, parent, false)
         return FollowerHolder(view)
     }
 

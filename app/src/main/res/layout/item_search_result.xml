@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/lightgrey">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/innerConstraintSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/circularbordersolid"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/itemSearchSpace"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/searchCard"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+
+            app:cardCornerRadius="150dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0">
+
+            <ImageView
+                android:id="@+id/imageViewSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                app:srcCompat="@drawable/chagaipp" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/textViewSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="Yitzchak Vaknin"
+            android:textSize="10sp"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/searchCard"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintLeft_toRightOf="@id/searchCard"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/searchCard"
+            app:layout_constraintVertical_bias="0.5"  />
+
+        <TextView
+            android:id="@+id/textViewSearchSub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="\@yitzchak"
+            android:textSize="7sp"
+            app:layout_constraintBottom_toBottomOf="@id/searchCard"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintLeft_toLeftOf="@id/textViewSearch"
+            app:layout_constraintRight_toRightOf="@id/textViewSearch"
+            app:layout_constraintTop_toBottomOf="@id/textViewSearch"
+            app:layout_constraintVertical_bias="0.2"  />
+
+        <Button
+            android:id="@+id/buttonSearch"
+            android:layout_width="65dp"
+            android:layout_height="20dp"
+            android:background="@drawable/follow_button_outline"
+            android:elevation="15dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:foregroundTint="#ECECEC"
+            android:text="Follow"
+            android:textColor="#080808"
+            android:textSize="8sp"
+            tools:ignore="SmallSp"
+            app:layout_constraintTop_toTopOf="@id/searchCard"
+            app:layout_constraintBottom_toBottomOf="@id/searchCard"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/textViewSearch"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintHorizontal_bias="1"
+            android:layout_marginEnd="10dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Space
+        android:id="@+id/itemSearchSpace"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </Space>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

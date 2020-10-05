@@ -3,7 +3,6 @@ package com.example.chefi.adapters
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +57,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         appContext = context.applicationContext as Chefi
         tempDbUser = ((dbUser ?: appContext.getCurrUser()) as DbUser)
         if(viewType == TYPE_HEADER){
-            view = LayoutInflater.from(context).inflate(R.layout.profile_header, parent, false)
+            view = LayoutInflater.from(context).inflate(R.layout.item_profile_header, parent, false)
             if(otherFlag){ //if not user
                 val editAboutMe:TextView = view.findViewById(R.id.textViewAboutMeEdit)
                 val editMainCard:TextView = view.findViewById(R.id.TextViewEditMainCard)
@@ -68,7 +67,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
             return ProfileHeaderHolder(view)
         }
         else{
-            view = LayoutInflater.from(context).inflate(R.layout.recipe_profile, parent, false)
+            view = LayoutInflater.from(context).inflate(R.layout.item_recipe_profile, parent, false)
             return RecipeHolder(view)
         }
     }

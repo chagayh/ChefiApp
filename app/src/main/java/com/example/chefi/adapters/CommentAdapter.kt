@@ -33,21 +33,20 @@ class CommentAdapter(curRecipe: AppRecipe?): RecyclerView.Adapter<CommentHolder>
         val context = parent.context
         val view: View
         appContext = context.applicationContext as Chefi
-        view = LayoutInflater.from(context).inflate(R.layout.comment, parent, false)
+        view = LayoutInflater.from(context).inflate(R.layout.item_comment, parent, false)
         return CommentHolder(view)
     }
 
     override fun getItemCount(): Int {
-//        return _items.size
-        return 15
+        return _items.size
     }
 
 
     override fun onBindViewHolder(holder: CommentHolder, position: Int) {
-//        val item = _items[position]
-//        holder.name.text = item.name
-//        holder.username.text = "@" + item.userName
-//        holder.content.text = item.commentContent
-//        holder.timestamp.text = item.timestamp.toString()
+        val item = _items[position]
+        holder.name.text = item.name
+        holder.username.text = "@" + item.userName
+        holder.content.text = item.commentContent
+        holder.timestamp.text = item.timestamp.toString()
     }
 }
