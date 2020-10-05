@@ -44,9 +44,8 @@ class AddFragment : Fragment() {
 
     private var currentPhotoPath: String? = null
     private var imageUri: Uri? = null
-    private lateinit var textView: TextView
-    private lateinit var galleryBtn: Button
-    private lateinit var cameraBtn: Button
+    private lateinit var galleryBtn: TextView
+    private lateinit var cameraBtn: TextView
     private lateinit var progressBar: ProgressBar
 
     companion object {
@@ -63,7 +62,6 @@ class AddFragment : Fragment() {
         Log.d(TAG_ADD_FRAGMENT, "bundle = $savedInstanceState")
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add, container, false)
-        textView = view.findViewById(R.id.textView)
         galleryBtn = view.findViewById(R.id.galleryBtn)
         cameraBtn = view.findViewById(R.id.cameraBtn)
         progressBar = view.findViewById(R.id.progressBar)

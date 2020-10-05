@@ -274,17 +274,17 @@
             <EditText
                 android:id="@+id/editTextPostComment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_weight="1"
                 android:background="@drawable/follow_button_outline"
                 android:fontFamily="@font/proximanovaregular"
                 android:hint="  Add a comment"
-                android:layout_weight="1"
                 android:padding="3dp"
-                android:layout_marginLeft="2dp"
 
-                app:layout_constraintHorizontal_chainStyle="packed"
                 android:textColor="#808080"
-                android:textSize="11sp">
+                android:textSize="11sp"
+                app:layout_constraintHorizontal_chainStyle="packed">
 
             </EditText>
 

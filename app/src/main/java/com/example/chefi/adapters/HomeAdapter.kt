@@ -104,7 +104,7 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
             }
         }
         LiveDataHolder.getCommentsLiveData().observe(_viewLifecycleOwner, observer)
-        setAddCommentButton(holder, item, curUser)
+        setAddCommentButton(holder, item, position)
         if (curUser != null) {
             setNavigateToProfileComponents(holder, curUser)
         }
@@ -133,12 +133,13 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         }
     }
 
-    private fun setAddCommentButton(holder: HomeHolder, appRecipe: AppRecipe?, curUser: DbUser?){
+    private fun setAddCommentButton(holder: HomeHolder, appRecipe: AppRecipe?, position: Int){
         holder.commentPostBtn.setOnClickListener {
             val inputText = holder.commentContent.text
             if (inputText.toString().trim().isNotEmpty()){
                 appContext.addComment(inputText.toString(), appRecipe?.uid!!)
                 holder.commentContent.text.clear()
+                notifyItemChanged(position)
             }
         }
     }

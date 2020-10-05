@@ -7,37 +7,42 @@
     android:id="@+id/addFragment"
     tools:context=".fragment.AddFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:id="@+id/textView"
-        android:text="Add an image first"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/lightgrey"
+        android:weightSum="1"
+        android:padding="50dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/galleryBtn"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/galleryBtn"
-        android:text="Gallery"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/galleryBtn"
+            android:gravity="center"
+            android:layout_gravity="top"
+            android:layout_weight="0.5"
+            android:layout_margin="25dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:background="@drawable/circularbordersolid"
+            android:text="Gallery"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/cameraBtn"
-        android:text="Camera"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/galleryBtn"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        <TextView
+            android:id="@+id/cameraBtn"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="0.5"
+            android:layout_margin="25dp"
+            android:fontFamily="@font/proximanovaregular"
+            android:background="@drawable/circularbordersolid"
+            android:text="Camera" />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
