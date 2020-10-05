@@ -84,7 +84,7 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         holder.postDescription.text = item.description
         holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), item.likes)
         // comment details
-        appContext.loadRecipesComments(item)
+//        appContext.loadRecipesComments(item)
         val observer = Observer<ObserveWrapper<MutableList<Comment>>> { value ->
             val content = value.getContentIfNotHandled()
             if (content != null){

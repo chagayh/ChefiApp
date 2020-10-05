@@ -12,7 +12,7 @@ data class AppRecipe (
     var description: String? = null,
     var likes: Int? = 0,
     var imageUrl: String? = null,
-    var comments: ArrayList<DocumentReference>? = null,
+    var comments: ArrayList<Comment>? = null,
     var directions: ArrayList<String>? = null,
     var ingredients: ArrayList<String>? = null,
     var status: Int? = null,    // trade = 3

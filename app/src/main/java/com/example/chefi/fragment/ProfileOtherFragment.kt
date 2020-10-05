@@ -79,6 +79,7 @@ class ProfileOtherFragment : Fragment() {
             if (content != null){
                 Log.e("Profile Fragment", content.size.toString())
                 recipesAdapter.setItems(ArrayList(content), false)
+//                Log.e("Profile Fragment", "${content[0]}")
 //                    notifyDataSetChanged()
             }
         }

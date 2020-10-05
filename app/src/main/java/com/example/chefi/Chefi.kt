@@ -151,9 +151,9 @@ class Chefi : Application() {
         appDb.loadRecipes(user)
     }
 
-    fun loadRecipesComments(appRecipe: AppRecipe) {
-        appDb.loadRecipesComments(appRecipe)
-    }
+//    fun loadRecipesComments(appRecipe: AppRecipe) {
+//        appDb.loadRecipesComments(appRecipe)
+//    }
 
     fun loadFavorites() {
         appDb.loadFavorites()
@@ -177,10 +177,6 @@ class Chefi : Application() {
 
     fun getUser(userId: String?) {
         appDb.getUser(userId)
-    }
-
-    fun loadRecipeComments(appRecipe: AppRecipe) {
-        appDb.loadRecipesComments(appRecipe)
     }
 
     fun deleteComment(comment: Comment, appRecipe: AppRecipe) {
