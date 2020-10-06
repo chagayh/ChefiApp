@@ -1426,7 +1426,6 @@ class AppDb {
     }
 
     fun uploadFeed(fromBeginning: Boolean) {
-        Log.d("updateFeed", "i'm in uploadFeed")
         val limit = 30
         val query = if (fromBeginning)
             firestore
@@ -1447,16 +1446,18 @@ class AppDb {
                 for (docSnapShot in querySnapShot) {
                     val feedPost = docSnapShot.toObject<FeedPost>()
                     if (feedPost.dbRecipe != null && feedPost.date != null) {
-                        Log.d("updateFeed", "curr db recipe date = ${feedPost.date}")
                         feedPostsListDbRecipe.add(feedPost.dbRecipe!!)
                     }
                 }
+                val visitedOwners = ArrayList<DocumentReference>()
                 val recipeOwnerTasks = ArrayList<Task<DocumentSnapshot>>()
                 for (dbRecipe in feedPostsListDbRecipe) {
-                    val task = dbRecipe.owner?.get()
-                    if (task != null) {
-                        Log.d("updateFeed", "curr db recipe owner = ${dbRecipe.owner}")
-                        recipeOwnerTasks.add(task)
+                    if (!visitedOwners.contains(dbRecipe.owner)) {
+                        val task = dbRecipe.owner?.get()
+                        if (task != null) {
+                            recipeOwnerTasks.add(task)
+                        }
+                        visitedOwners.add(dbRecipe.owner!!)
                     }
                 }
                 Tasks.whenAllSuccess<DocumentSnapshot>(recipeOwnerTasks)
@@ -1464,48 +1465,47 @@ class AppDb {
                         val appRecipesList = ArrayList<AppRecipe>()
                         for (userDoc in ownersList) {
                             val user = userDoc.toObject<DbUser>()
-                            Log.d("updateFeed", "curr db recipe owner userName = ${user?.userName}")
+
                             val userRef = firestore
                                 .collection(Chefi.getCon().getString(R.string.usersCollection))
                                 .document(user?.uid!!)
-                            val recipe =
-                                feedPostsListDbRecipe.find { it.owner == userRef }
-                            val recipeCommentsList = recipe?.comments
-                            val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
-                            if (recipeCommentsList != null) {
-                                val commentsList = ArrayList<Comment>()
-                                for (commentRef in recipeCommentsList) {
-                                    val docTask = commentRef.get()
-                                    commentsTasks.add(docTask)
-                                }
-                                Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
-                                    .addOnSuccessListener { value ->
-                                        for (commentDoc in value) {
-                                            val comment = commentDoc.toObject<Comment>()
-                                            if (comment != null) {
-                                                commentsList.add(comment)
-                                            }
-                                        }
-                                        Log.d("updateFeed", "curr app recipe comment size = ${commentsList.size}")
-                                        val appRecipe = AppRecipe(
-                                            recipe.uid,
-                                            recipe.description,
-                                            recipe.likes,
-                                            recipe.imageUrl,
-                                            commentsList,
-                                            recipe.directions,
-                                            recipe.ingredients,
-                                            recipe.status,
-                                            user,
-                                            recipe.timestamp
-                                        )
-                                        appRecipesList.add(appRecipe)
-                                        Log.d("updateFeed", "in uploadFeed appRecipesList size = ${appRecipesList.size}")
-                                        postAppRecipes(appRecipesList)
+                            val recipeFilteredList =
+                                feedPostsListDbRecipe.filter { it.owner == userRef }
+                            for (recipe in recipeFilteredList) {
+                                val recipeCommentsList = recipe.comments
+                                val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
+                                if (recipeCommentsList != null) {
+                                    val commentsList = ArrayList<Comment>()
+                                    for (commentRef in recipeCommentsList) {
+                                        val docTask = commentRef.get()
+                                        commentsTasks.add(docTask)
                                     }
+                                    Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
+                                        .addOnSuccessListener { value ->
+                                            for (commentDoc in value) {
+                                                val comment = commentDoc.toObject<Comment>()
+                                                if (comment != null) {
+                                                    commentsList.add(comment)
+                                                }
+                                            }
+                                            val appRecipe = AppRecipe(
+                                                recipe.uid,
+                                                recipe.description,
+                                                recipe.likes,
+                                                recipe.imageUrl,
+                                                commentsList,
+                                                recipe.directions,
+                                                recipe.ingredients,
+                                                recipe.status,
+                                                user,
+                                                recipe.timestamp
+                                            )
+                                            appRecipesList.add(appRecipe)
+                                            postAppRecipes(appRecipesList)
+                                        }
+                                }
                             }
                         }
-//                        postAppRecipes(appRecipesList)
                     }
             }
     }
