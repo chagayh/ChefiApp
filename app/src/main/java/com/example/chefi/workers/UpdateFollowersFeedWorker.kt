@@ -21,7 +21,7 @@ class UpdateFollowersFeedWorker(context: Context, workerParams: WorkerParameters
 
     private var recipeId: String? = null
     private val TAG_UPDATE_FEED_WORKER = "updateFollowersFeedWorker"
-    private var observer : Observer<ObserveWrapper<String>>? = null
+    private var observer : Observer<ObserveWrapper<Int>>? = null
 
     override fun startWork(): ListenableFuture<Result> {
         // 1. here we create the future and store the callback for later use
@@ -47,19 +47,19 @@ class UpdateFollowersFeedWorker(context: Context, workerParams: WorkerParameters
     }
 
     private fun setObserver() {
-        observer = Observer<ObserveWrapper<String>> { value ->
+        observer = Observer<ObserveWrapper<Int>> { value ->
             Log.d(TAG_UPDATE_FEED_WORKER, "in set observer")
             val content = value.getContentIfNotHandled()
             if (content != null) {
                 val outPutData = Data.Builder()
                     .putString("string", recipeId)
                     .build()
-                LiveDataHolder.getStringLiveData().removeObserver(observer!!)
+                LiveDataHolder.getIntLiveData().removeObserver(observer!!)
                 Log.d(TAG_UPDATE_FEED_WORKER, "in set observer recipeId = $value")
                 this.callback?.set(Result.success(outPutData))
             }
         }
-        LiveDataHolder.getStringLiveData().observeForever(observer!!)
+        LiveDataHolder.getIntLiveData().observeForever(observer!!)
     }
 
 }

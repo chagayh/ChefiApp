@@ -176,6 +176,7 @@ class Chefi : Application() {
     fun deleteRecipeFromFavorites(recipeId : String) {
         appDb.deleteRecipeFromFavorites(recipeId)
     }
+
     fun deleteImage(imageUrl: String?, dbRecipe: DbRecipe?) {
         appDb.deleteImageFromStorage(imageUrl, null)
     }
@@ -187,10 +188,6 @@ class Chefi : Application() {
     fun loadRecipes(user: DbUser?) {
         appDb.loadRecipes(user)
     }
-
-//    fun loadRecipesComments(appRecipe: AppRecipe) {
-//        appDb.loadRecipesComments(appRecipe)
-//    }
 
     fun loadFavorites() {
         appDb.loadFavorites()
@@ -233,7 +230,7 @@ class Chefi : Application() {
     }
 
     fun addComment(content: String, recipeId: String) {
-        appDb.addComment(content, recipeId)
+        appDb.addComment(content, recipeId, this, "add")
     }
 
     fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String, content: String?) {

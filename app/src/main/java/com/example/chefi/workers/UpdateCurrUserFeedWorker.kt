@@ -17,7 +17,7 @@ class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
 
     private var userIdTo: String? = null
     private var callback: CallbackToFutureAdapter.Completer<Result>? = null
-    private var observer : Observer<ObserveWrapper<String>>? = null
+    private var observer : Observer<ObserveWrapper<Int>>? = null
     private val appContext: Chefi
         get() = applicationContext as Chefi
 
@@ -44,18 +44,18 @@ class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
     }
 
     private fun setObserver() {
-        observer = Observer<ObserveWrapper<String>> { value ->
+        observer = Observer<ObserveWrapper<Int>> { value ->
             Log.d(TAG_UPDATE_FEED_FOLLOW_WORKER, "in set observer")
             val content = value.getContentIfNotHandled()
             if (content != null) {
                 val outPutData = Data.Builder()
                     .putString("string", userIdTo)
                     .build()
-                LiveDataHolder.getStringLiveData().removeObserver(observer!!)
+                LiveDataHolder.getIntLiveData().removeObserver(observer!!)
                 Log.d(TAG_UPDATE_FEED_FOLLOW_WORKER, "in set observer recipeId = $value")
                 this.callback?.set(Result.success(outPutData))
             }
         }
-        LiveDataHolder.getStringLiveData().observeForever(observer!!)
+        LiveDataHolder.getIntLiveData().observeForever(observer!!)
     }
 }
