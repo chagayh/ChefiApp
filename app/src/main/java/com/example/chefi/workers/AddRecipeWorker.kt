@@ -12,7 +12,6 @@ import androidx.work.Data
 import com.example.chefi.Chefi
 import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
-import com.example.chefi.database.DbRecipe
 import com.example.chefi.database.AppRecipe
 import com.google.gson.reflect.TypeToken
 import com.google.gson.Gson
@@ -78,6 +77,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
                     .build()
                 LiveDataHolder.getRecipeLiveData().removeObserver(observer!!)
                 Log.d(TAG_ADD_RECIPE_WORKER, "in set observer recipe = $value")
+                appContext.addWorkerUpdateFeedToFollowers("add", content.uid!!)
                 this.callback?.set(Result.success(outPutData))
             }
         }

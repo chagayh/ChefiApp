@@ -126,7 +126,6 @@ class AddRecipeDetailsFragment : Fragment() {
                                                       owner=null,   // curr user own the recipe
                                                       timestamp=gson.fromJson(timeStampAsJson, dateType))
 
-
 //                    val recipeAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipeType))
 //                    val recipeType = object : TypeToken<AppRecipe>() {}.type
 //

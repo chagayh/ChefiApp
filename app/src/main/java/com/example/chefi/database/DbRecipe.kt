@@ -18,7 +18,8 @@ data class DbRecipe(
     var status: Int? = null, // TODO - new
     var owner: DocumentReference? = null, // TODO - new
     @ServerTimestamp
-    var timestamp: Date? = null
+    var timestamp: Date? = null,
+    var myReference: DocumentReference? = null
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

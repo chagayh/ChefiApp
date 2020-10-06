@@ -2,6 +2,7 @@ package com.example.chefi.database
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 
 data class DbUser(
@@ -18,7 +19,8 @@ data class DbUser(
     var favorites: ArrayList<DocumentReference>? = null,
     var following: ArrayList<DocumentReference>? = null,
     var followers: ArrayList<DocumentReference>? = null,
-    var myReference: DocumentReference? = null
+    var myReference: DocumentReference? = null,
+    var myFeedCollectionReference: CollectionReference? = null
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

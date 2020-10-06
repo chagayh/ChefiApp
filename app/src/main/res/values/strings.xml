@@ -40,6 +40,7 @@
     <string name="recipesCollection">recipes_collection</string>
     <string name="commentsCollection">recipes_comments_collection</string>
     <string name="notificationsCollection">notifications_collection</string>
+    <string name="usersFeedCollection">users_feed_collection</string>
 
     //Firebase Storage keys
     <string name="imageUpload">uploads/images_upload</string>

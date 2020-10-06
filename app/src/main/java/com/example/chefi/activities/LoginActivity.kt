@@ -59,10 +59,12 @@ class LoginActivity : AppCompatActivity() {
     private fun checkUserConnection() {
         authStateListener = FirebaseAuth.AuthStateListener {
             val user = it.currentUser
+            Log.d(TAG_LOGIN_ACTIVITY, "in LoginActivity usr.email = ${user?.email}")
             if (user != null) {
 //                Toast.makeText(this, "user ${user.email} connected", Toast.LENGTH_SHORT)
 //                    .show()
                 Log.d(TAG_LOGIN_ACTIVITY, "in LoginActivity checkUser")
+
                 val appIntent = Intent(this, MainActivity::class.java)
                 appIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 startActivity(appIntent)

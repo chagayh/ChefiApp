@@ -151,6 +151,7 @@ class AddFragment : Fragment() {
                 )
                 Log.d("change_url", "in setWorkObserver image url = ${value.outputData.getString(getString(R.string.keyUrl))}")
                 if (value.outputData.size() != 0) {
+                    Log.d("change_url", "value.outputData.size() == 0")
                     val imageUrl =
                         value.outputData.getString(getString(R.string.keyUrl))
                     val action = AddFragmentDirections.actionAddToAddRecipeDetails(imageUrl!!)

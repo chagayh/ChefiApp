@@ -8,6 +8,8 @@ import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.*
 import com.example.chefi.workers.AddRecipeWorker
+import com.example.chefi.workers.UpdateCurrUserFeedWorker
+import com.example.chefi.workers.UpdateFollowersFeedWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -84,6 +86,10 @@ class Chefi : Application() {
 
     }
 
+    fun updateFeedWithRecipe(type: String, recipeUid: String) {
+        appDb.updateFeedWithRecipe(type, recipeUid)
+    }
+
     fun addRecipeToDb(
         recipeName: String?,
         imageUrl: String?,
@@ -92,6 +98,25 @@ class Chefi : Application() {
         status: Int?
     ) {
         appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status)
+    }
+
+    fun addWorkerUpdateFeedToFollowers(type: String, recipeId: String) {
+        val workId = UUID.randomUUID()
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val inputData = Data.Builder()
+            .putString("type", type)
+            .putString("recipeUid", recipeId)
+            .build()
+        val oneTimeWorkRequest = OneTimeWorkRequest
+            .Builder(UpdateFollowersFeedWorker::class.java)
+            .setConstraints(constraints)
+            .setInputData(inputData)
+            .addTag(workId.toString())
+            .build()
+        WorkManager.getInstance(this)
+            .enqueue(oneTimeWorkRequest)
     }
 
     fun addRecipe(
@@ -127,6 +152,10 @@ class Chefi : Application() {
         return oneTimeWorkRequest.id
     }
 
+    fun follow(dbUserToFollow: DbUser) {
+        appDb.follow(dbUserToFollow, this)
+    }
+
     fun getFirebaseCurrUser() : FirebaseUser? {
         return appDb.getFirebaseCurrUser()
     }
@@ -136,9 +165,17 @@ class Chefi : Application() {
     }
 
     fun deleteRecipe(recipe: AppRecipe) {
-        return appDb.deleteRecipe(recipe)
+        if (recipe.uid != null) {
+            addWorkerUpdateFeedToFollowers("delete", recipe.uid!!)
+        } else {
+            Log.w(TAG_CHEFI, "recipe uid = null")
+        }
+        appDb.deleteRecipe(recipe)
     }
 
+    fun deleteRecipeFromFavorites(recipeId : String) {
+        appDb.deleteRecipeFromFavorites(recipeId)
+    }
     fun deleteImage(imageUrl: String?, dbRecipe: DbRecipe?) {
         appDb.deleteImageFromStorage(imageUrl, null)
     }
@@ -223,12 +260,12 @@ class Chefi : Application() {
         return appDb.getUserFollowers()
     }
 
-    fun follow(dbUserToFollow: DbUser) {
-        appDb.follow(dbUserToFollow)
+    fun updatePostsToCurrUserFeed(type: String, userIdTo: String) {
+        appDb.updatePostsToCurrUserFeed(type, userIdTo)
     }
 
     fun unFollow(dbUserToUnFollow: DbUser) {
-        appDb.unFollow(dbUserToUnFollow)
+        appDb.unFollow(dbUserToUnFollow, this)
     }
 
     fun addRecipeToFavorites(appRecipe: AppRecipe) {
@@ -237,6 +274,10 @@ class Chefi : Application() {
 
     fun removeRecipeFromFavorites(appRecipe: AppRecipe) {
         appDb.removeRecipeFromFavorites(appRecipe)
+    }
+
+    fun uploadFeed(fromBeginning: Boolean) {
+        appDb.uploadFeed(fromBeginning)
     }
 
     fun addUserToFollowers(otherDbUser: DbUser) {

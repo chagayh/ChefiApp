@@ -8,7 +8,7 @@ object LiveDataHolder {
 
     // lists init
 
-    private val MUTABLE_DB_USER_LIVE_DATA : MutableLiveData<ObserveWrapper<DbUser>> by lazy {
+    private val mutableDbUserLiveData : MutableLiveData<ObserveWrapper<DbUser>> by lazy {
         MutableLiveData<ObserveWrapper<DbUser>>()
     }
 
@@ -24,11 +24,11 @@ object LiveDataHolder {
         MutableLiveData<ObserveWrapper<String>>()
     }
 
-    private val USERS_LIST_LIVE_DATA : MutableLiveData<ObserveWrapper<MutableList<DbUser>>> by lazy {
+    private val usersListLiveData : MutableLiveData<ObserveWrapper<MutableList<DbUser>>> by lazy {
         MutableLiveData<ObserveWrapper<MutableList<DbUser>>>()
     }
 
-    private val NOTIFICATIONS_LIVE_DATA : MutableLiveData<ObserveWrapper<MutableList<AppNotification>>> by lazy {
+    private val notificationLiveData : MutableLiveData<ObserveWrapper<MutableList<AppNotification>>> by lazy {
         MutableLiveData<ObserveWrapper<MutableList<AppNotification>>>()
     }
 
@@ -41,19 +41,19 @@ object LiveDataHolder {
     // funs
 
     fun getUsersListLiveData() : LiveData<ObserveWrapper<MutableList<DbUser>>>{
-        return USERS_LIST_LIVE_DATA
+        return usersListLiveData
     }
 
     fun getUsersListMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<DbUser>>>{
-        return USERS_LIST_LIVE_DATA
+        return usersListLiveData
     }
 
     fun getNotificationsLiveData() : LiveData<ObserveWrapper<MutableList<AppNotification>>>{
-        return NOTIFICATIONS_LIVE_DATA
+        return notificationLiveData
     }
 
     fun getNotificationsMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<AppNotification>>>{
-        return NOTIFICATIONS_LIVE_DATA
+        return notificationLiveData
     }
 
     fun getCommentsLiveData() : LiveData<ObserveWrapper<MutableList<Comment>>>{
@@ -81,11 +81,11 @@ object LiveDataHolder {
     }
 
     fun getUserLiveData() : LiveData<ObserveWrapper<DbUser>>{
-        return MUTABLE_DB_USER_LIVE_DATA
+        return mutableDbUserLiveData
     }
 
     fun getUserMutableLiveData() : MutableLiveData<ObserveWrapper<DbUser>>{
-        return MUTABLE_DB_USER_LIVE_DATA
+        return mutableDbUserLiveData
     }
 
     fun getRecipeListLiveData() : LiveData<ObserveWrapper<MutableList<AppRecipe>>>{
