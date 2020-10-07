@@ -63,7 +63,7 @@ class SignInFragment : Fragment() {
                     .isEmpty() || emailEditText.text.toString().trim().isEmpty()
             ) {
                 Log.d(UserEmailFragment.TAG_SIGN_IN, "one is empty")
-                Toast.makeText(activity, "missing fields", Toast.LENGTH_SHORT)
+                Toast.makeText(activity, "Missing fields", Toast.LENGTH_SHORT)
                     .show()
             } else {
                 val email = emailEditText.text.toString()

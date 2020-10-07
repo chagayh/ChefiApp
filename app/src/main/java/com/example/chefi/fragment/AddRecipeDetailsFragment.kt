@@ -15,6 +15,7 @@ import com.example.chefi.R
 import java.util.*
 import androidx.navigation.fragment.findNavController
 import com.example.chefi.database.AppRecipe
+import com.example.chefi.database.DbUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -41,6 +42,7 @@ class AddRecipeDetailsFragment : Fragment() {
     private lateinit var linearLayoutIngredients: LinearLayout
     private lateinit var addDirectionsBtn: ImageButton
     private lateinit var linearLayoutDirections: LinearLayout
+    private lateinit var user: DbUser
 
     private val ingredientsViewsList = ArrayList<View>()
     private val directionsViewsList = ArrayList<View>()
@@ -68,6 +70,7 @@ class AddRecipeDetailsFragment : Fragment() {
         addDirectionsBtn = view.findViewById(R.id.plusDirectionsBtn)
         linearLayoutDirections =  view.findViewById(R.id.LinearLayoutDirections)
 
+        user = appContext.getCurrUser()!!
         addBtn.setOnClickListener {
             Log.d(TAG_RECIPE_FRAGMENT, "${arrayListOf(textViewDirections.text.toString())}")
             val workId = appContext.addRecipe(textViewName.text.toString(),
@@ -131,7 +134,7 @@ class AddRecipeDetailsFragment : Fragment() {
 //
 //                    val returnedRecipe = Gson().fromJson<AppRecipe>(recipeAsJson, recipeType)
                     Log.d("change_url", "in recipeFragment in setWorkObserver, recipe image url = ${appRecipeReturned.imageUrl}")
-                    Toast.makeText(appContext, "recipe_profile ${appRecipeReturned.description} CREATED", Toast.LENGTH_SHORT)
+                    Toast.makeText(appContext, "Recipe was CREATED by @${user.userName}", Toast.LENGTH_SHORT)
                         .show()
                     // TODO - maybe add a preview page
                     findNavController().navigate(R.id.addFragment)

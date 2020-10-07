@@ -46,10 +46,8 @@ class FollowersAdapter(isFollowers: Boolean, curDbUser:DbUser?): RecyclerView.Ad
 
 
     override fun onBindViewHolder(holder: FollowerHolder, position: Int) {
-        if (_isFollowers){
-            holder.unfollowButton.text = "Follow"
-        }
         val item = _items[position]
+        // details:
         holder.name.text = item.name
         holder.username.text = "@" + item.userName
         if(item.imageUrl != null) {
@@ -59,9 +57,26 @@ class FollowersAdapter(isFollowers: Boolean, curDbUser:DbUser?): RecyclerView.Ad
         }else{
             holder.image.setImageResource(R.drawable.defpp)
         }
+        // Follow btn:
+        if (item.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+            holder.unfollowButton.text = "UNFOLLOW"
+        }else{
+            holder.unfollowButton.text = "FOLLOW"
+        }
+        // On click Listeners:
         holder.image.setOnClickListener {
             val action = FollowersFragmentDirections.actionFollowersToProfileOther(item)
             it.findNavController().navigate(action)
+        }
+
+        holder.unfollowButton.setOnClickListener {
+            if (item.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+                appContext.unFollow(item)
+                holder.unfollowButton.text = "FOLLOW"
+            }else{
+                appContext.follow(item)
+                holder.unfollowButton.text = "UNFOLLOW"
+            }
         }
     }
 }

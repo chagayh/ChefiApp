@@ -45,6 +45,7 @@ class SearchAdapter(): RecyclerView.Adapter<SearchHolder>() {
 
     override fun onBindViewHolder(holder: SearchHolder, position: Int) {
         val item = _items?.get(position)
+        // details
         if (item != null) {
             holder.name.text = item.name
             holder.username.text = "@" + item.userName
@@ -56,10 +57,26 @@ class SearchAdapter(): RecyclerView.Adapter<SearchHolder>() {
                 holder.image.setImageResource(R.drawable.defpp)
             }
         }
+        // follow btn
+        if (item?.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+            holder.followButton.text = "UNFOLLOW"
+        }else{
+            holder.followButton.text = "FOLLOW"
+        }
+
+        // on click listeners
         holder.image.setOnClickListener {
-            val action = item?.let { it1 -> SearchFragmentDirections.actionSearchToProfileOther(it1) }
-            if (action != null) {
-                it.findNavController().navigate(action)
+            val action = item.let { it1 -> SearchFragmentDirections.actionSearchToProfileOther(it1) }
+            it.findNavController().navigate(action)
+        }
+
+        holder.followButton.setOnClickListener {
+            if (item.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+                appContext.unFollow(item)
+                holder.followButton.text = "FOLLOW"
+            }else{
+                appContext.follow(item)
+                holder.followButton.text = "UNFOLLOW"
             }
         }
     }

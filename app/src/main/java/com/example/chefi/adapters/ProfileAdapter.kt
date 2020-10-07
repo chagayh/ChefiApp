@@ -62,8 +62,16 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
             if(otherFlag){ //if not user
                 val editAboutMe:TextView = view.findViewById(R.id.textViewAboutMeEdit)
                 val editMainCard:TextView = view.findViewById(R.id.TextViewEditMainCard)
+                val followButton:TextView = view.findViewById(R.id.followBtn)
                 editAboutMe.visibility = View.GONE
                 editMainCard.visibility = View.GONE
+                if (dbUser != null) {
+                    if (dbUser.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+                        followButton.text = "UNFOLLOW"
+                    }else{
+                        followButton.text = "FOLLOW"
+                    }
+                }
             }
             return ProfileHeaderHolder(view)
         }
@@ -108,7 +116,6 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         holder.aboutMeTextView.text = tempDbUser.aboutMe
         holder.nameTextView.text = tempDbUser.name
         holder.usernameTextView.text = "@" + tempDbUser.userName
-
         if(tempDbUser.imageUrl != null){
             Picasso.with(appContext)
                 .load(tempDbUser.imageUrl)
@@ -126,8 +133,13 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
             holder.followMenuLinear.visibility = View.VISIBLE
             holder.followButton.setOnClickListener(View.OnClickListener {
                 if (dbUser != null) {
-                    appContext.follow(dbUser)
-                    holder.followButton.text = "UNFOLLOW"
+                    if (dbUser.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+                        appContext.unFollow(dbUser)
+                        holder.followButton.text = "FOLLOW"
+                    }else{
+                        appContext.follow(dbUser)
+                        holder.followButton.text = "UNFOLLOW"
+                    }
                 }
             })
         }

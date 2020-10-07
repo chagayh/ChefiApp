@@ -13,6 +13,7 @@ import com.example.chefi.workers.UpdateFollowersFeedWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
 import com.google.gson.Gson
 import java.text.DateFormat
 import java.util.*
@@ -289,5 +290,9 @@ class Chefi : Application() {
 
     fun fireBaseSearchUsers(searchText: String) {
         appDb.fireBaseSearchUsers(searchText)
+    }
+
+    fun isFollowedByMe(ref: DocumentReference): Boolean{
+        return appDb.isFollowedByMe(ref)
     }
 }

@@ -68,6 +68,9 @@ class HomeFragment : Fragment() {
             if (content != null){
                 Log.d("updateFeed", "content size = ${content.size}")
                 items = ArrayList(content)
+                for(kas in content){
+                    Log.d("updateFeed", "content name = ${kas.uid}")
+                }
                 homeAdapter.setItems(items)
 //                Log.e("Profile Fragment", "${content[0]}")
 //                    notifyDataSetChanged()
@@ -76,6 +79,5 @@ class HomeFragment : Fragment() {
         LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
 //        if (items != null) {
         Log.e("Home fragment", items.size.toString())
-
     }
 }

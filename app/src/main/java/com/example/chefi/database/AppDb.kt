@@ -1705,6 +1705,10 @@ class AppDb {
         // you can just ignore the variable and the live-query will continue listening forever
         // (or at least until your application process will be killed by the OS)
     }
+
+    fun isFollowedByMe(ref: DocumentReference): Boolean{
+        return currDbUser?.following?.contains(ref)!!
+    }
 }
 
 
