@@ -11,16 +11,20 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
+import com.example.chefi.LiveDataHolder
+import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
 import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.holders.HomeHolder
 import com.squareup.picasso.Picasso
+import androidx.lifecycle.Observer
 
-class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<HomeHolder>() {
+class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<HomeHolder>() {
 
     private lateinit var appContext: Chefi
+    private lateinit var observer: Observer<ObserveWrapper<MutableList<AppRecipe>>>
     private var _items: ArrayList<AppRecipe> = ArrayList()
 
     // public method to show a new list of items
@@ -39,6 +43,22 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         val view: View
         appContext = context.applicationContext as Chefi
         view = LayoutInflater.from(context).inflate(R.layout.item_recipe_home, parent, false)
+
+        observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
+            val items = ArrayList<AppRecipe>(_items)
+            val content = value.getContentIfNotHandled()
+            if (content != null){
+                Log.d("HomeAdapterObserver", "content size = ${content.size}")
+                items.union(ArrayList(content))
+                for(kas in content){
+                    Log.d("HomeAdapterObserver", "content name = ${kas.uid}")
+                }
+                Log.d("HomeAdapterObserver", "items size = ${items.size}")
+                setItems(items)
+            }
+        }
+
+
         return HomeHolder(view)
     }
 
@@ -49,6 +69,15 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
 
     override fun onBindViewHolder(holder: HomeHolder, position: Int) {
         customizeComponents(holder, position)
+        updateFeedRoutine(position)
+    }
+
+    private fun updateFeedRoutine(position: Int){
+        if(position % 2 == 0){
+            appContext.uploadFeed(false)
+            LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
+            Log.e("Home fragment", _items.size.toString())
+        }
     }
 
     private fun customizeComponents(holder:HomeHolder, position: Int){

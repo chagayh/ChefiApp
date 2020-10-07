@@ -8,18 +8,23 @@ import java.util.*
 enum class NotificationType{
     LIKE{
         override fun toString(): String {
-            return "%s like your recipe_profile."
+            return "%s like your recipe_profile"
 
         }
     },
     FOLLOW{
         override fun toString(): String {
-            return "%s is now follow you."
+            return "%s is now follow you"
         }
     },
     COMMENT{
         override fun toString(): String {
-            return "%s leave a comment: %s"
+            return "%s leave a comment"
+        }
+    },
+    TRADE{
+        override fun toString(): String {
+            return "%s offer you a trade!"
         }
     },
     DEFAULT{
@@ -36,18 +41,4 @@ data class DbNotificationItem (
     var notificationType: NotificationType = NotificationType.DEFAULT,
     @ServerTimestamp
     var timestamp: Date? = null
-){
-//    override fun toString(): String {
-//        return when (notificationType) {
-//            NotificationType.DEFAULT -> {
-//                super.toString()
-//            }
-//            NotificationType.COMMENT -> {
-//                String.format(notificationType.toString(), user, notificationContent)
-//            }
-//            else -> {
-//                String.format(notificationType.toString(), user)
-//            }
-//        }
-//    }
-}
+){}

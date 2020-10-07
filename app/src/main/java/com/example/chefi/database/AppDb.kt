@@ -1726,6 +1726,7 @@ class AppDb {
                                                         recipe.allowedUsers
                                                     )
                                                     appRecipesList.add(appRecipe)
+                                                    Log.e("ZIN", "${appRecipe.myReference}")
                                                     postAppRecipes(appRecipesList)
                                                 }
                                         }
