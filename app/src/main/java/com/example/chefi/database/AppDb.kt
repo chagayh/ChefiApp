@@ -75,8 +75,32 @@ class AppDb {
         unseenNotification = num
     }
 
-    fun getUnseenNotification(): Int {
-        return unseenNotification
+    fun setUserPermission(appRecipe: AppRecipe, userId: String) {
+        if (appRecipe.status == 3) {
+            if (appRecipe.allowedUsers == null) {
+                appRecipe.allowedUsers = ArrayList()
+            }
+            val userRef = firestore
+                .collection(Chefi.getCon().getString(R.string.usersCollection))
+                .document(userId)
+            if (!appRecipe.allowedUsers!!.contains(userRef)) {
+                appRecipe.allowedUsers!!.add(userRef)
+                firestore
+                    .collection(Chefi.getCon().getString(R.string.recipesCollection))
+                    .document(appRecipe.uid!!)
+                    .get()
+                    .addOnSuccessListener {
+                        val dbUser = it.toObject<DbRecipe>()
+                        if (dbUser != null){
+                            updateRecipeInRecipesCollection(dbUser)
+                        }
+                    }
+            } else {
+                Log.w(TAG_APP_DB, "in setUserPermission appRecipe.allowedUsers already contains the user ref")
+            }
+        } else {
+            Log.w(TAG_APP_DB, "in setUserPermission appRecipe.status != 3")
+        }
     }
 
     fun getFirebaseAuth(): FirebaseAuth {
@@ -164,7 +188,8 @@ class AppDb {
                     postUser(newUser)
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG_APP_DB, "createUserWithEmail:failure", task.exception)
+                    Log.w(TAG_APP_DB, "createUserWithEmail:failure ${task.exception?.message}")
+                    postString(task.exception?.message.toString())
                 }
             }
     }
