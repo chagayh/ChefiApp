@@ -55,6 +55,11 @@ class AppDb {
     private var userAppFavorites: ArrayList<AppRecipe>? = null
     private var userAppNotification: ArrayList<AppNotification>? = null
 
+    // other user fields
+    private var otherAppRecipes: ArrayList<AppRecipe>? = null
+    private var otherAppFavorites: ArrayList<AppRecipe>? = null
+    private var otherAppNotification: ArrayList<AppNotification>? = null
+
     companion object {
         // TAGS
         private const val TAG_APP_DB: String = "appDb"
@@ -708,7 +713,10 @@ class AppDb {
     ) {
 
         val recipeTasks = ArrayList<Task<DocumentSnapshot>>()
-        val userRecipesList = ArrayList<AppRecipe>()
+        if (otherAppRecipes == null) {
+            otherAppRecipes = ArrayList<AppRecipe>()
+        }
+//        val otherAppRecipes = ArrayList<AppRecipe>()
         if (recipesList != null) {
             for (recipeRef in recipesList) {
                 val docTask = recipeRef.get()
@@ -749,7 +757,7 @@ class AppDb {
                                             recipe.myReference,
                                             recipe.allowedUsers
                                         )
-                                        userRecipesList.add(appRecipe)
+                                        otherAppRecipes!!.add(appRecipe)
 
                                         // TODO - add post somewhere
                                     }
@@ -758,23 +766,31 @@ class AppDb {
                     }
                     Log.d(
                         TAG_APP_DB,
-                        "in loadRecipesFromReferenceList userRecipesList = ${userRecipesList.size}"
+                        "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes!!.size}"
                     )
                     if (isCurrUser == null) {
                         when (type!!) {
                             "recipes" -> {
                                 userAppRecipes = ArrayList()
-                                userAppRecipes = userRecipesList
+                                userAppRecipes = otherAppRecipes
                             }
                             "favorites" -> {
                                 userAppFavorites = ArrayList()
-                                userAppFavorites = userRecipesList
+                                userAppFavorites = otherAppRecipes
                             }
                         }
                     }
-                    postAppRecipes(userRecipesList)
+                    Log.e(
+                        TAG_APP_DB,
+                        "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes!!.size}"
+                    )
+//                    postAppRecipes(otherAppRecipes!!)
                 }
         }
+    }
+
+    fun getOtherAppRecipes() : ArrayList<AppRecipe> {
+        return otherAppRecipes
     }
 
     private fun loadCommentsAndOwnersOfRecipes(
@@ -1615,7 +1631,7 @@ class AppDb {
 
     fun uploadFeed(fromBeginning: Boolean) {
         Log.d("updateFeed", "first line")
-        val limit = 3
+        val limit = 5
         val query = if (fromBeginning)
             firestore
                 .collection(auth.currentUser?.uid!!)
