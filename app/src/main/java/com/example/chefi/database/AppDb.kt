@@ -1390,7 +1390,10 @@ class AppDb {
 
     fun addRecipeToFavorites(appRecipe: AppRecipe) {
         val recipeId = appRecipe.uid
-        if (userAppFavorites != null && !userAppFavorites?.contains(appRecipe)!!)
+        if (userAppFavorites != null) {
+            userAppFavorites = ArrayList()
+        }
+        if (!userAppFavorites?.contains(appRecipe)!!)
         {
             if (recipeId != null) {
                 val recipeRef =
@@ -1401,9 +1404,7 @@ class AppDb {
                 }
                 currDbUser?.favorites!!.add(recipeRef)
                 updateUserInUsersCollection(currDbUser)
-                if (userAppFavorites == null) {
-                    userAppFavorites = ArrayList()
-                }
+                
                 userAppFavorites!!.add(appRecipe)
 
 //            firestore.collection(Chefi.getCon()
