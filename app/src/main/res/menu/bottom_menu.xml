@@ -17,7 +17,7 @@
         android:title="@string/add_title" />
 
     <item
-        android:id="@+id/favoritesFragment"
+        android:id="@+id/notificationFragment"
         android:icon="@drawable/ic_notifications"
         android:title="@string/notifications_title" />
 

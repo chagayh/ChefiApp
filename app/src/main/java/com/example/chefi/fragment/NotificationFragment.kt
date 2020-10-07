@@ -17,7 +17,7 @@ import com.example.chefi.adapters.NotificationAdapter
  * Use the [FavoritesFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FavoritesFragment : Fragment() {
+class NotificationFragment : Fragment() {
 
     private lateinit var recyclerViewNotification: RecyclerView
     private lateinit var notificationAdapter: NotificationAdapter

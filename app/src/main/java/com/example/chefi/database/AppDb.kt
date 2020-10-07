@@ -7,7 +7,6 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.google.gson.reflect.TypeToken
 import android.net.Uri
 import android.util.Log
 import androidx.work.*
@@ -26,7 +25,6 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
 @SuppressLint("Registered")
@@ -993,11 +991,11 @@ class AppDb {
             for (notification in notificationList) {
                 Log.d(
                     "notification",
-                    "in loadOwnersToNotifications notification content = ${notification.notificationContent}"
+                    "in loadOwnersToNotifications notification content = ${notification.recipeRef}"
                 )
                 val notTask = firestore
                     .collection(Chefi.getCon().getString(R.string.usersCollection))
-                    .document(notification.userId!!)
+                    .document(notification.creatorId!!)
                     .get()
                 tasks.add(notTask)
             }
@@ -1006,11 +1004,11 @@ class AppDb {
                     if (value != null) {
                         for (userDoc in value) {
                             val user = userDoc.toObject<DbUser>()
-                            val notification = notificationList.find { it.userId == user?.uid }
+                            val notification = notificationList.find { it.creatorId == user?.uid }
                             if (notification != null) {
                                 val appNotificationItem = AppNotification(
                                     user,
-                                    notification.notificationContent,
+                                    notification.recipeRef,
                                     notification.notificationType,
                                     notification.timestamp
                                 )
