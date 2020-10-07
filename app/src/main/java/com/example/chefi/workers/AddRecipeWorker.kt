@@ -39,9 +39,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
 
         val recipeDirectionsAsString = inputData.getString(appContext.getString(R.string.keyRecipeDirections))
         val recipeIngredientsAsString = inputData.getString(appContext.getString(R.string.keyRecipeIngredients))
-        val ownerAsString = inputData.getString(appContext.getString(R.string.keyRecipeOwner))
         val listType = object : TypeToken<ArrayList<String>>() {}.type
-        val userType = object : TypeToken<AppRecipe>() {}.type
 
         val recipeDirections = Gson().fromJson<ArrayList<String>>(recipeDirectionsAsString, listType)
         val recipeIngredients = Gson().fromJson<ArrayList<String>>(recipeIngredientsAsString, listType)

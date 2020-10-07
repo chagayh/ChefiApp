@@ -362,7 +362,8 @@ class AppDb {
             ingredients = ingredients,
             status = status,
             owner = userDocument,
-            myReference = newDocument
+            myReference = newDocument,
+            allowedUsers = ArrayList()
         )
 
         val appRecipe = AppRecipe(
@@ -375,9 +376,11 @@ class AppDb {
             ingredients = ingredients,
             status = status,
             owner = currDbUser,
-            myReference = newDocument
+            myReference = newDocument,
+            allowedUsers = ArrayList()
         )
-
+        dbRecipe.allowedUsers?.add(userDocument)
+        appRecipe.allowedUsers?.add(userDocument)
 //        if (userDbRecipes == null) {
 //            userDbRecipes = ArrayList()
 //        }
@@ -1404,7 +1407,7 @@ class AppDb {
                 }
                 currDbUser?.favorites!!.add(recipeRef)
                 updateUserInUsersCollection(currDbUser)
-                
+
                 userAppFavorites!!.add(appRecipe)
 
 //            firestore.collection(Chefi.getCon()
@@ -1733,6 +1736,9 @@ class AppDb {
             currDbUser?.following?.contains(ref)!! else false
 
     }
+
+
+
 }
 
 
