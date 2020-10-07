@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.example.chefi.Chefi
+import com.example.chefi.LiveDataHolder
 import com.example.chefi.R
 /**
  * A simple [Fragment] subclass.
@@ -37,8 +39,19 @@ class LogInFragment : Fragment() {
         logInBtn = view.findViewById(R.id.logInBtn)
 
         setComponents()
+        setObserver()
 
         return view
+    }
+
+    private fun setObserver() {
+        LiveDataHolder.getStringLiveData().observe(viewLifecycleOwner, Observer { value ->
+            val content = value.getContentIfNotHandled()
+            if (content != null) {
+                Toast.makeText(activity, content, Toast.LENGTH_LONG)
+                    .show()
+            }
+        })
     }
 
     private fun setComponents() {

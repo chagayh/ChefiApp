@@ -233,6 +233,7 @@ class AppDb {
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG_APP_DB, "logInWithEmail:failure", task.exception)
+                    postString(task.exception?.message.toString())
                 }
             }
     }
