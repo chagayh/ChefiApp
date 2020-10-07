@@ -50,7 +50,8 @@ class AppDb {
     private var lastVisible: DocumentSnapshot? = null
 
 
-    //App Objects
+    // App Objects
+
     private var userAppRecipes: ArrayList<AppRecipe>? = null
     private var userAppFavorites: ArrayList<AppRecipe>? = null
     private var userAppNotification: ArrayList<AppNotification>? = null
@@ -708,10 +709,7 @@ class AppDb {
     ) {
 
         val recipeTasks = ArrayList<Task<DocumentSnapshot>>()
-        if (otherAppRecipes == null) {
-            otherAppRecipes = ArrayList<AppRecipe>()
-        }
-//        val otherAppRecipes = ArrayList<AppRecipe>()
+        val otherAppRecipes = ArrayList<AppRecipe>()
         if (recipesList != null) {
             for (recipeRef in recipesList) {
                 val docTask = recipeRef.get()
@@ -752,7 +750,7 @@ class AppDb {
                                             recipe.myReference,
                                             recipe.allowedUsers
                                         )
-                                        otherAppRecipes!!.add(appRecipe)
+                                        otherAppRecipes.add(appRecipe)
 
                                         // TODO - add post somewhere
                                     }
@@ -761,7 +759,7 @@ class AppDb {
                     }
                     Log.d(
                         TAG_APP_DB,
-                        "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes!!.size}"
+                        "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes.size}"
                     )
                     if (isCurrUser == null) {
                         when (type!!) {
@@ -777,9 +775,9 @@ class AppDb {
                     }
                     Log.e(
                         TAG_APP_DB,
-                        "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes!!.size}"
+                        "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes.size}"
                     )
-                    postAppRecipes(otherAppRecipes!!)
+                    postAppRecipes(otherAppRecipes)
                 }
         }
     }
