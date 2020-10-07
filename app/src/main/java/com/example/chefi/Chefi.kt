@@ -8,7 +8,6 @@ import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.*
 import com.example.chefi.workers.AddRecipeWorker
-import com.example.chefi.workers.UpdateCurrUserFeedWorker
 import com.example.chefi.workers.UpdateFollowersFeedWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +16,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.gson.Gson
 import java.text.DateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Chefi : Application() {
     private lateinit var appDb : AppDb
@@ -51,6 +51,10 @@ class Chefi : Application() {
 
     fun logIn(email: String, password: String){
         appDb.logIn(email, password)
+    }
+
+    fun filterForTradeRecipesList() : ArrayList<AppRecipe> {
+        return appDb.filterForTradeRecipesList()
     }
 
     fun uploadImageToStorage(uri: Uri) {

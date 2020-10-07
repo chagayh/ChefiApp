@@ -21,6 +21,7 @@ class UpdateFollowersFeedWorker(context: Context, workerParams: WorkerParameters
 
     private var recipeId: String? = null
     private val TAG_UPDATE_FEED_WORKER = "updateFollowersFeedWorker"
+    private val TAG_UPDATE_FEED: String = "updateFeed"
     private var observer : Observer<ObserveWrapper<Int>>? = null
 
     override fun startWork(): ListenableFuture<Result> {
@@ -38,6 +39,7 @@ class UpdateFollowersFeedWorker(context: Context, workerParams: WorkerParameters
         recipeId = inputData.getString("recipeUid")
 
         if (type != null && recipeId != null) {
+            Log.e(TAG_UPDATE_FEED, "in UpdateFollowersFeedWorker")
             appContext.updateFeedWithRecipe(type, recipeId!!)
         } else {
             Log.d(TAG_UPDATE_FEED_WORKER, "(followersAsJson != null && type != null && recipeId != null) = false")

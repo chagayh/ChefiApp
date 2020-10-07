@@ -10,6 +10,7 @@ import androidx.work.WorkerParameters
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.ObserveWrapper
+import com.example.chefi.database.AppDb
 import com.google.common.util.concurrent.ListenableFuture
 
 class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
@@ -22,6 +23,7 @@ class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
         get() = applicationContext as Chefi
 
     private val TAG_UPDATE_FEED_FOLLOW_WORKER = "updateFollowersFollowFeedWorker"
+    private val TAG_UPDATE_FEED = "updateFeed"
 
     override fun startWork(): ListenableFuture<Result> {
         val future = CallbackToFutureAdapter.getFuture {
@@ -37,6 +39,7 @@ class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
         setObserver()
 
         if (typeOp != null && userIdTo != null) {
+            Log.e(TAG_UPDATE_FEED, "in UpdateCurrUserFeedWorker, userId = $userIdTo, type = $typeOp")
             appContext.updatePostsToCurrUserFeed(typeOp, userIdTo!!)
         }
 

@@ -64,6 +64,7 @@ class AppDb {
     companion object {
         // TAGS
         private const val TAG_APP_DB: String = "appDb"
+        private const val TAG_UPDATE_FEED: String = "updateFeed"
     }
 
     init {
@@ -171,6 +172,17 @@ class AppDb {
         }
     }
 
+    fun filterForTradeRecipesList() : ArrayList<AppRecipe> {
+        val filteredList = userAppRecipes?.filter { it.status == 3 }
+        val forTradeList = ArrayList<AppRecipe>()
+        if (filteredList != null) {
+            for (recipe in filteredList) {
+                forTradeList.add(recipe)
+            }
+        }
+        return forTradeList
+    }
+
     fun createUserWithEmailPassword(email: String, password: String, userName: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -249,6 +261,7 @@ class AppDb {
     }
 
     fun updatePostsToCurrUserFeed(type: String, userIdTo: String) {
+        Log.e(TAG_UPDATE_FEED, "in appDb updatePostsToCurrUserFeed")
         firestore
             .collection(Chefi.getCon().getString(R.string.usersCollection))
             .document(userIdTo)
@@ -277,7 +290,7 @@ class AppDb {
                                 }
                                 "unfollow" -> {
                                     firestore.collection(currDbUser?.uid!!)
-                                        .whereEqualTo("myReference", recipeRef)
+                                        .whereEqualTo("dbRecipe", recipeRef)
                                         .get()
                                         .addOnSuccessListener {
                                             for (doc in it) {
@@ -1217,6 +1230,7 @@ class AppDb {
             .document(currDbUser?.uid!!)
             .set(currDbUser!!, SetOptions.merge())
             .addOnSuccessListener {
+                Log.d(TAG_APP_DB, "in follow adding another worker")
                 addWorkerUpdateCurrUserFeed("follow", dbUserToFollow.uid!!, context)
             }
 
@@ -1307,6 +1321,7 @@ class AppDb {
                 .document(currDbUser?.uid!!)
                 .set(currDbUser!!, SetOptions.merge())
                 .addOnSuccessListener {
+                    Log.d(TAG_APP_DB, "in unFollow adding another worker")
                     addWorkerUpdateCurrUserFeed("unfollow", dbUserToUnFollow.uid!!, context)
                 }
 
@@ -1469,7 +1484,7 @@ class AppDb {
         val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
         val usersRef = firestore.collection(usersCollectionPath)
         val query = usersRef
-            .whereGreaterThanOrEqualTo(
+            .whereEqualTo(
                 "userName_lowerCase",
                 searchText.toLowerCase(Locale.ROOT)
             )
@@ -1491,6 +1506,7 @@ class AppDb {
     }
 
     fun updateFeedWithRecipe(type: String, recipeUid: String) {
+        Log.e(TAG_UPDATE_FEED, "in updateFeedWithRecipe, recipeId = $recipeUid")
         if (dbUserFollowers != null) {
             val feedDeleteTasks = ArrayList<Task<QuerySnapshot>>()
             val feedAddTasks = ArrayList<Task<Void>>()
@@ -1499,16 +1515,19 @@ class AppDb {
                 .document(recipeUid)
                 .get()
                 .addOnSuccessListener {
+                    // We have the recipe that's needs to be added ot deleted
                     val dbRecipe = it.toObject<DbRecipe>()
                     for (user in dbUserFollowers!!) {
                         when (type) {
                             "add" -> {
+                                Log.e(TAG_UPDATE_FEED, "in updateFeedWithRecipe add")
                                 val feedDocRef = firestore.collection(user.uid!!).document()
                                 val feedRecipe = FeedPost(feedDocRef.id, dbRecipe?.myReference, dbRecipe?.timestamp, dbRecipe?.uid)
                                 val task = feedDocRef.set(feedRecipe)
                                 feedAddTasks.add(task)
                             }
                             "delete" -> {
+                                Log.e(TAG_UPDATE_FEED, "in updateFeedWithRecipe delete")
                                 val feedDocTask = firestore.collection(user.uid!!)
                                     .whereEqualTo("dbRecipe", dbRecipe)
                                     .get()
@@ -1553,12 +1572,12 @@ class AppDb {
         val query = if (fromBeginning)
             firestore
                 .collection(auth.currentUser?.uid!!)
-                .orderBy("date", Query.Direction.ASCENDING)
+                .orderBy("date", Query.Direction.DESCENDING)
                 .limit(limit.toLong())
         else
             firestore
                 .collection(auth.currentUser?.uid!!)
-                .orderBy("date", Query.Direction.ASCENDING)
+                .orderBy("date", Query.Direction.DESCENDING)
                 .startAfter(lastVisible)
                 .limit(limit.toLong())
 
