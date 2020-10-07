@@ -55,11 +55,6 @@ class AppDb {
     private var userAppFavorites: ArrayList<AppRecipe>? = null
     private var userAppNotification: ArrayList<AppNotification>? = null
 
-    // other user fields
-    private var otherAppRecipes: ArrayList<AppRecipe>? = null
-    private var otherAppFavorites: ArrayList<AppRecipe>? = null
-    private var otherAppNotification: ArrayList<AppNotification>? = null
-
     companion object {
         // TAGS
         private const val TAG_APP_DB: String = "appDb"
@@ -784,13 +779,9 @@ class AppDb {
                         TAG_APP_DB,
                         "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes!!.size}"
                     )
-//                    postAppRecipes(otherAppRecipes!!)
+                    postAppRecipes(otherAppRecipes!!)
                 }
         }
-    }
-
-    fun getOtherAppRecipes() : ArrayList<AppRecipe> {
-        return otherAppRecipes
     }
 
     private fun loadCommentsAndOwnersOfRecipes(

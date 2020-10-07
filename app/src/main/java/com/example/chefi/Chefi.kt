@@ -237,10 +237,6 @@ class Chefi : Application() {
         appDb.addNotification(userDestRef, recipeRef, offeredRecipeRef, type)
     }
 
-    fun getOtherAppRecipes() : ArrayList<AppRecipe> {
-        return appDb.getOtherAppRecipes()
-    }
-
     fun addComment(content: String, recipeId: String) {
         appDb.addComment(content, recipeId, this, "add")
     }
