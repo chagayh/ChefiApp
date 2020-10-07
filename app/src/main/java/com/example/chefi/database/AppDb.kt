@@ -881,7 +881,9 @@ class AppDb {
                             }
                         }
                     }
-                    postUsersList(followingList)   // TODO - check if needed
+                    if (!isCurrUser) {
+                        postUsersList(followingList)
+                    }
                 }
         }
     }
