@@ -230,8 +230,11 @@ class Chefi : Application() {
         appDb.setUserPermission(appRecipe, userId)
     }
 
-    fun addNotification(userDestId: String, content: String, type : NotificationType) {
-        appDb.addNotification(userDestId, content, type)
+    fun addNotification(userDestRef: DocumentReference,
+                        recipeRef: DocumentReference,
+                        offeredRecipeRef: DocumentReference?,
+                        type: NotificationType) {
+        appDb.addNotification(userDestRef, recipeRef, offeredRecipeRef, type)
     }
 
     fun addComment(content: String, recipeId: String) {

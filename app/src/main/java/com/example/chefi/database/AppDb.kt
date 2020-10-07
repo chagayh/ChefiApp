@@ -43,10 +43,6 @@ class AppDb {
 
     // Users fields
 
-    private var userNotification: ArrayList<DbNotificationItem>? = null  // TODO CHANGE!!
-    private var userFavorites: ArrayList<DbRecipe>? = null
-    private var userDbRecipes: ArrayList<DbRecipe>? = null
-
     private var currDbUser: DbUser? = null
     private var dbUserFollowing: ArrayList<DbUser>? = null
     private var dbUserFollowers: ArrayList<DbUser>? = null
@@ -927,18 +923,9 @@ class AppDb {
     fun loadNotifications() {
         // TODO - add live query on the notification collection
         val userNotificationsList = currDbUser?.notifications
-        Log.e(
-            TAG_APP_DB,
-            "in loadNotifications userNotificationsList = ${currDbUser?.notifications}"
-        )
         val tasks = ArrayList<Task<DocumentSnapshot>>()
         val notificationsList = ArrayList<DbNotificationItem>()
-        if (userNotificationsList != null && userNotificationsList.size != 0) {
-            Log.e(
-                TAG_APP_DB,
-                "in loadNotifications userNotificationsList = ${currDbUser?.notifications}"
-            )
-//            userNotification = ArrayList()
+        if (userNotificationsList != null) {
             for (notificationRef in userNotificationsList) {
                 val docTask = notificationRef.get()
                 tasks.add(docTask)
@@ -956,20 +943,28 @@ class AppDb {
         }
     }
 
-    fun addNotification(userDestId: String, content: String, type: NotificationType) {
+    fun addNotification(userDestRef: DocumentReference,
+                        recipeRef: DocumentReference,
+                        offeredRecipeRef: DocumentReference?,
+                        type: NotificationType) {
         val notificationRef = firestore
             .collection(Chefi.getCon().getString(R.string.notificationsCollection))
             .document()
         val dbNotificationItem =
-            DbNotificationItem(notificationRef.id, currDbUser?.uid, content, type)
+            DbNotificationItem(
+                notificationRef.id,
+                currDbUser?.myReference,
+                userDestRef,
+                recipeRef,
+                offeredRecipeRef,
+                type)
+
         notificationRef
             .set(dbNotificationItem)
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "notification added")
                 // add the notification to the user dest notification list
-                firestore
-                    .collection(Chefi.getCon().getString(R.string.usersCollection))
-                    .document(userDestId)
+                userDestRef
                     .get()
                     .addOnSuccessListener { documentSnapShot ->
                         val user = documentSnapShot.toObject<DbUser>()
@@ -982,42 +977,31 @@ class AppDb {
         if (userAppNotification == null) {
             userAppNotification = ArrayList()
         }
-        Log.d(
-            "notification",
-            "in loadOwnersToNotifications notification content = $notificationList"
-        )
         if (notificationList != null) {
             val tasks = ArrayList<Task<DocumentSnapshot>>()
             for (notification in notificationList) {
-                Log.d(
-                    "notification",
-                    "in loadOwnersToNotifications notification content = ${notification.recipeRef}"
-                )
-                val notTask = firestore
-                    .collection(Chefi.getCon().getString(R.string.usersCollection))
-                    .document(notification.creatorId!!)
-                    .get()
-                tasks.add(notTask)
+                val notTask = notification.creatorId?.get()
+                if (notTask != null) {
+                    tasks.add(notTask)
+                }
             }
             Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
                 .addOnSuccessListener { value ->
                     if (value != null) {
                         for (userDoc in value) {
                             val user = userDoc.toObject<DbUser>()
-                            val notification = notificationList.find { it.creatorId == user?.uid }
-                            if (notification != null) {
+                            val notificationFilteredList = notificationList.filter { it.creatorId == user?.myReference }
+                            for (notification in notificationFilteredList) {
                                 val appNotificationItem = AppNotification(
+                                    notification.uid,
                                     user,
-                                    notification.recipeRef,
+                                    notification.destinationId,
+                                    AppRecipe(),    // TODO
+                                    AppRecipe(),    // TODO
                                     notification.notificationType,
                                     notification.timestamp
                                 )
                                 userAppNotification?.add(appNotificationItem)
-                            } else {
-                                Log.w(
-                                    TAG_APP_DB,
-                                    "in loadOwnersToNotifications notification = null"
-                                )
                             }
                         }
                         if (userAppNotification != null) {
@@ -1025,7 +1009,7 @@ class AppDb {
                         }
                         Log.e(
                             TAG_APP_DB,
-                            "in loadOwnersToNotifications userAppNotification = $userAppNotification"
+                            "in loadOwnersToNotifications userAppNotification size = ${userAppNotification?.size}"
                         )
                     }
                 }
