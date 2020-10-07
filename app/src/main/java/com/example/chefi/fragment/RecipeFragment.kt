@@ -1,5 +1,7 @@
 package com.example.chefi.fragment
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ class RecipeFragment : Fragment() {
 
     private val args: RecipeFragmentArgs by navArgs()
     private lateinit var appRecipe: AppRecipe
+    private lateinit var appUser: DbUser
 
     private lateinit var userImage: ImageView
     private lateinit var userNameUp: TextView
@@ -52,6 +55,7 @@ class RecipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view= inflater.inflate(R.layout.fragment_recipe, container, false)
+        appUser = appContext.getCurrUser()!!
         appRecipe = args.curRecipe
         userImage = view.findViewById(R.id.recipeHomeUserImageView)
         userNameUp = view.findViewById(R.id.textViewRecipeHome)
@@ -175,8 +179,20 @@ class RecipeFragment : Fragment() {
         }
 
         recipeImage.setOnClickListener{
-            val action = RecipeFragmentDirections.actionRecipeToRecipeDetails(appRecipe)
-            it.findNavController().navigate(action)
+            if(appRecipe.status == appRecipe.TRADE_STATUS && appRecipe.allowedUsers?.contains(appUser.myReference) == false){
+                val alertDialog = AlertDialog.Builder(it.context)
+                val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_move_offer_trade, null)
+                alertDialog.setView(view)
+                alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                    val action = RecipeFragmentDirections.actionRecipeToTrade(appRecipe.uid)
+                    it.findNavController().navigate(action)
+                }
+                alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
+                alertDialog.show()
+            }else{
+                val action = RecipeFragmentDirections.actionRecipeToRecipeDetails(appRecipe)
+                it.findNavController().navigate(action)
+            }
         }
     }
 }

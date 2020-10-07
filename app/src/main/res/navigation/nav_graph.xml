@@ -38,9 +38,6 @@
         <action
             android:id="@+id/action_profile_to_recipe"
             app:destination="@id/recipeFragment" />
-        <action
-            android:id="@+id/action_profile_to_trade"
-            app:destination="@id/tradeFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
@@ -137,7 +134,7 @@
             android:name="curRecipe"
             app:argType="com.example.chefi.database.AppRecipe" />
         <action
-            android:id="@+id/action_recipeFragment_to_tradeFragment"
+            android:id="@+id/action_recipe_to_trade"
             app:destination="@id/tradeFragment" />
     </fragment>
     <fragment

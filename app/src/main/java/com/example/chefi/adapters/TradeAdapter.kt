@@ -1,16 +1,17 @@
 package com.example.chefi.adapters
 
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.database.AppRecipe
-import com.example.chefi.database.Comment
-import com.example.chefi.holders.CommentHolder
-import com.example.chefi.holders.FollowerHolder
+import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.holders.TradeHolder
 import com.squareup.picasso.Picasso
 
@@ -49,5 +50,18 @@ class TradeAdapter(): RecyclerView.Adapter<TradeHolder>() {
                 .load(item.imageUrl)
                 .into(holder.image)
         }
+
+        holder.image.setOnClickListener {
+            val alertDialog = AlertDialog.Builder(it.context)
+            val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_offer_trade, null)
+            alertDialog.setView(view)
+            alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                // TODO: create notification
+                it.findNavController().popBackStack()
+            }
+            alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
+            alertDialog.show()
+        }
     }
+
 }

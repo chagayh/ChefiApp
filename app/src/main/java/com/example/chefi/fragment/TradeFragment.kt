@@ -50,7 +50,7 @@ class TradeFragment : Fragment() {
 //            }
 //        }
         recyclerViewTrade.layoutManager = gridLayoutManager
-        val reps = appContext.getUserRecipes()
+        val reps = appContext.filterForTradeRecipesList()
         tradeRecipesAdapter.setItems(reps)
 //        recyclerViewTrade.addItemDecoration(decoration)
 //        recyclerViewTrade.addItemDecoration(DividerItemDecoration(activity, LinearLayoutManager.VERTICAL))

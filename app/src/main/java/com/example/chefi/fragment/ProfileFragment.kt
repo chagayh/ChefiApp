@@ -69,12 +69,6 @@ class ProfileFragment : Fragment() {
         signOutButton.setOnClickListener {
             appContext.signOut()
         }
-        val backButton: ImageView = view.findViewById(R.id.backButton)
-        backButton.setOnClickListener {
-            val action = ProfileFragmentDirections.actionProfileToTrade("sd")
-            it.findNavController().navigate(action)
-        }
-
         recipesAdapter.setItems(appContext.getUserRecipes(), false)
         Log.e("Profile Fragment", appContext.getUserRecipes()?.size.toString())
         return view
