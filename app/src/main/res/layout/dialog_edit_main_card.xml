@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/lightgrey"
     android:layout_height="wrap_content">
 
 
@@ -12,6 +13,7 @@
         android:background="@drawable/circularbordersolid"
         android:orientation="vertical"
         android:padding="16dp"
+        android:layout_margin="20dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -28,8 +30,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/proximanovaregular"
                     android:text="Full Name"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/blue"
+                    android:textSize="14sp"/>
 
                 <Space
                     android:layout_width="wrap_content"
@@ -44,7 +46,7 @@
                 android:fontFamily="@font/proximanovaregular"
                 android:text="Insert text here:"
                 android:textSize="12sp"
-                android:textStyle="bold" />
+                android:textColor="@color/blue" />
 
             <EditText
                 android:id="@+id/editTextFullName"
@@ -53,15 +55,30 @@
                 android:layout_marginTop="10dp"
                 android:visibility="visible" />
 
-            <Button
+            <TextView
                 android:id="@+id/uploadProfilePictureButton"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/lightgrey"
+                android:padding="13dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/proximanovaregular"
+                android:textSize="12sp"
+                android:background="@drawable/follow_button_outline"
                 android:text="Upload Profile Picture"
                 android:textColor="@color/blue" />
 
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="5dp">
+            </Space>
         </LinearLayout>
 
     </LinearLayout>
+    <Space
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aboutMeDialog"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp">
+    </Space>
 </androidx.constraintlayout.widget.ConstraintLayout>

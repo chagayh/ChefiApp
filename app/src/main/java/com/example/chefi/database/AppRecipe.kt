@@ -33,8 +33,9 @@ data class AppRecipe (
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readParcelable(AppRecipe::class.java.classLoader),
         TODO("timestamp")
-    ) {
-    }
+    ) {}
+
+    val TRADE_STATUS = 3
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(uid)

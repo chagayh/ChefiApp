@@ -1,6 +1,9 @@
 package com.example.chefi.adapters
 
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -77,6 +80,7 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         }
         holder.postDescription.text = item.description
         holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), item.likes)
+        if (item.status != item.TRADE_STATUS) holder.forTrade.visibility = View.GONE
         // comment details
 //        holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), 0)
         if (item.comments != null){
@@ -157,8 +161,20 @@ class HomeAdapter(viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<Hom
         }
 
         holder.recipeImage.setOnClickListener{
-            val action = HomeFragmentDirections.actionHomeToRecipeDetails(appRecipe)
-            it.findNavController().navigate(action)
+            if(appRecipe?.status == appRecipe?.TRADE_STATUS){
+                val alertDialog = AlertDialog.Builder(it.context)
+                val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_offer_trade_nav, null)
+                alertDialog.setView(view)
+                alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                    val action = HomeFragmentDirections.actionHomeToTrade(appRecipe?.uid)
+                    it.findNavController().navigate(action)
+                }
+                alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
+                alertDialog.show()
+            }else{
+                val action = HomeFragmentDirections.actionHomeToRecipeDetails(appRecipe)
+                it.findNavController().navigate(action)
+            }
         }
     }
 
