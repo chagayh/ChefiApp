@@ -1707,7 +1707,10 @@ class AppDb {
     }
 
     fun isFollowedByMe(ref: DocumentReference): Boolean{
-        return currDbUser?.following?.contains(ref)!!
+        Log.e("search", "user ref = $ref")
+        return if (currDbUser?.following != null)
+            currDbUser?.following?.contains(ref)!! else false
+
     }
 }
 
