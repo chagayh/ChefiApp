@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_home_to_recipeDetails"
             app:destination="@id/recipeDetailsFragment" />
+        <action
+            android:id="@+id/action_home_to_trade"
+            app:destination="@id/tradeFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -35,12 +38,10 @@
         <action
             android:id="@+id/action_profile_to_recipe"
             app:destination="@id/recipeFragment" />
+        <action
+            android:id="@+id/action_profile_to_trade"
+            app:destination="@id/tradeFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/favoritesFragment"
-        android:name="com.example.chefi.fragment.FavoritesFragment"
-        android:label="fragment_favorites"
-        tools:layout="@layout/fragment_notification" />
     <fragment
         android:id="@+id/addFragment"
         android:name="com.example.chefi.fragment.AddFragment"
@@ -69,11 +70,6 @@
             app:argType="string"
             android:defaultValue="default" />
     </fragment>
-    <fragment
-        android:id="@+id/displayFragment"
-        android:name="com.example.chefi.fragment.DisplayFragment"
-        android:label="fragment_display"
-        tools:layout="@layout/fragment_display" />
     <fragment
         android:id="@+id/followersFragment"
         android:name="com.example.chefi.fragment.FollowersFragment"
@@ -140,5 +136,18 @@
         <argument
             android:name="curRecipe"
             app:argType="com.example.chefi.database.AppRecipe" />
+        <action
+            android:id="@+id/action_recipeFragment_to_tradeFragment"
+            app:destination="@id/tradeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tradeFragment"
+        android:name="com.example.chefi.fragment.TradeFragment"
+        android:label="fragment_trade"
+        tools:layout="@layout/fragment_trade" >
+        <argument
+            android:name="recipeID"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

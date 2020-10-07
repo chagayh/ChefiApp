@@ -64,6 +64,8 @@ class SearchAdapter(): RecyclerView.Adapter<SearchHolder>() {
             holder.followButton.text = "FOLLOW"
         }
 
+        if(item.myReference == appContext.getCurrUser()?.myReference) holder.followButton.visibility = View.GONE
+
         // on click listeners
         holder.image.setOnClickListener {
             val action = item.let { it1 -> SearchFragmentDirections.actionSearchToProfileOther(it1) }

@@ -40,6 +40,7 @@ class RecipeFragment : Fragment() {
     private lateinit var commentTwoContent: TextView
     private lateinit var commentPostBtn: TextView
     private lateinit var commentContent: EditText
+    private lateinit var forTrade: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +68,7 @@ class RecipeFragment : Fragment() {
         commentTwoContent = view.findViewById(R.id.textViewCommentTwoContent)
         commentPostBtn = view.findViewById(R.id.textViewPostCommentBtn)
         commentContent = view.findViewById(R.id.editTextPostComment)
+        forTrade = view.findViewById(R.id.textViewForTrade)
         customizeComponents()
         return view
     }
@@ -99,6 +101,7 @@ class RecipeFragment : Fragment() {
         }
         postDescription.text = item.description
         likesTitle.text = String.format(likesTitle.text.toString(), item.likes)
+        if (item.status != item.TRADE_STATUS) forTrade.visibility = View.GONE
         // comment details
         if (item.comments != null){
             commentTitle.text = String.format(commentTitle.text.toString(), item.comments!!.size)

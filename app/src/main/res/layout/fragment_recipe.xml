@@ -130,6 +130,22 @@
             app:srcCompat="@drawable/ic_like" />
 
         <TextView
+            android:id="@+id/textViewForTrade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/proximanovaregular"
+            android:text="for trade"
+            android:textSize="12sp"
+            android:textColor="@color/yellow"
+            app:layout_constraintBottom_toBottomOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintLeft_toRightOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintTop_toTopOf="@id/imageViewHomeRecipeLike"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
             android:id="@+id/textViewLikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

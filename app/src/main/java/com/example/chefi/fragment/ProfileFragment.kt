@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.core.content.ContextCompat.startActivity
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
@@ -62,10 +64,15 @@ class ProfileFragment : Fragment() {
 //        recipesAdapter.notifyDataSetChanged()
 
         // set sign out button:
-        val signOutButton: TextView = view.findViewById(R.id.signOut)
         val appContext: Chefi = view.context.applicationContext as Chefi
+        val signOutButton: TextView = view.findViewById(R.id.signOut)
         signOutButton.setOnClickListener {
             appContext.signOut()
+        }
+        val backButton: ImageView = view.findViewById(R.id.backButton)
+        backButton.setOnClickListener {
+            val action = ProfileFragmentDirections.actionProfileToTrade("sd")
+            it.findNavController().navigate(action)
         }
 
         recipesAdapter.setItems(appContext.getUserRecipes(), false)

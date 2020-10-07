@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             if (content == null){
                 Log.d(TAG_MAIN_ACTIVITY, "null user, live data")
             } else {
-                Toast.makeText(this, "user ${content.name} connected", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "User @${content.userName} was connected", Toast.LENGTH_SHORT)
                     .show()
                 appContext.loadRecipes(null)
                 appContext.loadFavorites()

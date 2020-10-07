@@ -142,6 +142,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                     }
                 }
             })
+            if(tempDbUser.myReference == appContext.getCurrUser()?.myReference) holder.followMenuLinear.visibility = View.GONE
         }
         else{
             holder.favoritesButton.setOnClickListener(View.OnClickListener {
@@ -181,7 +182,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                 val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_edit_main_card, null)
                 alertDialog.setView(view)
                 val fullName: EditText = view.findViewById(R.id.editTextFullName)
-                val uploadProfilePictureBtn: Button = view.findViewById(R.id.uploadProfilePictureButton)
+                val uploadProfilePictureBtn: TextView = view.findViewById(R.id.uploadProfilePictureButton)
                 uploadProfilePictureBtn.setOnClickListener(){
                     //TODO: Use Chagay API
                 }
