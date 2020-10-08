@@ -78,6 +78,7 @@ class HomeFragment : Fragment() {
                 for(kas in content){
                     Log.d("updateFeed", "content name = ${kas.uid}")
                 }
+
                 homeAdapter.setItems(items)
 //                Log.e("Profile Fragment", "${content[0]}")
 //                    notifyDataSetChanged()

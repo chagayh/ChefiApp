@@ -45,6 +45,7 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
         val view: View
         appContext = context.applicationContext as Chefi
         // TODO: get list
+        // appContext.get
         view = LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false)
         return NotificationHolder(view)
     }
@@ -120,6 +121,8 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
                 alertDialog.setView(view)
                 alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                     //TODO: update permission
+//                    appContext.setUserPermission(userRef)
+//
                     val action = NotificationFragmentDirections.actionNotificationToRecipe(recipeTrade)
                     view.findNavController().navigate(action)
                 }
@@ -133,6 +136,7 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
         }
         holder.linearLayoutOverall.setOnLongClickListener(){
             // TODO: delete On long
+            // appContext.deleteNotification()
             true
         }
     }

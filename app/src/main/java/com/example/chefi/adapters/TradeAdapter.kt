@@ -57,6 +57,7 @@ class TradeAdapter(): RecyclerView.Adapter<TradeHolder>() {
             alertDialog.setView(view)
             alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                 // TODO: create notification
+//                appContext.addNotification()
                 it.findNavController().popBackStack()
             }
             alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }

@@ -182,8 +182,13 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                 val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_edit_main_card, null)
                 alertDialog.setView(view)
                 val fullName: EditText = view.findViewById(R.id.editTextFullName)
-                val uploadProfilePictureBtn: TextView = view.findViewById(R.id.uploadProfilePictureButton)
-                uploadProfilePictureBtn.setOnClickListener(){
+                val uploadProfilePictureCamera: TextView = view.findViewById(R.id.uploadProfilePictureCamera)
+                val uploadProfilePictureGallery: TextView = view.findViewById(R.id.uploadProfilePictureGallery)
+                uploadProfilePictureCamera.setOnClickListener(){
+                    //TODO: Use Chagay API
+                    // do not forget to pop back to this dialog after you upload the image successfully
+                }
+                uploadProfilePictureGallery.setOnClickListener(){
                     //TODO: Use Chagay API
                 }
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->

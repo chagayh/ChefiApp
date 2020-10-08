@@ -44,15 +44,15 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         //s
         if (items != null){
             if (items.size > 0){
+//                constraintLayoutProgressBar.visibility = View.VISIBLE
                 notFeedToShow.visibility = View.GONE
-                constraintLayoutProgressBar.visibility = View.VISIBLE
             }
             _items.clear()
             _items.addAll(items)
             notifyDataSetChanged()
         }else{
             notFeedToShow.visibility = View.VISIBLE
-            constraintLayoutProgressBar.visibility = View.GONE
+//            constraintLayoutProgressBar.visibility = View.GONE
         }
     }
 
