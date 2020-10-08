@@ -113,11 +113,11 @@ object LiveDataHolder {
     }
 
     fun getFeedListLiveData() : LiveData<ObserveWrapper<MutableList<AppRecipe>>>{
-        return mutableRecipeLiveData
+        return feedLiveData
     }
 
     fun getFeedMutableLiveData() : MutableLiveData<ObserveWrapper<MutableList<AppRecipe>>>{
-        return mutableRecipeLiveData
+        return feedLiveData
     }
 
 }

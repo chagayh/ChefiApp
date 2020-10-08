@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -1127,6 +1128,17 @@ class AppDb {
         }
     }
 
+    fun mainFeedFlow(dbRecipesFeed: ArrayList<DbRecipe>):
+            Flow<ArrayList<AppRecipe>> = flow {
+        val appRecipesList = ArrayList<AppRecipe>()
+        for (dbRecipe in dbRecipesFeed) {
+            val job = buildRecipeFlow(dbRecipe)
+            job.collect { appRecipe -> appRecipesList.add(appRecipe) }
+            Log.d(TAG_UPDATE_FEED, "in uploadFeed1 for flow appRecipesList size = ${appRecipesList.size}")
+        }
+        emit(appRecipesList)
+    }
+
     fun uploadFeed() {
         val query =
             firestore
@@ -1141,23 +1153,33 @@ class AppDb {
                     if (currDbUser?.following != null
                         && currDbUser?.following?.contains(dbRecipe.owner)!!)
                     {
+                        Log.d(TAG_UPDATE_FEED, "currDbUser?.following?.contains = ${dbRecipe.owner}, recipe id = ${dbRecipe.uid}")
                         dbRecipesFeed.add(dbRecipe)
                     }
                 }
                 Log.d(TAG_UPDATE_FEED, "in uploadFeed1 dbRecipesFeed size = ${dbRecipesFeed.size}")
                 val mainJob = CoroutineScope(Default).launch {
-                    for (dbRecipe in dbRecipesFeed) {
-                        val job = buildRecipeFlow(dbRecipe)
-                        job.collect { appRecipe -> appRecipesList.add(appRecipe) }
-                        Log.d(TAG_UPDATE_FEED, "in uploadFeed1 for flow appRecipesList size = ${appRecipesList.size}")
+//                    for (dbRecipe in dbRecipesFeed) {
+//                        val job = buildRecipeFlow(dbRecipe)
+//                        job.collect { appRecipe -> appRecipesList.add(appRecipe) }
+//                        Log.d(TAG_UPDATE_FEED, "in uploadFeed1 for flow appRecipesList size = ${appRecipesList.size}")
+//                    }
+                    val job = mainFeedFlow(dbRecipesFeed)
+                    job.collect { value ->
+                        withContext(Main) {
+                            Log.d(TAG_UPDATE_FEED, "in collect value size = ${value.size}")
+                            postFeedRecipes(value)
+                        }
                     }
                 }
-                mainJob.invokeOnCompletion {
-                    Log.d(TAG_UPDATE_FEED, "in uploadFeed1 invokeOnCompletion appRecipesList size = ${appRecipesList.size}")
-                    CoroutineScope(Main).launch {
-                        postFeedRecipes(appRecipesList)
-                    }
-                }
+
+//                mainJob.invokeOnCompletion {
+//                    Log.d(TAG_UPDATE_FEED, "it = ${mainJob.isCancelled}")
+//                    Log.d(TAG_UPDATE_FEED, "in uploadFeed1 invokeOnCompletion appRecipesList size = ${appRecipesList.size}")
+//                    CoroutineScope(Main).launch {
+//                        postFeedRecipes(appRecipesList)
+//                    }
+//                }
             }
     }
 
