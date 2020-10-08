@@ -44,6 +44,10 @@ class Chefi : Application() {
         return workManager
     }
 
+    fun getUserNotifications() {
+        appDb.getUserNotification()
+    }
+
     fun signIn(email: String, password: String, userName: String){
         appDb.createUserWithEmailPassword(email, password, userName)
     }
@@ -213,8 +217,8 @@ class Chefi : Application() {
         appDb.setUnseenNotification(num)
     }
 
-    fun setUserPermission(appRecipe: AppRecipe, userId: String) {
-        appDb.setUserPermission(appRecipe, userId)
+    fun setUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
+        appDb.setUserPermission(appRecipe, userRef)
     }
 
     fun addNotification(userDestRef: DocumentReference,
@@ -275,8 +279,8 @@ class Chefi : Application() {
         appDb.addUserToFollowers(otherDbUser)
     }
 
-    fun deleteNotification(dbNotificationItem: DbNotificationItem) {
-        appDb.deleteNotification(dbNotificationItem)
+    fun deleteNotification(appNotificationItem: AppNotification) {
+        appDb.deleteNotification(appNotificationItem)
     }
 
     fun fireBaseSearchUsers(searchText: String) {

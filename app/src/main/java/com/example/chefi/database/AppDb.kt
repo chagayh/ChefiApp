@@ -9,12 +9,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.work.*
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
-import com.example.chefi.workers.UpdateCurrUserFeedWorker
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -83,14 +81,12 @@ class AppDb {
         return unseenNotification
     }
 
-    fun setUserPermission(appRecipe: AppRecipe, userId: String) {
+    fun setUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
         if (appRecipe.status == 3) {
             if (appRecipe.allowedUsers == null) {
                 appRecipe.allowedUsers = ArrayList()
             }
-            val userRef = firestore
-                .collection(Chefi.getCon().getString(R.string.usersCollection))
-                .document(userId)
+
             if (!appRecipe.allowedUsers!!.contains(userRef)) {
                 appRecipe.allowedUsers!!.add(userRef)
                 firestore
@@ -132,6 +128,10 @@ class AppDb {
 
     fun getUserFollowers(): ArrayList<DbUser>? {
         return dbUserFollowers
+    }
+
+    fun getUserNotification() : ArrayList<AppNotification>? {
+        return userAppNotification
     }
 
     fun getCurrUser(): DbUser? {
@@ -502,10 +502,10 @@ class AppDb {
         }
     }
 
-    fun deleteNotification(dbNotificationItem: DbNotificationItem) {
-        val notification = userAppNotification?.find { it.uid == dbNotificationItem.uid }
+    fun deleteNotification(appNotificationItem: AppNotification) {
+        val notification = userAppNotification?.find { it.uid == appNotificationItem.uid }
         userAppNotification?.remove(notification)
-        val notificationRef = dbNotificationItem.uid?.let {
+        val notificationRef = appNotificationItem.uid?.let {
             firestore
                 .collection(Chefi.getCon().getString(R.string.notificationsCollection))
                 .document(it)
@@ -516,7 +516,7 @@ class AppDb {
                 updateUserInUsersCollection(currDbUser)
             }
         } else {
-            Log.e(TAG_APP_DB, "notification uid wrong = ${dbNotificationItem.uid}")
+            Log.e(TAG_APP_DB, "notification uid wrong = ${appNotificationItem.uid}")
         }
     }
 
