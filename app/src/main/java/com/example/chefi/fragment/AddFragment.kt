@@ -1,8 +1,5 @@
 package com.example.chefi.fragment
 
-// TODO "https://www.airpair.com/android/taking-pictures-android-fragment-intents"
-// TODO MUST add a progress bar
-
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager

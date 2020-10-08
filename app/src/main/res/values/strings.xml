@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Chefi</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_add_fragment">Hello add fragment</string>
     <string name="hello_favorites_fragment">Hello favorites fragment</string>
     <string name="hello_home_fragment">Hello home fragment</string>
@@ -45,7 +44,6 @@
     //Firebase Storage keys
     <string name="imageUpload">uploads/images_upload</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     // dialog sign in
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile_description">profile description</string>

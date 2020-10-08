@@ -75,8 +75,12 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
         }
 
         holder.profileImage.setOnClickListener {
-            val action = NotificationFragmentDirections.actionNotificationToRecipe(recipe)
-            it.findNavController().navigate(action)
+            val action = user?.let { it1 ->
+                NotificationFragmentDirections.actionNotificationToProfileOther(it1)
+            }
+            if (action != null) {
+                it.findNavController().navigate(action)
+            }
         }
 
         when(item.notificationType){
