@@ -99,6 +99,7 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
                         holder.followButton.text = "FOLLOW"
                     }else{
                         appContext.follow(user)
+                        appContext.addNotification(user.myReference!!, null, null, NotificationType.FOLLOW)
                         holder.followButton.text = "UNFOLLOW"
                     }
                 }

@@ -23,6 +23,7 @@ import com.example.chefi.holders.HomeHolder
 import com.squareup.picasso.Picasso
 import androidx.lifecycle.Observer
 import com.example.chefi.database.Comment
+import com.example.chefi.database.NotificationType
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
@@ -43,8 +44,9 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         val constraintLayoutProgressBar: androidx.constraintlayout.widget.ConstraintLayout = fragmentView.findViewById(R.id.constrainLayoutProgressBar)
         //s
         if (items != null){
+            Log.e("visibility", constraintLayoutProgressBar.visibility.toString())
+            constraintLayoutProgressBar.visibility = View.VISIBLE
             if (items.size > 0){
-//                constraintLayoutProgressBar.visibility = View.VISIBLE
                 notFeedToShow.visibility = View.GONE
             }
             _items.clear()
@@ -52,7 +54,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
             notifyDataSetChanged()
         }else{
             notFeedToShow.visibility = View.VISIBLE
-//            constraintLayoutProgressBar.visibility = View.GONE
+            constraintLayoutProgressBar.visibility = View.GONE
         }
     }
 
@@ -185,23 +187,32 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         holder.commentPostBtn.setOnClickListener {
             val inputText = holder.commentContent.text.toString()
             if (inputText.trim().isNotEmpty()){
-                appContext.addComment(inputText.toString(), appRecipe?.uid!!)
+                appContext.addComment(inputText, appRecipe?.uid!!)
                 holder.commentContent.text.clear()
                 _items[position].comments?.add(Comment(appUser.userName,
                     appUser.name, inputText, null, Calendar.getInstance().time))
                 holder.commentTitle.text = String.format(commentMsg, _items[position].comments?.size)
+                _items[position].myReference?.let { it1 ->
+                    _items[position].owner?.myReference?.let { it2 ->
+                        appContext.addNotification(it2, it1, null, NotificationType.COMMENT)
+                    }
+                }
             }
         }
     }
 
     private fun setOtherClicks(holder: HomeHolder, position: Int){
-
         holder.likeImage.setOnClickListener {
             Log.e("Home Adapter: likes", _items[position].likes.toString())
             _items[position].likes = _items[position].likes?.plus(1)
             Log.e("Home Adapter: likes", _items[position].likes.toString())
             appContext.updateRecipeFields(_items[position], "likes", null)
             holder.likesTitle.text = String.format(likeMsg, _items[position].likes)
+            _items[position].myReference?.let { it1 ->
+                _items[position].owner?.myReference?.let { it2 ->
+                    appContext.addNotification(it2, it1, null, NotificationType.LIKE)
+                }
+            }
         }
 
         holder.recipeImage.setOnLongClickListener {
@@ -224,7 +235,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
                 val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_move_offer_trade, null)
                 alertDialog.setView(view)
                 alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                    val action = HomeFragmentDirections.actionHomeToTrade(_items[position].uid)
+                    val action = HomeFragmentDirections.actionHomeToTrade(_items[position])
                     it.findNavController().navigate(action)
                 }
                 alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }

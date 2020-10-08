@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.database.AppRecipe
+import com.example.chefi.database.NotificationType
 import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.holders.TradeHolder
 import com.squareup.picasso.Picasso
 
 
-class TradeAdapter(): RecyclerView.Adapter<TradeHolder>() {
+class TradeAdapter(val recipe: AppRecipe?): RecyclerView.Adapter<TradeHolder>() {
 
     private lateinit var appContext: Chefi
     private var _items: ArrayList<AppRecipe> = ArrayList()
@@ -57,7 +58,10 @@ class TradeAdapter(): RecyclerView.Adapter<TradeHolder>() {
             alertDialog.setView(view)
             alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                 // TODO: create notification
-//                appContext.addNotification()
+                recipe?.owner?.myReference?.let { it1 -> recipe.myReference?.let { it2 ->
+                    appContext.addNotification(it1, it2, item.myReference, NotificationType.TRADE) } }
+                val unseen = appContext.getUnseenNotification()
+                appContext.setUnseenNotificationNumber(unseen + 1)
                 it.findNavController().popBackStack()
             }
             alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }

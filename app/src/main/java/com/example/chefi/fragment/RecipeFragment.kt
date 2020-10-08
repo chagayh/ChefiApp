@@ -19,6 +19,7 @@ import com.example.chefi.R
 import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.Comment
 import com.example.chefi.database.DbUser
+import com.example.chefi.database.NotificationType
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -169,6 +170,11 @@ class RecipeFragment : Fragment() {
                     appUser.name, inputText, null, Calendar.getInstance().time)
                 )
                 commentTitle.text = String.format(commentMsg, appRecipe.comments?.size)
+                appRecipe.myReference?.let { it1 ->
+                    appRecipe.owner?.myReference?.let { it2 ->
+                        appContext.addNotification(it2, it1, null, NotificationType.COMMENT)
+                    }
+                }
             }
         }
     }
@@ -180,6 +186,11 @@ class RecipeFragment : Fragment() {
             Log.e("Home Adapter: likes", appRecipe.likes.toString())
             appContext.updateRecipeFields(appRecipe, "likes", null)
             likesTitle.text = String.format(likeMsg, appRecipe.likes)
+            appRecipe.myReference?.let { it1 ->
+                appRecipe.owner?.myReference?.let { it2 ->
+                    appContext.addNotification(it2, it1, null, NotificationType.LIKE)
+                }
+            }
         }
 
         recipeImage.setOnLongClickListener {
@@ -201,7 +212,7 @@ class RecipeFragment : Fragment() {
                 val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_move_offer_trade, null)
                 alertDialog.setView(view)
                 alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                    val action = RecipeFragmentDirections.actionRecipeToTrade(appRecipe.uid)
+                    val action = RecipeFragmentDirections.actionRecipeToTrade(appRecipe)
                     it.findNavController().navigate(action)
                 }
                 alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }

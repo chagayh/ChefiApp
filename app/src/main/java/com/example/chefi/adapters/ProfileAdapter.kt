@@ -19,6 +19,7 @@ import com.example.chefi.holders.ProfileHeaderHolder
 import com.example.chefi.database.AppRecipe
 import com.example.chefi.holders.RecipeHolder
 import com.example.chefi.database.DbUser
+import com.example.chefi.database.NotificationType
 import com.example.chefi.fragment.ProfileFragmentDirections
 import com.example.chefi.fragment.ProfileOtherFragmentDirections
 import com.squareup.picasso.Picasso
@@ -138,6 +139,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                         holder.followButton.text = "FOLLOW"
                     }else{
                         appContext.follow(dbUser)
+                        appContext.addNotification(dbUser.myReference!!, null, null, NotificationType.FOLLOW)
                         holder.followButton.text = "UNFOLLOW"
                     }
                 }
@@ -182,15 +184,17 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                 val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_edit_main_card, null)
                 alertDialog.setView(view)
                 val fullName: EditText = view.findViewById(R.id.editTextFullName)
-                val uploadProfilePictureCamera: TextView = view.findViewById(R.id.uploadProfilePictureCamera)
+//                val uploadProfilePictureCamera: TextView = view.findViewById(R.id.uploadProfilePictureCamera)
                 val uploadProfilePictureGallery: TextView = view.findViewById(R.id.uploadProfilePictureGallery)
-                uploadProfilePictureCamera.setOnClickListener(){
-                    //TODO: Use Chagay API
-                    // do not forget to pop back to this dialog after you upload the image successfully
-                }
                 uploadProfilePictureGallery.setOnClickListener(){
-                    //TODO: Use Chagay API
+                    //action_profile_to_upload
+                    // do not forget to pop back to this dialog after you upload the image successfully
+                    val action = ProfileFragmentDirections.actionProfileToUpload()
+                    it.findNavController().navigate(action)
                 }
+//                uploadProfilePictureGallery.setOnClickListener(){
+//                    //TODO: Use Chagay API
+//                }
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     if (fullName.text.toString().trim().isNotEmpty()){
                         holder.nameTextView.text = fullName.text

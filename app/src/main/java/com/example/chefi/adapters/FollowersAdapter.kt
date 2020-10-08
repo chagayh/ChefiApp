@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.database.DbUser
+import com.example.chefi.database.NotificationType
 import com.example.chefi.fragment.FollowersFragmentDirections
 import com.example.chefi.holders.FollowerHolder
 import com.squareup.picasso.Picasso
@@ -95,6 +96,7 @@ class FollowersAdapter(val isFollowers: Boolean, val curDbUser:DbUser?, private 
                 holder.unfollowButton.text = "FOLLOW"
             }else{
                 appContext.follow(item)
+                appContext.addNotification(item.myReference!!, null, null, NotificationType.FOLLOW)
                 holder.unfollowButton.text = "UNFOLLOW"
             }
         }

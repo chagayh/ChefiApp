@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,7 @@ class TradeFragment : Fragment() {
     private lateinit var recyclerViewTrade: RecyclerView
     private lateinit var tradeRecipesAdapter: TradeAdapter
     private var SPAN_VALUE: Int = 3
+    private val args: TradeFragmentArgs by navArgs()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +36,9 @@ class TradeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_trade, container, false)
+        val recipe = args.recipe
         recyclerViewTrade = view.findViewById(R.id.recyclerViewTrade)
-        tradeRecipesAdapter = TradeAdapter()
+        tradeRecipesAdapter = TradeAdapter(recipe)
         recyclerViewTrade.adapter = tradeRecipesAdapter
 //        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 //        recyclerViewRecipes.layoutManager = lm

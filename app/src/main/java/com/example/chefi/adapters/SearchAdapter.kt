@@ -11,6 +11,7 @@ import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
+import com.example.chefi.database.NotificationType
 import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.fragment.SearchFragmentDirections
 import com.example.chefi.holders.SearchHolder
@@ -85,6 +86,7 @@ class SearchAdapter(private val fragmentView: View): RecyclerView.Adapter<Search
                 holder.followButton.text = "FOLLOW"
             }else{
                 appContext.follow(item)
+                appContext.addNotification(item.myReference!!, null, null, NotificationType.FOLLOW)
                 holder.followButton.text = "UNFOLLOW"
             }
         }

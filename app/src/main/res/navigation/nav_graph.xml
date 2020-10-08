@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_profile_to_recipe"
             app:destination="@id/recipeFragment" />
+        <action
+            android:id="@+id/action_profile_to_upload"
+            app:destination="@id/uploadPicFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
@@ -143,8 +146,8 @@
         android:label="fragment_trade"
         tools:layout="@layout/fragment_trade" >
         <argument
-            android:name="recipeID"
-            app:argType="string"
+            android:name="recipe"
+            app:argType="com.example.chefi.database.AppRecipe"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -159,4 +162,9 @@
             android:id="@+id/action_notification_to_profileOther"
             app:destination="@id/profileOtherFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/uploadPicFragment"
+        android:name="com.example.chefi.fragment.UploadPicFragment"
+        android:label="fragment_upload_pic"
+        tools:layout="@layout/fragment_upload_pic" />
 </navigation>
