@@ -1,11 +1,13 @@
 package com.example.chefi.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +17,7 @@ import com.example.chefi.ObserveWrapper
 import com.example.chefi.R
 import com.example.chefi.adapters.HomeAdapter
 import com.example.chefi.database.AppRecipe
+
 
 class HomeFragment : Fragment() {
 
@@ -34,6 +37,11 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+//        val progressBar: ProgressBar = view.findViewById(R.id.progressBarHome)
+//        val draw: Drawable = view.resources.getDrawable(R.drawable.custum_progress_bar)
+//        progressBar.progressDrawable = draw
+
         recyclerViewHome = view.findViewById(R.id.recyclerViewHome)
         homeAdapter = HomeAdapter(viewLifecycleOwner, view)
         homeAdapter.setItems(null)

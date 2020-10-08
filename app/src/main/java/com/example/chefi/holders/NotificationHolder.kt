@@ -20,4 +20,5 @@ class NotificationHolder(view: View): RecyclerView.ViewHolder(view) {
     val recipeImageTwo: ImageView = view.findViewById(R.id.imageViewNotificationRecipeTwo)
     val arrow: ImageView = view.findViewById(R.id.imageViewArrow)
     val linearLayout: LinearLayout = view.findViewById(R.id.linearLayoutNotificationTrade)
+    val linearLayoutOverall: LinearLayout = view.findViewById(R.id.innerConstraintNotifiaction)
 }
