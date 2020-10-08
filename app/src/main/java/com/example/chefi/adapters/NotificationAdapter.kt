@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,6 @@ import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
 import com.example.chefi.database.NotificationType
 import com.example.chefi.fragment.NotificationFragmentDirections
-import com.example.chefi.fragment.RecipeFragmentDirections
 import com.example.chefi.holders.NotificationHolder
 import com.squareup.picasso.Picasso
 

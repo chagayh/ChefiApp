@@ -40,15 +40,19 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
     // public method to show a new list of items
     fun setItems(items: ArrayList<AppRecipe>?){
         val notFeedToShow: TextView = fragmentView.findViewById(R.id.noFeedToShow)
+        val constraintLayoutProgressBar: androidx.constraintlayout.widget.ConstraintLayout = fragmentView.findViewById(R.id.constrainLayoutProgressBar)
+        //s
         if (items != null){
             if (items.size > 0){
                 notFeedToShow.visibility = View.GONE
+                constraintLayoutProgressBar.visibility = View.VISIBLE
             }
             _items.clear()
             _items.addAll(items)
             notifyDataSetChanged()
         }else{
             notFeedToShow.visibility = View.VISIBLE
+            constraintLayoutProgressBar.visibility = View.GONE
         }
     }
 
