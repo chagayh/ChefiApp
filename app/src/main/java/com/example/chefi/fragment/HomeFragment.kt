@@ -75,7 +75,7 @@ class HomeFragment : Fragment() {
 //                    notifyDataSetChanged()
             }
         }
-        LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
+        LiveDataHolder.getFeedListLiveData().observe(viewLifecycleOwner, observer)
         appContext.uploadFeed(true)
 //        if (items != null) {
         Log.e("Home fragment", items.size.toString())

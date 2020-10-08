@@ -24,8 +24,20 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.random.Random
 
 @SuppressLint("Registered")
 class AppDb {
@@ -428,6 +440,11 @@ class AppDb {
         LiveDataHolder.getRecipeListMutableLiveData().value = ObserveWrapper(recipesList)
     }
 
+    private fun postFeedRecipes(recipesList: ArrayList<AppRecipe>) {
+        Log.d("coUpload", "in postAppRecipes recipesList.size = ${recipesList.size}")
+        LiveDataHolder.getFeedMutableLiveData().value = ObserveWrapper(recipesList)
+    }
+
     private fun postUsersList(usersList: ArrayList<DbUser>) {
 //        LiveDataHolder.getUsersListMutableLiveData().postValue(usersList)
         LiveDataHolder.getUsersListMutableLiveData().value = ObserveWrapper(usersList)
@@ -613,36 +630,12 @@ class AppDb {
             Log.d(TAG_APP_DB, "in loadRecipes user?.recipes = ${user.recipes?.size}")
             var recipesRefList: ArrayList<DocumentReference>? = null
             when (type) {
-                "favorites" -> recipesRefList = currDbUser?.favorites
-                "recipes" -> recipesRefList = currDbUser?.recipes
+                "favorites" -> recipesRefList = user.favorites
+                "recipes" -> recipesRefList = user.recipes
                 else -> Log.e(TAG_APP_DB, "wrong type = $type")
             }
             loadRecipesFromReferenceList(recipesRefList, type, user)
         }
-
-//        val tasks = ArrayList<Task<DocumentSnapshot>>()
-//        val userRecipesList = ArrayList<Recipe>()
-//
-//        if (recipesRefList != null) {
-//            for (recipeRef in recipesRefList) {
-//                val docTask = recipeRef.get()
-//                tasks.add(docTask)
-//            }
-//            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
-//                .addOnSuccessListener { value ->
-//                    for (recipeDoc in value) {
-//                        val recipe = recipeDoc.toObject<Recipe>()
-//                        if (recipe != null) {
-//                            userRecipesList.add(recipe)
-//                        }
-//                    }
-//                    if (user == null) {
-//                        userRecipes = ArrayList()
-//                        userRecipes = userRecipesList
-//                    }
-//                    postRecipes(userRecipesList)   // TODO - check if needed
-//                }
-//        }
     }
 
     private fun loadRecipesFromReferenceList(
@@ -665,70 +658,6 @@ class AppDb {
                         if (recipe != null) {
                             dbRecipesList.add(recipe)
                         }
-
-
-//                        if (recipe != null) {
-//                            val recipeCommentsList = recipe.comments
-//                            val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
-//                            if (recipeCommentsList != null) {
-//                                for (commentRef in recipeCommentsList) {
-//                                    val docTask = commentRef.get()
-//                                    commentsTasks.add(docTask)
-//                                }
-//                                Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
-//                                    .addOnSuccessListener { value ->
-//                                        val commentsList = ArrayList<Comment>()
-//                                        for (commentDoc in value) {
-//                                            val comment = commentDoc.toObject<Comment>()
-//                                            if (comment != null) {
-//                                                commentsList.add(comment)
-//                                            }
-//                                        }
-//                                        val appRecipe = AppRecipe(
-//                                            recipe.uid,
-//                                            recipe.description,
-//                                            recipe.likes,
-//                                            recipe.imageUrl,
-//                                            commentsList,
-//                                            recipe.directions,
-//                                            recipe.ingredients,
-//                                            recipe.status,
-//                                            isCurrUser,
-//                                            recipe.timestamp,
-//                                            recipe.myReference,
-//                                            recipe.allowedUsers
-//                                        )
-//                                        otherAppRecipes.add(appRecipe)
-//
-//                                        // TODO - add post somewhere
-//                                    }
-//                            }
-//                        }
-//                    }
-//                    Log.d(
-//                        TAG_APP_DB,
-//                        "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes.size}"
-//                    )
-//                    if (isCurrUser == null) {
-//                        when (type) {
-//                            "recipes" -> {
-//                                Log.d("coLoadTest", "appRecipesList size = ${otherAppRecipes.size}")
-//                                userAppRecipes = ArrayList()
-//                                userAppRecipes = otherAppRecipes
-//                            }
-//                            "favorites" -> {
-//                                userAppFavorites = ArrayList()
-//                                userAppFavorites = otherAppRecipes
-//                            }
-//                        }
-//                    }
-//                    Log.e(
-//                        TAG_APP_DB,
-//                        "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes.size}"
-//                    )
-//                    postAppRecipes(otherAppRecipes)
-//                }
-
                     }
                     parseDbRecipesToAppRecipes(dbRecipesList, dbUser, type)
                 }
@@ -1378,69 +1307,90 @@ class AppDb {
             }
     }
 
+//    private fun buildCommentsFlow(recipeCommentsList: ArrayList<DocumentReference>) :
+//            Flow<Comment> = flow {
+//
+//
+//    }
+
+    private suspend fun getSingleUser(dbUserRef: DocumentReference?) =
+        dbUserRef
+            ?.get()
+            ?.await()
+
     private fun parseDbRecipesToAppRecipes(
         dbRecipesList: ArrayList<DbRecipe>,
         dbUser: DbUser?,
         type: String) {
         val otherAppRecipes = ArrayList<AppRecipe>()
-        for (recipe in dbRecipesList) {
-            val recipeCommentsList = recipe.comments
-            val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
-            if (recipeCommentsList != null) {
-                for (commentRef in recipeCommentsList) {
-                    val docTask = commentRef.get()
-                    commentsTasks.add(docTask)
-                }
-                Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
-                    .addOnSuccessListener { value ->
-                        val commentsList = ArrayList<Comment>()
-                        for (commentDoc in value) {
-                            val comment = commentDoc.toObject<Comment>()
-                            if (comment != null) {
-                                commentsList.add(comment)
-                            }
-                        }
-                        val appRecipe = AppRecipe(
-                            recipe.uid,
-                            recipe.description,
-                            recipe.likes,
-                            recipe.imageUrl,
-                            commentsList,
-                            recipe.directions,
-                            recipe.ingredients,
-                            recipe.status,
-                            dbUser,
-                            recipe.timestamp,
-                            recipe.myReference,
-                            recipe.allowedUsers
-                        )
-                        otherAppRecipes.add(appRecipe)
+
+        val mainJob = CoroutineScope(Default).launch {
+            for (dbRecipe in dbRecipesList) {
+                val job = buildRecipeFlow(dbRecipe)
+                job.collect { appRecipe -> otherAppRecipes.add(appRecipe) }
+            }
+        }
+        mainJob.invokeOnCompletion {
+            Log.d(TAG_UPDATE_FEED, "in uploadFeed1 invokeOnCompletion appRecipesList size = ${otherAppRecipes.size}")
+            if (dbUser == null) {
+                when (type) {
+                    "recipes" -> {
+                        Log.d("coLoadTest", "appRecipesList size = ${otherAppRecipes.size}")
+                        userAppRecipes = ArrayList()
+                        userAppRecipes = otherAppRecipes
                     }
-            }
-        }
-        Log.d(
-            TAG_APP_DB,
-            "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes.size}"
-        )
-        if (dbUser == null) {
-            when (type) {
-                "recipes" -> {
-                    Log.d("coLoadTest", "appRecipesList size = ${otherAppRecipes.size}")
-                    userAppRecipes = ArrayList()
-                    userAppRecipes = otherAppRecipes
-                }
-                "favorites" -> {
-                    userAppFavorites = ArrayList()
-                    userAppFavorites = otherAppRecipes
+                    "favorites" -> {
+                        userAppFavorites = ArrayList()
+                        userAppFavorites = otherAppRecipes
+                    }
                 }
             }
+            CoroutineScope(Main).launch {
+                postAppRecipes(otherAppRecipes)
+            }
         }
-        Log.e(
-            TAG_APP_DB,
-            "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes.size}"
-        )
-        Log.d(TAG_UPDATE_FEED, "in loadRecipesFromReferenceList otherAppRecipes size = ${otherAppRecipes.size}")
-        postAppRecipes(otherAppRecipes)
+    }
+
+    private fun buildRecipeFlow(dbRecipe: DbRecipe):
+            Flow<AppRecipe> = flow {
+
+        val commentsList = ArrayList<Comment>()
+        val recipeCommentsList = dbRecipe.comments
+        val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
+        if (recipeCommentsList != null) {
+            for (commentRef in recipeCommentsList) {
+                val docTask = commentRef.get()
+                commentsTasks.add(docTask)
+            }
+            Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
+                .addOnSuccessListener { value ->
+                    for (commentDoc in value) {
+                        val comment = commentDoc.toObject<Comment>()
+                        if (comment != null) {
+                            commentsList.add(comment)
+                        }
+                    }
+                }
+            val recipeOwnerSnapshot = getSingleUser(dbRecipe.owner)
+            val recipeOwner = recipeOwnerSnapshot?.toObject<DbUser>()
+
+            val appRecipe = AppRecipe(
+                dbRecipe.uid,
+                dbRecipe.description,
+                dbRecipe.likes,
+                dbRecipe.imageUrl,
+                commentsList,
+                dbRecipe.directions,
+                dbRecipe.ingredients,
+                dbRecipe.status,
+                recipeOwner,
+                dbRecipe.timestamp,
+                dbRecipe.myReference,
+                dbRecipe.allowedUsers
+            )
+            Log.d("flow", "comments size = ${commentsList.size}, owner = ${recipeOwner?.uid}")
+            emit(appRecipe)
+        }
     }
 
     fun uploadFeed1() {
@@ -1449,6 +1399,7 @@ class AppDb {
                 .collection(Chefi.getCon().getString(R.string.recipesCollection))
                 .orderBy("timestamp", Query.Direction.DESCENDING)
         val dbRecipesFeed = ArrayList<DbRecipe>()
+        val appRecipesList = ArrayList<AppRecipe>()
         query.get()
             .addOnSuccessListener { snapShotList ->
                 for (snapShot in snapShotList) {
@@ -1460,7 +1411,19 @@ class AppDb {
                     }
                 }
                 Log.d(TAG_UPDATE_FEED, "in uploadFeed1 dbRecipesFeed size = ${dbRecipesFeed.size}")
-                parseDbRecipesToAppRecipes(dbRecipesFeed, currDbUser, "feed")
+                val mainJob = CoroutineScope(Default).launch {
+                    for (dbRecipe in dbRecipesFeed) {
+                        val job = buildRecipeFlow(dbRecipe)
+                        job.collect { appRecipe -> appRecipesList.add(appRecipe) }
+                        Log.d(TAG_UPDATE_FEED, "in uploadFeed1 for flow appRecipesList size = ${appRecipesList.size}")
+                    }
+                }
+                mainJob.invokeOnCompletion {
+                    Log.d(TAG_UPDATE_FEED, "in uploadFeed1 invokeOnCompletion appRecipesList size = ${appRecipesList.size}")
+                    CoroutineScope(Main).launch {
+                        postFeedRecipes(appRecipesList)
+                    }
+                }
             }
     }
 

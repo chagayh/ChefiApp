@@ -95,7 +95,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         Log.e("Position", "$position")
         if(position % 5 == 2){
             appContext.uploadFeed(false)
-            LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
+            LiveDataHolder.getFeedListLiveData().observe(viewLifecycleOwner, observer)
             Log.e("Home fragment", _items.size.toString())
         }
     }
