@@ -7,7 +7,7 @@ import java.util.*
 data class AppNotification (
     var uid: String? = null,
     var creator: DbUser? = null,
-    var destinationId: DocumentReference? = null, // for db only
+    var destinationRef: DocumentReference? = null, // for db only
     var recipe: AppRecipe? = null, // always relevant
     var offeredRecipe: AppRecipe? = null, // relevant if status == 3
     var notificationType: NotificationType = NotificationType.DEFAULT,
