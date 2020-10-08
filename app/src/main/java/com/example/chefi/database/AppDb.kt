@@ -521,7 +521,7 @@ class AppDb {
     }
 
     fun addNotification(userDestRef: DocumentReference,
-                        recipeRef: DocumentReference,
+                        recipeRef: DocumentReference?,
                         offeredRecipeRef: DocumentReference?,
                         type: NotificationType) {
         val notificationRef = firestore
@@ -551,7 +551,6 @@ class AppDb {
     }
 
     fun addComment(content: String, recipeId: String, context: Context, type: String) {
-        // TODO add worker to update comment in all followers feed collections
         Log.d("addComment", "start of addComment")
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
             .document(recipeId)

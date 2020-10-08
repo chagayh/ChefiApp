@@ -222,7 +222,7 @@ class Chefi : Application() {
     }
 
     fun addNotification(userDestRef: DocumentReference,
-                        recipeRef: DocumentReference,
+                        recipeRef: DocumentReference?,
                         offeredRecipeRef: DocumentReference?,
                         type: NotificationType) {
         appDb.addNotification(userDestRef, recipeRef, offeredRecipeRef, type)
@@ -270,8 +270,8 @@ class Chefi : Application() {
         Log.d("updateFeed", "uploadFeed in Chefi")
     }
 
-    fun getUnseenNotification(){
-        appDb.getUnseenNotification()
+    fun getUnseenNotification() : Int {
+        return appDb.getUnseenNotification()
     }
 
     fun addUserToFollowers(otherDbUser: DbUser) {
