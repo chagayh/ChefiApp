@@ -166,8 +166,6 @@ class AddFragment : Fragment() {
             REQUEST_CODE_PERMISSION_GENERAL -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     checkForPermissions()
-                } else {
-                    showUploadPicOptions()
                 }
             }
         }
