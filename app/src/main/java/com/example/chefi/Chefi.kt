@@ -44,8 +44,8 @@ class Chefi : Application() {
         return workManager
     }
 
-    fun getUserNotifications() {
-        appDb.getUserNotification()
+    fun getUserNotifications() : ArrayList<AppNotification>? {
+        return appDb.getUserNotification()
     }
 
     fun signIn(email: String, password: String, userName: String){

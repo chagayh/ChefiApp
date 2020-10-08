@@ -1127,7 +1127,7 @@ class AppDb {
         }
     }
 
-    fun mainFeedFlow(dbRecipesFeed: ArrayList<DbRecipe>):
+    private fun mainFeedFlow(dbRecipesFeed: ArrayList<DbRecipe>):
             Flow<ArrayList<AppRecipe>> = flow {
         val appRecipesList = ArrayList<AppRecipe>()
         for (dbRecipe in dbRecipesFeed) {
