@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +41,7 @@ class FollowersFragment : Fragment() {
         val isFollowers = args.isFollowers
         val curUser = args.curUser
         recyclerViewFollowers = view.findViewById(R.id.recyclerViewFollowers)
-        followersAdapter = FollowersAdapter(isFollowers, curUser)
+        followersAdapter = FollowersAdapter(isFollowers, curUser, view)
         recyclerViewFollowers.adapter = followersAdapter
         recyclerViewFollowers.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         if (curUser == null){
@@ -61,7 +62,7 @@ class FollowersFragment : Fragment() {
                     followersAdapter.setItems(ArrayList(content))
                 }
                 else{
-                    followersAdapter.setItems(ArrayList())
+                    followersAdapter.setItems(null)
                 }
             }
             LiveDataHolder.getUsersListLiveData().observe(viewLifecycleOwner, observer)

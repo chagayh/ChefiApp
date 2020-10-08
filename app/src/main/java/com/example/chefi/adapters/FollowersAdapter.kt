@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
@@ -15,20 +16,41 @@ import com.example.chefi.holders.FollowerHolder
 import com.squareup.picasso.Picasso
 
 
-class FollowersAdapter(isFollowers: Boolean, curDbUser:DbUser?): RecyclerView.Adapter<FollowerHolder>() {
+class FollowersAdapter(val isFollowers: Boolean, val curDbUser:DbUser?, private val fragmentView: View): RecyclerView.Adapter<FollowerHolder>() {
 
     private lateinit var appContext: Chefi
     private var _items: ArrayList<DbUser> = ArrayList()
-    private val _curUser = curDbUser
-    private  val _isFollowers = isFollowers
 
     // public method to show a new list of items
     fun setItems(items: ArrayList<DbUser>?){
-        Log.e("FA", items?.size.toString())
-        _items.clear()
-        if (items != null) {
+        Log.e("No Follow", isFollowers.toString())
+        val notFollowersToShow: TextView = fragmentView.findViewById(R.id.noFollowersToShow)
+        val notFollowingToShow: TextView = fragmentView.findViewById(R.id.noFollowingToShow)
+        if (items != null){
+            if (items.size > 0){
+                notFollowersToShow.visibility = View.GONE
+                notFollowingToShow.visibility = View.GONE
+            }else{
+                if(isFollowers){
+                    notFollowersToShow.visibility = View.VISIBLE
+                    notFollowingToShow.visibility = View.GONE
+                }else{
+                    notFollowersToShow.visibility = View.GONE
+                    notFollowingToShow.visibility = View.VISIBLE
+                }
+            }
+            Log.e("FA", items.size.toString())
+            _items.clear()
             _items.addAll(items)
             notifyDataSetChanged()
+        }else{
+            if(isFollowers){
+                notFollowersToShow.visibility = View.VISIBLE
+                notFollowingToShow.visibility = View.GONE
+            }else{
+                notFollowersToShow.visibility = View.GONE
+                notFollowingToShow.visibility = View.VISIBLE
+            }
         }
     }
 

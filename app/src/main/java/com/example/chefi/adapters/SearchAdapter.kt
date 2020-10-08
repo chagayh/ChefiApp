@@ -4,6 +4,7 @@ package com.example.chefi.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
@@ -16,17 +17,23 @@ import com.example.chefi.holders.SearchHolder
 import com.squareup.picasso.Picasso
 
 
-class SearchAdapter(): RecyclerView.Adapter<SearchHolder>() {
+class SearchAdapter(private val fragmentView: View): RecyclerView.Adapter<SearchHolder>() {
 
     private lateinit var appContext: Chefi
     private var _items: ArrayList<DbUser>? = ArrayList()
 
     // public method to show a new list of items
     fun setItems(items: ArrayList<DbUser>?){
-        _items?.clear()
+        val notSearchResultToShow: TextView = fragmentView.findViewById(R.id.noSearchResultToShow)
         if (items != null) {
+            if (items.size > 0){
+                notSearchResultToShow.visibility = View.GONE
+            }
+            _items?.clear()
             _items?.addAll(items)
             notifyDataSetChanged()
+        }else{
+            notSearchResultToShow.visibility = View.VISIBLE
         }
     }
 

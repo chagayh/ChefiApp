@@ -153,10 +153,8 @@ class RecipeFragment : Fragment() {
 
     private fun setNavigateToCommentComponents(){
         commentTitle.setOnClickListener {
-            if (appRecipe.comments?.size!! > 0){
-                val action = RecipeFragmentDirections.actionRecipeToComment(appRecipe)
-                it.findNavController().navigate(action)
-            }
+            val action = RecipeFragmentDirections.actionRecipeToComment(appRecipe)
+            it.findNavController().navigate(action)
         }
     }
 

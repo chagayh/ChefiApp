@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
@@ -27,7 +28,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<HomeHolder>() {
+class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentView: View) : RecyclerView.Adapter<HomeHolder>() {
 
     private lateinit var appContext: Chefi
     private lateinit var observer: Observer<ObserveWrapper<MutableList<AppRecipe>>>
@@ -37,10 +38,18 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
     private lateinit var appUser: DbUser
 
     // public method to show a new list of items
-    fun setItems(items: ArrayList<AppRecipe>){
-        _items.clear()
-        _items.addAll(items)
-        notifyDataSetChanged()
+    fun setItems(items: ArrayList<AppRecipe>?){
+        val notFeedToShow: TextView = fragmentView.findViewById(R.id.noFeedToShow)
+        if (items != null){
+            if (items.size > 0){
+                notFeedToShow.visibility = View.GONE
+            }
+            _items.clear()
+            _items.addAll(items)
+            notifyDataSetChanged()
+        }else{
+            notFeedToShow.visibility = View.VISIBLE
+        }
     }
 
     // here we need to create a view holder
@@ -163,10 +172,8 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
 
     private fun setNavigateToCommentComponents(holder: HomeHolder, appRecipe: AppRecipe?){
         holder.commentTitle.setOnClickListener {
-            if (appRecipe?.comments?.size!! > 0){
-                val action = HomeFragmentDirections.actionHomeToComment(appRecipe)
-                it.findNavController().navigate(action)
-            }
+            val action = HomeFragmentDirections.actionHomeToComment(appRecipe)
+            it.findNavController().navigate(action)
         }
     }
 

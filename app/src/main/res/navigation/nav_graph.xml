@@ -151,5 +151,12 @@
         android:id="@+id/notificationFragment"
         android:name="com.example.chefi.fragment.NotificationFragment"
         android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" />
+        tools:layout="@layout/fragment_notification" >
+        <action
+            android:id="@+id/action_notification_to_recipe"
+            app:destination="@id/recipeFragment" />
+        <action
+            android:id="@+id/action_notification_to_profileOther"
+            app:destination="@id/profileOtherFragment" />
+    </fragment>
 </navigation>

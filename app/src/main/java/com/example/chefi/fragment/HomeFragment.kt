@@ -35,8 +35,8 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         recyclerViewHome = view.findViewById(R.id.recyclerViewHome)
-        homeAdapter = HomeAdapter(viewLifecycleOwner)
-        homeAdapter.setItems(ArrayList())
+        homeAdapter = HomeAdapter(viewLifecycleOwner, view)
+        homeAdapter.setItems(null)
         recyclerViewHome.adapter = homeAdapter
         recyclerViewHome.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 //        val items= appContext.getUserRecipes()

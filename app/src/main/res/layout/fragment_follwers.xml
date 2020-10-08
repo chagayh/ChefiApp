@@ -6,6 +6,28 @@
     android:background="@color/lightgrey"
     tools:context=".fragment.FollowersFragment">
 
+    <TextView
+        android:id="@+id/noFollowersToShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="No followers to show"
+        android:textSize="16sp"
+        android:fontFamily="@font/proximanovaregular"
+        android:textColor="@color/blue">
+    </TextView>
+
+    <TextView
+        android:id="@+id/noFollowingToShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="No following to show"
+        android:textSize="16sp"
+        android:fontFamily="@font/proximanovaregular"
+        android:textColor="@color/blue">
+    </TextView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFollowers"
         android:layout_width="match_parent"

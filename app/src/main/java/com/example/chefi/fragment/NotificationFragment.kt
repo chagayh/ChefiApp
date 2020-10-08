@@ -33,7 +33,8 @@ class NotificationFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_notification, container, false)
         recyclerViewNotification = view.findViewById(R.id.recyclerViewNotification)
-        notificationAdapter = NotificationAdapter()
+        notificationAdapter = NotificationAdapter(view)
+        // TODO - get items from chagay
         notificationAdapter.setItems(ArrayList())
         recyclerViewNotification.adapter = notificationAdapter
         recyclerViewNotification.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)

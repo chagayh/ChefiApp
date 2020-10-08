@@ -35,7 +35,7 @@ class CommentFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_comment, container, false)
         val curRecipe: AppRecipe? = args.curRecipe
         recyclerViewComment = view.findViewById(R.id.recyclerViewComment)
-        commentAdapter = CommentAdapter(curRecipe)
+        commentAdapter = CommentAdapter(curRecipe, view)
         recyclerViewComment.adapter = commentAdapter
         recyclerViewComment.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         commentAdapter.setItems(curRecipe?.comments)

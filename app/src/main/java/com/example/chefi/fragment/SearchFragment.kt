@@ -48,7 +48,7 @@ class SearchFragment : Fragment() {
         setUsersObserver()
         setSearchBtn()
         recyclerViewSearch = view.findViewById(R.id.recyclerViewSearch)
-        searchAdapter = SearchAdapter()
+        searchAdapter = SearchAdapter(view)
         recyclerViewSearch.adapter = searchAdapter
         recyclerViewSearch.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         searchAdapter.setItems(usersList)
