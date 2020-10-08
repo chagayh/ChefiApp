@@ -23,7 +23,6 @@ class FollowersAdapter(val isFollowers: Boolean, val curDbUser:DbUser?, private 
 
     // public method to show a new list of items
     fun setItems(items: ArrayList<DbUser>?){
-        Log.e("No Follow", isFollowers.toString())
         val notFollowersToShow: TextView = fragmentView.findViewById(R.id.noFollowersToShow)
         val notFollowingToShow: TextView = fragmentView.findViewById(R.id.noFollowingToShow)
         if (items != null){
@@ -39,7 +38,6 @@ class FollowersAdapter(val isFollowers: Boolean, val curDbUser:DbUser?, private 
                     notFollowingToShow.visibility = View.VISIBLE
                 }
             }
-            Log.e("FA", items.size.toString())
             _items.clear()
             _items.addAll(items)
             notifyDataSetChanged()

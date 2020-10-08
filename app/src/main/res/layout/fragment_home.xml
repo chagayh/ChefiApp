@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/lightgrey"
     tools:context=".fragment.HomeFragment">
 
@@ -16,6 +17,49 @@
         android:fontFamily="@font/proximanovaregular"
         android:textColor="@color/blue">
     </TextView>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/progressBarLinearLayout"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/progress_bar_outline">
+
+            <TextView
+                android:id="@+id/textViewChefi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/welcomesummer"
+                android:text="Chefi"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingRight="40dp"
+                android:paddingLeft="40dp"
+                android:textColor="@color/white"
+                android:textSize="30sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBarHome"
+            android:outlineAmbientShadowColor="@color/white"
+            android:outlineSpotShadowColor="@color/kas"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHome"

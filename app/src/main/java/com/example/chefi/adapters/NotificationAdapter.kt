@@ -1,9 +1,12 @@
 package com.example.chefi.adapters
 
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +17,7 @@ import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
 import com.example.chefi.database.NotificationType
 import com.example.chefi.fragment.NotificationFragmentDirections
+import com.example.chefi.fragment.RecipeFragmentDirections
 import com.example.chefi.holders.NotificationHolder
 import com.squareup.picasso.Picasso
 
@@ -59,6 +63,7 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
         val item = _items[position]
         val user: DbUser? = item.creator
         val recipe: AppRecipe = item.recipe!!
+        val recipeTrade: AppRecipe = item.offeredRecipe!!
 
         if(user?.imageUrl != null){
             Picasso.with(appContext)
@@ -94,12 +99,37 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
                 }
             }
             NotificationType.TRADE -> {
-                // TODO: nav graph and pop up msg
+                val alertDialog = AlertDialog.Builder(appContext)
+                val view = LayoutInflater.from(appContext).inflate(R.layout.dialog_trade_layout, null)
+                val imageTradeOne: ImageView = view.findViewById(R.id.imageViewTradeRecipeOne)
+                val imageTradeTwo: ImageView = view.findViewById(R.id.imageViewTradeRecipeTwo)
+                if(recipe.imageUrl != null){
+                    Picasso.with(appContext)
+                        .load(recipe.imageUrl)
+                        .into(imageTradeOne)
+                }
+                if(recipeTrade.imageUrl != null){
+                    Picasso.with(appContext)
+                        .load(recipe.imageUrl)
+                        .into(imageTradeTwo)
+                }
+                alertDialog.setView(view)
+                alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                    //TODO: update permission
+                    val action = NotificationFragmentDirections.actionNotificationToRecipe(recipeTrade)
+                    view.findNavController().navigate(action)
+                }
+                alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
+                alertDialog.show()
             }
             else ->{
                 holder.recipeCardTwo.visibility = View.GONE
                 holder.arrow.visibility = View.GONE
             }
+        }
+        holder.linearLayoutOverall.setOnLongClickListener(){
+            // TODO: delete On long
+            true
         }
     }
 }
