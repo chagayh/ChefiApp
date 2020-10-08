@@ -40,7 +40,7 @@ class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
 
         if (typeOp != null && userIdTo != null) {
             Log.e(TAG_UPDATE_FEED, "in UpdateCurrUserFeedWorker, userId = $userIdTo, type = $typeOp")
-            appContext.updatePostsToCurrUserFeed(typeOp, userIdTo!!)
+//            appContext.updatePostsToCurrUserFeed(typeOp, userIdTo!!)
         }
 
         return future

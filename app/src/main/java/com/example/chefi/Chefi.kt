@@ -11,7 +11,6 @@ import com.example.chefi.workers.AddRecipeWorker
 import com.example.chefi.workers.UpdateFollowersFeedWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.gson.Gson
 import java.text.DateFormat
@@ -161,10 +160,6 @@ class Chefi : Application() {
         appDb.follow(dbUserToFollow, this)
     }
 
-    fun getFirebaseCurrUser() : FirebaseUser? {
-        return appDb.getFirebaseCurrUser()
-    }
-
     fun getCurrUser() : DbUser? {
         return appDb.getCurrUser()
     }
@@ -195,11 +190,11 @@ class Chefi : Application() {
     }
 
     fun loadFollowing(dbUser: DbUser?) {
-        appDb.loadFollow(dbUser, "following")
+        appDb.loadFollowUnFollow(dbUser, "following")
     }
 
     fun loadFollowers(dbUser: DbUser?) {
-        appDb.loadFollow(dbUser, "followers")
+        appDb.loadFollowUnFollow(dbUser, "followers")
     }
 
     fun loadNotifications() {
@@ -208,10 +203,6 @@ class Chefi : Application() {
 
     fun signOut(){
         appDb.signOut()
-    }
-
-    fun getUser(userId: String?) {
-        appDb.getUser(userId)
     }
 
     fun deleteComment(comment: Comment, appRecipe: AppRecipe) {
@@ -261,10 +252,6 @@ class Chefi : Application() {
         return appDb.getUserFollowers()
     }
 
-    fun updatePostsToCurrUserFeed(type: String, userIdTo: String) {
-        appDb.updatePostsToCurrUserFeed(type, userIdTo)
-    }
-
     fun unFollow(dbUserToUnFollow: DbUser) {
         appDb.unFollow(dbUserToUnFollow, this)
     }
@@ -275,8 +262,12 @@ class Chefi : Application() {
     }
 
     fun uploadFeed(fromBeginning: Boolean) {
-        appDb.uploadFeed1()
+        appDb.uploadFeed()
         Log.d("updateFeed", "uploadFeed in Chefi")
+    }
+
+    fun getUnseenNotification(){
+        appDb.getUnseenNotification()
     }
 
     fun addUserToFollowers(otherDbUser: DbUser) {
@@ -284,10 +275,9 @@ class Chefi : Application() {
         appDb.addUserToFollowers(otherDbUser)
     }
 
-    // TODO - delete, for debug only
-//    fun loadSingleImage(imageId: String){
-//        appDb.loadSingleImage(imageId)
-//    }
+    fun deleteNotification(dbNotificationItem: DbNotificationItem) {
+        appDb.deleteNotification(dbNotificationItem)
+    }
 
     fun fireBaseSearchUsers(searchText: String) {
         appDb.fireBaseSearchUsers(searchText)
