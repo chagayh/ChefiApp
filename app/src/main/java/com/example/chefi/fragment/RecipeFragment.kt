@@ -112,6 +112,7 @@ class RecipeFragment : Fragment() {
         postDescription.text = item.description
         likesTitle.text = String.format(likesTitle.text.toString(), item.likes)
         if (item.status != item.TRADE_STATUS) forTrade.visibility = View.GONE
+        if(appUser.favorites?.contains(appRecipe.myReference)!!) favoritesImage.visibility = View.VISIBLE
         // comment details
         if (item.comments != null){
             commentTitle.text = String.format(commentTitle.text.toString(), item.comments!!.size)
@@ -184,10 +185,15 @@ class RecipeFragment : Fragment() {
         }
 
         recipeImage.setOnLongClickListener {
-            appContext.addRecipeToFavorites(appRecipe)
-            favoritesImage.visibility = View.VISIBLE
-            Toast.makeText(activity, "Recipe was added to favorites", Toast.LENGTH_LONG)
-                .show()
+            if(!appUser.favorites?.contains(appRecipe.myReference)!!) {
+                appContext.addRecipeToFavorites(appRecipe)
+                favoritesImage.visibility = View.VISIBLE
+                Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
+                    .show()
+            }else{
+                appContext.deleteRecipeFromFavorites(appRecipe)
+                favoritesImage.visibility = View.GONE
+            }
             true
         }
 

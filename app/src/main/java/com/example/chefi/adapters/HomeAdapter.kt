@@ -79,7 +79,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: HomeHolder, position: Int) {
         customizeComponents(holder, position)
-        updateFeedRoutine(position)
+//        updateFeedRoutine(position)
     }
 
     private fun updateFeedRoutine(position: Int){
@@ -120,6 +120,8 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
         holder.postDescription.text = item.description
         holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), item.likes)
         if (item.status != item.TRADE_STATUS) holder.forTrade.visibility = View.GONE
+        if(appUser.favorites?.contains(item.myReference)!!) holder.favoritesImage.visibility = View.VISIBLE
+
         // comment details
 //        holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), 0)
         if (item.comments != null){
@@ -182,6 +184,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
     }
 
     private fun setOtherClicks(holder: HomeHolder, position: Int){
+
         holder.likeImage.setOnClickListener {
             Log.e("Home Adapter: likes", _items[position].likes.toString())
             _items[position].likes = _items[position].likes?.plus(1)
@@ -191,10 +194,16 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
         }
 
         holder.recipeImage.setOnLongClickListener {
-            appContext.addRecipeToFavorites(_items[position])
-            holder.favoritesImage.visibility = View.VISIBLE
-            Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
-                .show()
+            val item = _items[position]
+            if(!appUser.favorites?.contains(item.myReference)!!) {
+                appContext.addRecipeToFavorites(_items[position])
+                holder.favoritesImage.visibility = View.VISIBLE
+                Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
+                    .show()
+            }else{
+                appContext.deleteRecipeFromFavorites(item)
+                holder.favoritesImage.visibility = View.GONE
+            }
             true
         }
 

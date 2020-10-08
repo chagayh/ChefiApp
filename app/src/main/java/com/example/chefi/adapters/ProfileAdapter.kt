@@ -217,7 +217,8 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
     }
 
     private fun setRecipe(holder: RecipeHolder, position: Int){
-        val item = _recipesItems?.get(position-1)
+        val item = if(recipesFlag){_recipesItems?.get(position-1)} else
+            _favoritesItems?.get(position-1)
         Picasso.with(appContext)
             .load(item?.imageUrl)
             .into(holder._image)
@@ -225,7 +226,8 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
     }
 
     private fun setRecipeButtons(holder: RecipeHolder,  position: Int){
-        val item = _recipesItems?.get(position - 1)
+        val item = if(recipesFlag){_recipesItems?.get(position-1)} else
+            _favoritesItems?.get(position-1)
         // set a listener to know when view was clicked, and tell the listener if exists
         holder.itemView.setOnClickListener {
             if (item != null){
@@ -255,7 +257,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                     }else{
                         _favoritesItems?.remove(item)
                         appContext.deleteRecipeFromFavorites(item)
-                        _favoritesItems?.let { it1 -> setItems(it1, true) }
+//                        _favoritesItems?.let { it1 -> setItems(it1, true) }
                         notifyDataSetChanged()
                     }
                 }
