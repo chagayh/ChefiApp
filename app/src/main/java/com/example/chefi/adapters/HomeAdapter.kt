@@ -41,6 +41,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
     fun setItems(items: ArrayList<AppRecipe>?){
         val notFeedToShow: TextView = fragmentView.findViewById(R.id.noFeedToShow)
         val constraintLayoutProgressBar: androidx.constraintlayout.widget.ConstraintLayout = fragmentView.findViewById(R.id.constrainLayoutProgressBar)
+        //s
         if (items != null){
             if (items.size > 0){
                 notFeedToShow.visibility = View.GONE
