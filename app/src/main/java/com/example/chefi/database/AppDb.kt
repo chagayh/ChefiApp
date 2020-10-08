@@ -660,6 +660,7 @@ class AppDb {
                     mainJob.invokeOnCompletion {
                         Log.d(TAG_UPDATE_FEED, "in loadNotification invokeOnCompletion appNotificationsList size = ${appNotificationsList.size}")
                         CoroutineScope(Main).launch {
+                            userAppNotification = appNotificationsList
                             postNotificationList(appNotificationsList)
                         }
                     }
