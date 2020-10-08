@@ -31,7 +31,7 @@
                     android:fontFamily="@font/proximanovaregular"
                     android:text="Full Name"
                     android:textColor="@color/blue"
-                    android:textSize="14sp"/>
+                    android:textSize="16sp"/>
 
                 <Space
                     android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/proximanovaregular"
                 android:text="Insert text here:"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textColor="@color/blue" />
 
             <EditText
@@ -62,7 +62,7 @@
                 android:padding="13dp"
                 android:layout_gravity="center"
                 android:fontFamily="@font/proximanovaregular"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:background="@drawable/follow_button_outline"
                 android:text="Upload Profile Picture"
                 android:textColor="@color/blue" />

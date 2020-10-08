@@ -11,13 +11,16 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import com.example.chefi.database.AppRecipe
+import com.example.chefi.database.Comment
 import com.example.chefi.database.DbUser
 import com.squareup.picasso.Picasso
+import java.util.*
 
 
 class RecipeFragment : Fragment() {
@@ -27,6 +30,9 @@ class RecipeFragment : Fragment() {
     private val args: RecipeFragmentArgs by navArgs()
     private lateinit var appRecipe: AppRecipe
     private lateinit var appUser: DbUser
+
+    private val likeMsg = "%s people likes this recipe"
+    private val commentMsg = "View all %s comments"
 
     private lateinit var userImage: ImageView
     private lateinit var userNameUp: TextView
@@ -155,10 +161,15 @@ class RecipeFragment : Fragment() {
 
     private fun setAddCommentButton(){
         commentPostBtn.setOnClickListener {
-            val inputText = commentContent.text
-            if (inputText.toString().trim().isNotEmpty()){
+            val inputText = commentContent.text.toString()
+            if (inputText.trim().isNotEmpty()){
                 appContext.addComment(inputText.toString(), appRecipe.uid!!)
                 commentContent.text.clear()
+                appRecipe.comments?.add(
+                    Comment(appUser.userName,
+                    appUser.name, inputText, null, Calendar.getInstance().time)
+                )
+                commentTitle.text = String.format(commentMsg, appRecipe.comments?.size)
             }
         }
     }
@@ -169,12 +180,14 @@ class RecipeFragment : Fragment() {
             appRecipe.likes = appRecipe.likes?.plus(1)
             Log.e("Home Adapter: likes", appRecipe.likes.toString())
             appContext.updateRecipeFields(appRecipe, "likes", null)
-            likesTitle.text = String.format(likesTitle.text.toString(), appRecipe.likes)
+            likesTitle.text = String.format(likeMsg, appRecipe.likes)
         }
 
         recipeImage.setOnLongClickListener {
             appContext.addRecipeToFavorites(appRecipe)
             favoritesImage.visibility = View.VISIBLE
+            Toast.makeText(activity, "Recipe was added to favorites", Toast.LENGTH_LONG)
+                .show()
             true
         }
 

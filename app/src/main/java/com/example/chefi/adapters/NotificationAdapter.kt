@@ -7,25 +7,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
+import com.example.chefi.database.AppNotification
 import com.example.chefi.database.DbUser
+import com.example.chefi.database.NotificationType
 import com.example.chefi.holders.NotificationHolder
+import com.squareup.picasso.Picasso
 
 class NotificationAdapter(): RecyclerView.Adapter<NotificationHolder>() {
 
     private lateinit var appContext: Chefi
-    private var _items: ArrayList<DbUser> = ArrayList()
+    private var _items: ArrayList<AppNotification> = ArrayList()
 
-    // public method to show a new list of items
-    fun setItems(items: ArrayList<DbUser>){
+    fun setItems(items: ArrayList<AppNotification>){
         _items.clear()
         _items.addAll(items)
         notifyDataSetChanged()
     }
 
-    // here we need to create a view holder
-    // steps: 1. hold a LayoutInflater
-    //        2. inflate a view
-    //        3. wrap it with a view holder and return it
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):  NotificationHolder {
         val context = parent.context
         val view: View
@@ -44,15 +42,48 @@ class NotificationAdapter(): RecyclerView.Adapter<NotificationHolder>() {
 
     override fun onBindViewHolder(holder: NotificationHolder, position: Int) {
         holder.profileImage.setImageResource(R.drawable.guypp)
-        holder.followButton.visibility = View.INVISIBLE
-        holder.recipeCard.visibility = View.INVISIBLE
-//        val item = _items[position]
-//        holder.name.text = item.name
-//        Picasso.with(appContext) // ToDO: check with Chagai if appContext it's OK
-//            .load(item.imageUrl)
-//            .into(holder.image)
-        holder.followButton.setOnClickListener {
+    }
 
+    fun setComponents(holder: NotificationHolder, position: Int){
+        val item = _items[position]
+        val user: DbUser? = item.creator
+
+        if(user?.imageUrl != null){
+            Picasso.with(appContext)
+                .load(user.imageUrl)
+                .into(holder.profileImage)
+        }
+        else{
+            holder.profileImage.setImageResource(R.drawable.defpp)
+        }
+
+        when(item.notificationType){
+            NotificationType.FOLLOW -> {
+                holder.followButton.visibility = View.VISIBLE
+                holder.linearLayout.visibility = View.GONE
+                if (user?.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+                    holder.followButton.text = "UNFOLLOW"
+                }else{
+                    holder.followButton.text = "FOLLOW"
+                }
+                holder.followButton.setOnClickListener {
+                    if (user.myReference?.let { it1 -> appContext.isFollowedByMe(it1) }!!){
+                        appContext.unFollow(user)
+                        holder.followButton.text = "FOLLOW"
+                    }else{
+                        appContext.follow(user)
+                        holder.followButton.text = "UNFOLLOW"
+                    }
+                }
+            }
+            NotificationType.TRADE -> {
+                // TODO: nav graph
+            }
+            else ->{
+                holder.recipeCardTwo.visibility = View.GONE
+                holder.arrow.visibility = View.GONE
+                // TODO: nav graph
+            }
         }
     }
 }

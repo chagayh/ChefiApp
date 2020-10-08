@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
@@ -243,18 +242,20 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                 if (item != null) {
                     if(recipesFlag){
                         val alertDialog = AlertDialog.Builder(it.context)
-                        alertDialog.setTitle("Would you like to delete this recipe_profile?")
-                        alertDialog.setPositiveButton("Confirm") { _: DialogInterface, _: Int ->
+                        val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_delete_recipe, null)
+                        alertDialog.setView(view)
+                        alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                             _recipesItems?.remove(item)
                             appContext.deleteRecipe(item)
                             _recipesItems?.let { it1 -> setItems(it1, false) }
                         }
-                        alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
+                        alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
                         alertDialog.show()
                     }else{
                         _favoritesItems?.remove(item)
                         appContext.removeRecipeFromFavorites(item)
                         _favoritesItems?.let { it1 -> setItems(it1, true) }
+                        notifyDataSetChanged()
                     }
                 }
                 true

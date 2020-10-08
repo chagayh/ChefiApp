@@ -31,7 +31,7 @@
                     android:fontFamily="@font/proximanovaregular"
                     android:text="@string/dialog_for_trade_msg"
                     android:textColor="@color/blue"
-                    android:textSize="14sp"/>
+                    android:textSize="16sp"/>
 
                 <Space
                     android:layout_width="wrap_content"

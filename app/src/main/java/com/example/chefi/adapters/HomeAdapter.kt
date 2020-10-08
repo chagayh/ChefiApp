@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -20,12 +21,20 @@ import com.example.chefi.fragment.HomeFragmentDirections
 import com.example.chefi.holders.HomeHolder
 import com.squareup.picasso.Picasso
 import androidx.lifecycle.Observer
+import com.example.chefi.database.Comment
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ServerTimestamp
+import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<HomeHolder>() {
 
     private lateinit var appContext: Chefi
     private lateinit var observer: Observer<ObserveWrapper<MutableList<AppRecipe>>>
     private var _items: ArrayList<AppRecipe> = ArrayList()
+    private val likeMsg = "%s people likes this recipe"
+    private val commentMsg = "View all %s comments"
+    private lateinit var appUser: DbUser
 
     // public method to show a new list of items
     fun setItems(items: ArrayList<AppRecipe>){
@@ -42,6 +51,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
         val context = parent.context
         val view: View
         appContext = context.applicationContext as Chefi
+        appUser = appContext.getCurrUser()!!
         view = LayoutInflater.from(context).inflate(R.layout.item_recipe_home, parent, false)
 
         observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
@@ -73,7 +83,8 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
     }
 
     private fun updateFeedRoutine(position: Int){
-        if(position % 2 == 0){
+        Log.e("Position", "$position")
+        if(position % 5 == 2){
             appContext.uploadFeed(false)
             LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
             Log.e("Home fragment", _items.size.toString())
@@ -130,7 +141,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
         if (curUser != null) {
             setNavigateToProfileComponents(holder, curUser)
         }
-        setOtherClicks(holder, item, position)
+        setOtherClicks(holder, position)
     }
 
     private fun setNavigateToProfileComponents(holder: HomeHolder, dbUser: DbUser){
@@ -159,48 +170,47 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter
 
     private fun setAddCommentButton(holder: HomeHolder, appRecipe: AppRecipe?, position: Int){
         holder.commentPostBtn.setOnClickListener {
-            val inputText = holder.commentContent.text
-            if (inputText.toString().trim().isNotEmpty()){
+            val inputText = holder.commentContent.text.toString()
+            if (inputText.trim().isNotEmpty()){
                 appContext.addComment(inputText.toString(), appRecipe?.uid!!)
                 holder.commentContent.text.clear()
-                notifyItemChanged(position)
+                _items[position].comments?.add(Comment(appUser.userName,
+                    appUser.name, inputText, null, Calendar.getInstance().time))
+                holder.commentTitle.text = String.format(commentMsg, _items[position].comments?.size)
             }
         }
     }
 
-    private fun setOtherClicks(holder: HomeHolder, appRecipe: AppRecipe?, position: Int){
+    private fun setOtherClicks(holder: HomeHolder, position: Int){
         holder.likeImage.setOnClickListener {
-            if (appRecipe != null) {
-                Log.e("Home Adapter: likes", appRecipe.likes.toString())
-                appRecipe.likes = appRecipe.likes?.plus(1)
-                Log.e("Home Adapter: likes", appRecipe.likes.toString())
-                appContext.updateRecipeFields(appRecipe, "likes", null)
-                holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), appRecipe.likes)
-                notifyItemChanged(position)
-            }
+            Log.e("Home Adapter: likes", _items[position].likes.toString())
+            _items[position].likes = _items[position].likes?.plus(1)
+            Log.e("Home Adapter: likes", _items[position].likes.toString())
+            appContext.updateRecipeFields(_items[position], "likes", null)
+            holder.likesTitle.text = String.format(likeMsg, _items[position].likes)
         }
 
         holder.recipeImage.setOnLongClickListener {
-            if (appRecipe != null) {
-                appContext.addRecipeToFavorites(appRecipe)
-                holder.favoritesImage.visibility = View.VISIBLE
-            }
+            appContext.addRecipeToFavorites(_items[position])
+            holder.favoritesImage.visibility = View.VISIBLE
+            Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
+                .show()
             true
         }
 
         holder.recipeImage.setOnClickListener{
-            if(appRecipe?.status == appRecipe?.TRADE_STATUS){
+            if(_items[position].status == _items[position].TRADE_STATUS){
                 val alertDialog = AlertDialog.Builder(it.context)
                 val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_move_offer_trade, null)
                 alertDialog.setView(view)
                 alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                    val action = HomeFragmentDirections.actionHomeToTrade(appRecipe?.uid)
+                    val action = HomeFragmentDirections.actionHomeToTrade(_items[position].uid)
                     it.findNavController().navigate(action)
                 }
                 alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
                 alertDialog.show()
             }else{
-                val action = HomeFragmentDirections.actionHomeToRecipeDetails(appRecipe)
+                val action = HomeFragmentDirections.actionHomeToRecipeDetails(_items[position])
                 it.findNavController().navigate(action)
             }
         }

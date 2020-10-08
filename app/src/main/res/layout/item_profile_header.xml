@@ -144,8 +144,8 @@
                         android:fontFamily="@font/proximanovaregular"
                         android:padding="10dp"
                         android:text="FOLLOWING"
-                        android:textColor="@color/blue"
                         android:textAlignment="center"
+                        android:textColor="@color/blue"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -265,7 +265,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/proximanovaregular"
                         android:text="@string/about_me"
-                        android:textSize="17sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <Space
@@ -290,6 +290,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:textSize="12dp"
                     android:text="@string/my_desc"
                     android:visibility="visible" />
             </LinearLayout>

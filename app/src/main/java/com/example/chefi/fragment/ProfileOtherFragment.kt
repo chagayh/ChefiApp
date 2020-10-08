@@ -67,10 +67,7 @@ class ProfileOtherFragment : Fragment() {
         // set sign out button:
         val signOutButton: TextView = view.findViewById(R.id.signOut)
         val appContext: Chefi = view.context.applicationContext as Chefi
-        signOutButton.setOnClickListener {
-            appContext.signOut()
-        }
-        Log.e("POF", recipesAdapter._recipesItems?.size.toString())
+        signOutButton.visibility = View.GONE
 
         appContext.loadRecipes(dbUser)
         Log.e("Profile Fragment", dbUser?.name.toString())
@@ -84,7 +81,7 @@ class ProfileOtherFragment : Fragment() {
             }
         }
         LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
-        recipesAdapter.setItems(recipesAdapter._recipesItems, false)
+//        recipesAdapter.setItems(recipesAdapter._recipesItems, false)
         return view
     }
 

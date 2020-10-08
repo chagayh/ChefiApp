@@ -95,7 +95,7 @@
     <string name="keyIngredients">ingredients</string>
     <string name="keyStatus">status</string>
     <string name="keyTimestamp">timestamp</string>
-    <string name="dialog_for_trade_msg">This recipe is for trade. \nWould you like to offer one of your recipe in exchange?</string>
+    <string name="dialog_for_trade_msg">This recipe is for trade. Would you like to offer one of your recipe in exchange?</string>
 
 
 </resources>
