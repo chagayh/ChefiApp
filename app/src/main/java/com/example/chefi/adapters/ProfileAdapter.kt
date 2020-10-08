@@ -3,6 +3,7 @@ package com.example.chefi.adapters
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -253,7 +254,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                         alertDialog.show()
                     }else{
                         _favoritesItems?.remove(item)
-                        appContext.removeRecipeFromFavorites(item)
+                        appContext.deleteRecipeFromFavorites(item)
                         _favoritesItems?.let { it1 -> setItems(it1, true) }
                         notifyDataSetChanged()
                     }

@@ -75,7 +75,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
                     .build()
                 LiveDataHolder.getRecipeLiveData().removeObserver(observer!!)
                 Log.d(TAG_ADD_RECIPE_WORKER, "in set observer recipe = $value")
-                appContext.addWorkerUpdateFeedToFollowers("add", content.uid!!)
+//                appContext.addWorkerUpdateFeedToFollowers("add", content.uid!!)
                 this.callback?.set(Result.success(outPutData))
             }
         }

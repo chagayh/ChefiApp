@@ -170,16 +170,11 @@ class Chefi : Application() {
     }
 
     fun deleteRecipe(recipe: AppRecipe) {
-        if (recipe.uid != null) {
-            addWorkerUpdateFeedToFollowers("delete", recipe.uid!!)
-        } else {
-            Log.w(TAG_CHEFI, "recipe uid = null")
-        }
         appDb.deleteRecipe(recipe)
     }
 
-    fun deleteRecipeFromFavorites(recipeId : String) {
-        appDb.deleteRecipeFromFavorites(recipeId)
+    fun deleteRecipeFromFavorites(appRecipe: AppRecipe) {
+        appDb.deleteRecipeFromFavorites(appRecipe)
     }
 
     fun deleteImage(imageUrl: String?, dbRecipe: DbRecipe?) {
@@ -191,19 +186,20 @@ class Chefi : Application() {
     }
 
     fun loadRecipes(user: DbUser?) {
-        appDb.loadRecipes(user)
+        appDb.loadRecipes(user, "recipes")
     }
 
     fun loadFavorites() {
-        appDb.loadFavorites()
+        appDb.loadRecipes(null, "favorites")
+//        appDb.loadFavorites()
     }
 
     fun loadFollowing(dbUser: DbUser?) {
-        appDb.loadFollowing(dbUser)
+        appDb.loadFollow(dbUser, "following")
     }
 
     fun loadFollowers(dbUser: DbUser?) {
-        appDb.loadFollowers(dbUser)
+        appDb.loadFollow(dbUser, "followers")
     }
 
     fun loadNotifications() {
@@ -274,15 +270,13 @@ class Chefi : Application() {
     }
 
     fun addRecipeToFavorites(appRecipe: AppRecipe) {
+        Log.e("favoritesBug", "adds recipe ${appRecipe.uid} to favorites")
         appDb.addRecipeToFavorites(appRecipe)
     }
 
-    fun removeRecipeFromFavorites(appRecipe: AppRecipe) {
-        appDb.removeRecipeFromFavorites(appRecipe)
-    }
-
     fun uploadFeed(fromBeginning: Boolean) {
-        appDb.uploadFeed(fromBeginning)
+        appDb.uploadFeed1()
+        Log.d("updateFeed", "uploadFeed in Chefi")
     }
 
     fun addUserToFollowers(otherDbUser: DbUser) {

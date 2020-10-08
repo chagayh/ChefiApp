@@ -20,26 +20,24 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 import kotlin.collections.ArrayList
+
 @SuppressLint("Registered")
 class AppDb {
 
     // Declare an instance of FirebaseAuth
     private val auth: FirebaseAuth = Firebase.auth
 
-    //    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    // Private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
-//    private val firestore = FirebaseFirestore
 
     // Chefi.getCon().getString(R.string.imageUpload)
     private val storageRef = FirebaseStorage.getInstance().getReference("uploads")
-    private val databaseRef = FirebaseDatabase.getInstance().getReference("uploads")
 
     // Users fields
 
@@ -132,12 +130,8 @@ class AppDb {
 
     private fun initCurrUser() {
         currDbUser = null
-//        userDbRecipes = null
         dbUserFollowers = null
         dbUserFollowing = null
-//        userNotification = null
-
-        //
         userAppRecipes = null
         userAppFavorites = null
         userAppNotification = null
@@ -154,10 +148,8 @@ class AppDb {
                 Log.d(TAG_APP_DB, "user?.name = ${user?.name} in updateCurrentUser")
                 if (user != null) {
                     currDbUser = user
-//                    userDbRecipes = null
                     dbUserFollowers = null
                     dbUserFollowing = null
-//                    userNotification = null
 
                     userAppRecipes = null
                     userAppFavorites = null
@@ -214,22 +206,27 @@ class AppDb {
             Log.d(TAG_APP_DB, "in addUserToCollection myReference = $myReference")
             dbUser.myReference = myReference
 
-            val emptyRecipe = DbRecipe()
-            val collectionPath = dbUser.uid!!
-            val emptyPostRef = firestore
-                .collection(collectionPath)
-                .document()
-
-            emptyRecipe.uid = emptyPostRef.id
-            val feedPost = FeedPost(uid = emptyRecipe.uid, null, null, null)
-
-            emptyPostRef.set(feedPost)
+            myReference.set(dbUser)
                 .addOnSuccessListener {
-                    myReference.set(dbUser)
-                        .addOnSuccessListener {
-                            updateCurrentUserField()
-                        }
+                    updateCurrentUserField()
                 }
+
+//            val emptyRecipe = DbRecipe()
+//            val collectionPath = dbUser.uid!!
+//            val emptyPostRef = firestore
+//                .collection(collectionPath)
+//                .document()
+//
+//            emptyRecipe.uid = emptyPostRef.id
+//            val feedPost = FeedPost(uid = emptyRecipe.uid, null, null, null)
+//
+//            emptyPostRef.set(feedPost)
+//                .addOnSuccessListener {
+//                    myReference.set(dbUser)
+//                        .addOnSuccessListener {
+//                            updateCurrentUserField()
+//                        }
+//                }
         }
     }
 
@@ -258,6 +255,7 @@ class AppDb {
         }
     }
 
+    // TODO - delete after
     fun updatePostsToCurrUserFeed(type: String, userIdTo: String) {
         Log.e(TAG_UPDATE_FEED, "in appDb updatePostsToCurrUserFeed")
         firestore
@@ -327,6 +325,7 @@ class AppDb {
                 }
             }
     }
+
 
     private fun updateRecipeInRecipesCollection(dbRecipe: DbRecipe) {
         // update the user in the db
@@ -424,34 +423,25 @@ class AppDb {
         LiveDataHolder.getUserMutableLiveData().value = ObserveWrapper(dbUser)
     }
 
-//    private fun postRecipes(recipesList: ArrayList<DbRecipe>) {
-////        LiveDataHolder.getRecipeListMutableLiveData().postValue(recipesList)
-//        LiveDataHolder.getRecipeListMutableLiveData().value = ObserveWrapper(recipesList)
-//    }
-
     private fun postAppRecipes(recipesList: ArrayList<AppRecipe>) {
+        Log.d("coUpload", "in postAppRecipes recipesList.size = ${recipesList.size}")
         LiveDataHolder.getRecipeListMutableLiveData().value = ObserveWrapper(recipesList)
     }
 
     private fun postUsersList(usersList: ArrayList<DbUser>) {
-        Log.d(TAG_APP_DB, "usersList.size = ${usersList.size}")
 //        LiveDataHolder.getUsersListMutableLiveData().postValue(usersList)
         LiveDataHolder.getUsersListMutableLiveData().value = ObserveWrapper(usersList)
     }
 
     private fun postNotificationList(notificationList: ArrayList<AppNotification>) {
-        Log.d(TAG_APP_DB, "usersList.size = ${notificationList.size}")
 //        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
         LiveDataHolder.getNotificationsMutableLiveData().value = ObserveWrapper(notificationList)
     }
 
     private fun postCommentsList(commentsList: ArrayList<Comment>) {
-        Log.d(TAG_APP_DB, "usersList.size = ${commentsList.size}")
-//        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
         LiveDataHolder.getCommentsMutableLiveData().value = ObserveWrapper(commentsList)
     }
 
-    // TODO add on success listener and set observer
     fun signOut() {
         initCurrUser()
         auth.signOut()
@@ -459,13 +449,19 @@ class AppDb {
 
     fun deleteRecipe(recipe: AppRecipe) {
         // delete from local array
+        Log.d("favoritesBug", "in deleteRecipe in appDb recipe uid = ${recipe.uid}")
         if (userAppRecipes?.contains(recipe)!!) {
             userAppRecipes?.remove(recipe)
+
         } else {
             Log.d(TAG_APP_DB, "in deleteRecipe, local recipe list not contains")
         }
         // delete from storage and data base
         val imageUrl = recipe.imageUrl
+        if (currDbUser?.favorites?.contains(recipe.myReference)!!) {
+            deleteRecipeFromFavorites(recipe)
+        }
+        deleteRecipeFromFavorites(recipe)
         deleteImageFromStorage(imageUrl, recipe)
     }
 
@@ -546,21 +542,15 @@ class AppDb {
             }
     }
 
-    fun deleteRecipeFromFavorites(recipeId: String) {
+    fun deleteRecipeFromFavorites(appRecipe: AppRecipe) {
         if (userAppFavorites != null) {
-            val recipe = userAppFavorites?.find { it.uid == recipeId }
+            val recipe = userAppFavorites?.find { it.uid == appRecipe.uid }
             if (recipe != null) {
-                userAppRecipes?.remove(recipe)
-                val recipeRef = firestore
-                    .collection(Chefi.getCon().getString(R.string.recipesCollection))
-                    .document(recipeId)
+                userAppFavorites?.remove(recipe)
+                val recipeRef = appRecipe.myReference
                 if (currDbUser?.favorites != null) {
-                    if (currDbUser != null) {
-                        currDbUser?.favorites!!.remove(recipeRef)
-                        updateUserInUsersCollection(currDbUser!!)
-                    } else {
-                        Log.w(TAG_APP_DB, "currDbUser = null")
-                    }
+                    currDbUser?.favorites!!.remove(recipeRef)
+                    updateUserInUsersCollection(currDbUser!!)
                 } else {
                     Log.w(TAG_APP_DB, "currDbUser?.favorites = null")
                 }
@@ -608,26 +598,26 @@ class AppDb {
         Log.d(TAG_APP_DB, "image url = ${fileRef.downloadUrl}")
     }
 
-    fun loadRecipes(user: DbUser?) {
+    fun loadRecipes(user: DbUser?, type: String) {
 
         if (user == null) {
-            val recipesRefList = currDbUser?.recipes
-            loadRecipesFromReferenceList(recipesRefList, "recipes", null)
+            var recipesRefList: ArrayList<DocumentReference>? = null
+            when (type) {
+                "favorites" -> recipesRefList = currDbUser?.favorites
+                "recipes" -> recipesRefList = currDbUser?.recipes
+                else -> Log.e(TAG_APP_DB, "wrong type = $type")
+            }
+            loadRecipesFromReferenceList(recipesRefList, type, null)
         } else {
             Log.d(TAG_APP_DB, "in loadRecipes user?.name = ${user.name}")
             Log.d(TAG_APP_DB, "in loadRecipes user?.recipes = ${user.recipes?.size}")
-            loadRecipesFromReferenceList(user.recipes, "recipes", user)
-//            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
-//                .document(user.uid!!)
-//                .get()
-//                .addOnSuccessListener { documentSnapShot ->
-//                    if (documentSnapShot != null) {
-//                        val otherUser = documentSnapShot.toObject<DbUser>()
-//                        Log.d(TAG_APP_DB, "in loadRecipes otherUser?.name = ${otherUser?.name}")
-//                        Log.d(TAG_APP_DB, "in loadRecipes otherUser?.recipes = ${otherUser?.recipes?.size}")
-//                        loadRecipesFromReferenceList(otherUser?.recipes, "recipes", user)
-//                    }
-//                }
+            var recipesRefList: ArrayList<DocumentReference>? = null
+            when (type) {
+                "favorites" -> recipesRefList = currDbUser?.favorites
+                "recipes" -> recipesRefList = currDbUser?.recipes
+                else -> Log.e(TAG_APP_DB, "wrong type = $type")
+            }
+            loadRecipesFromReferenceList(recipesRefList, type, user)
         }
 
 //        val tasks = ArrayList<Task<DocumentSnapshot>>()
@@ -655,61 +645,13 @@ class AppDb {
 //        }
     }
 
-//    private fun loadOwnersToRecipe(userDbRecipesList : ArrayList<DbRecipe>,
-//                                   type: String?,
-//                                   user: DbUser?) {
-//        val userAppRecipesList = ArrayList<AppRecipe>()
-//
-//        if (user == null) {
-//            for (recipe in userDbRecipesList) {
-//                val appRecipe = AppRecipe(recipe.uid,
-//                    recipe.description,
-//                    recipe.likes,
-//                    recipe.imageUrl,
-//                    recipe.comments,
-//                    recipe.directions,
-//                    recipe.ingredients,
-//                    recipe.status,
-//                    null,
-//                    recipe.timestamp)
-//                userAppRecipesList.add(appRecipe)
-//            }
-//            when (type!!) {
-//                "recipes" -> {
-//                    userAppRecipes = ArrayList()
-//                    userAppRecipes = userAppRecipesList
-//                }
-//                "favorites" -> {
-//                    userAppFavorites = ArrayList()
-//                    userAppFavorites = userAppRecipesList
-//                }
-//            }
-//        } else {
-//            for (recipe in userDbRecipesList) {
-//                val appRecipe = AppRecipe(recipe.uid,
-//                    recipe.description,
-//                    recipe.likes,
-//                    recipe.imageUrl,
-//                    recipe.comments,
-//                    recipe.directions,
-//                    recipe.ingredients,
-//                    recipe.status,
-//                    user,
-//                    recipe.timestamp)
-//                userAppRecipesList.add(appRecipe)
-//            }
-//        }
-//        postAppRecipes(userAppRecipesList)
-//    }
-
     private fun loadRecipesFromReferenceList(
         recipesList: ArrayList<DocumentReference>?,
-        type: String?,
-        isCurrUser: DbUser?
+        type: String,
+        dbUser: DbUser?
     ) {
-
         val recipeTasks = ArrayList<Task<DocumentSnapshot>>()
-        val otherAppRecipes = ArrayList<AppRecipe>()
+//        val otherAppRecipes = ArrayList<AppRecipe>()
         if (recipesList != null) {
             for (recipeRef in recipesList) {
                 val docTask = recipeRef.get()
@@ -717,71 +659,88 @@ class AppDb {
             }
             Tasks.whenAllSuccess<DocumentSnapshot>(recipeTasks)
                 .addOnSuccessListener { value ->
+                    val dbRecipesList = ArrayList<DbRecipe>()
                     for (recipeDoc in value) {
                         val recipe = recipeDoc.toObject<DbRecipe>()
                         if (recipe != null) {
-                            val recipeCommentsList = recipe.comments
-                            val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
-                            if (recipeCommentsList != null) {
-                                for (commentRef in recipeCommentsList) {
-                                    val docTask = commentRef.get()
-                                    commentsTasks.add(docTask)
-                                }
-                                Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
-                                    .addOnSuccessListener { value ->
-                                        val commentsList = ArrayList<Comment>()
-                                        for (commentDoc in value) {
-                                            val comment = commentDoc.toObject<Comment>()
-                                            if (comment != null) {
-                                                commentsList.add(comment)
-                                            }
-                                        }
-                                        val appRecipe = AppRecipe(
-                                            recipe.uid,
-                                            recipe.description,
-                                            recipe.likes,
-                                            recipe.imageUrl,
-                                            commentsList,
-                                            recipe.directions,
-                                            recipe.ingredients,
-                                            recipe.status,
-                                            isCurrUser,
-                                            recipe.timestamp,
-                                            recipe.myReference,
-                                            recipe.allowedUsers
-                                        )
-                                        otherAppRecipes.add(appRecipe)
+                            dbRecipesList.add(recipe)
+                        }
 
-                                        // TODO - add post somewhere
-                                    }
-                            }
-                        }
+
+//                        if (recipe != null) {
+//                            val recipeCommentsList = recipe.comments
+//                            val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
+//                            if (recipeCommentsList != null) {
+//                                for (commentRef in recipeCommentsList) {
+//                                    val docTask = commentRef.get()
+//                                    commentsTasks.add(docTask)
+//                                }
+//                                Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
+//                                    .addOnSuccessListener { value ->
+//                                        val commentsList = ArrayList<Comment>()
+//                                        for (commentDoc in value) {
+//                                            val comment = commentDoc.toObject<Comment>()
+//                                            if (comment != null) {
+//                                                commentsList.add(comment)
+//                                            }
+//                                        }
+//                                        val appRecipe = AppRecipe(
+//                                            recipe.uid,
+//                                            recipe.description,
+//                                            recipe.likes,
+//                                            recipe.imageUrl,
+//                                            commentsList,
+//                                            recipe.directions,
+//                                            recipe.ingredients,
+//                                            recipe.status,
+//                                            isCurrUser,
+//                                            recipe.timestamp,
+//                                            recipe.myReference,
+//                                            recipe.allowedUsers
+//                                        )
+//                                        otherAppRecipes.add(appRecipe)
+//
+//                                        // TODO - add post somewhere
+//                                    }
+//                            }
+//                        }
+//                    }
+//                    Log.d(
+//                        TAG_APP_DB,
+//                        "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes.size}"
+//                    )
+//                    if (isCurrUser == null) {
+//                        when (type) {
+//                            "recipes" -> {
+//                                Log.d("coLoadTest", "appRecipesList size = ${otherAppRecipes.size}")
+//                                userAppRecipes = ArrayList()
+//                                userAppRecipes = otherAppRecipes
+//                            }
+//                            "favorites" -> {
+//                                userAppFavorites = ArrayList()
+//                                userAppFavorites = otherAppRecipes
+//                            }
+//                        }
+//                    }
+//                    Log.e(
+//                        TAG_APP_DB,
+//                        "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes.size}"
+//                    )
+//                    postAppRecipes(otherAppRecipes)
+//                }
+
                     }
-                    Log.d(
-                        TAG_APP_DB,
-                        "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes.size}"
-                    )
-                    if (isCurrUser == null) {
-                        when (type!!) {
-                            "recipes" -> {
-                                userAppRecipes = ArrayList()
-                                userAppRecipes = otherAppRecipes
-                            }
-                            "favorites" -> {
-                                userAppFavorites = ArrayList()
-                                userAppFavorites = otherAppRecipes
-                            }
-                        }
-                    }
-                    Log.e(
-                        TAG_APP_DB,
-                        "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes.size}"
-                    )
-                    postAppRecipes(otherAppRecipes)
+                    parseDbRecipesToAppRecipes(dbRecipesList, dbUser, type)
                 }
         }
     }
 
+
+
+
+
+
+    // TODO - delete if not needed
     private fun loadCommentsAndOwnersOfRecipes(
         userDbRecipesList: ArrayList<DbRecipe>,
         type: String?,
@@ -831,26 +790,6 @@ class AppDb {
     fun loadFavorites() {
         val recipesFavoritesList = currDbUser?.favorites
         loadRecipesFromReferenceList(recipesFavoritesList, "favorites", null)
-
-//        val tasks = ArrayList<Task<DocumentSnapshot>>()
-//        if (recipesFavoritesList != null) {
-//            userFavorites = ArrayList()
-//            for (recipeRef in recipesFavoritesList) {
-//                val docTask = recipeRef.get()
-//                tasks.add(docTask)
-//            }
-//            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
-//                .addOnSuccessListener { value ->
-//                    for (recipeDoc in value) {
-//                        val recipe = recipeDoc.toObject<Recipe>()
-//                        if (recipe != null) {
-//                            userFavorites?.add(recipe)
-//                        }
-//                    }
-//                    postRecipes(userFavorites!!)
-//                    Log.e(TAG_APP_DB, "userFavorites.size = ${userFavorites?.size} last")
-//                }
-//        }
     }
 
     private fun loadUsersListFromReferenceList(
@@ -893,24 +832,31 @@ class AppDb {
         }
     }
 
-    fun loadFollowing(dbUser: DbUser?) {
+    fun loadFollow(dbUser: DbUser?, type: String) {
+        var userDocRefList : ArrayList<DocumentReference>? = null
+        when (type) {
+            "followers" -> userDocRefList = currDbUser?.followers
+            "following" -> userDocRefList = currDbUser?.following
+            else -> Log.e(TAG_APP_DB, "wrong type - $type")
+        }
         if (dbUser == null) {
-            val userFollowingList = currDbUser?.following
-            loadUsersListFromReferenceList(userFollowingList, "following", true)
+            loadUsersListFromReferenceList(userDocRefList, type, true)
         } else {
-            firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
-                .document(dbUser.uid!!)
-                .get()
-                .addOnSuccessListener { documentSnapShot ->
+            dbUser.myReference?.get()
+                ?.addOnSuccessListener { documentSnapShot ->
                     if (documentSnapShot != null) {
                         val otherUser = documentSnapShot.toObject<DbUser>()
-                        loadUsersListFromReferenceList(otherUser?.following, "following", false)
+                        val refList =
+                            if (type == "followers") otherUser?.followers
+                            else otherUser?.following
+                        loadUsersListFromReferenceList(refList, type, false)
                     }
                 }
         }
     }
 
-    fun loadFollowers(dbUser: DbUser?) {
+    // TODO - delete if not needed
+    fun loadFollowers(dbUser: DbUser?, type: String) {
         if (dbUser == null) {
             val userFollowingList = currDbUser?.followers
             loadUsersListFromReferenceList(userFollowingList, "followers", true)
@@ -987,7 +933,7 @@ class AppDb {
         if (notificationList != null) {
             val tasks = ArrayList<Task<DocumentSnapshot>>()
             for (notification in notificationList) {
-                val notTask = notification.creatorId?.get()
+                val notTask = notification.creatorRef?.get()
                 if (notTask != null) {
                     tasks.add(notTask)
                 }
@@ -997,12 +943,12 @@ class AppDb {
                     if (value != null) {
                         for (userDoc in value) {
                             val user = userDoc.toObject<DbUser>()
-                            val notificationFilteredList = notificationList.filter { it.creatorId == user?.myReference }
+                            val notificationFilteredList = notificationList.filter { it.creatorRef == user?.myReference }
                             for (notification in notificationFilteredList) {
                                 val appNotificationItem = AppNotification(
                                     notification.uid,
                                     user,
-                                    notification.destinationId,
+                                    notification.destinationRef,
                                     AppRecipe(),    // TODO
                                     AppRecipe(),    // TODO
                                     notification.notificationType,
@@ -1022,94 +968,6 @@ class AppDb {
                 }
         }
     }
-
-//    fun updateCommentInFollowersFeed(typeOp: String, recipeId: String, commentAsJson: String) {
-//        val commentType = object : TypeToken<Comment>() {}.type
-//        val comment = Gson().fromJson<Comment>(commentAsJson, commentType)
-//        val commentRef = firestore
-//            .collection(Chefi.getCon().getString(R.string.commentsCollection))
-//            .document(comment.uid!!)
-//        firestore
-//            .collection(Chefi.getCon().getString(R.string.recipesCollection))
-//            .document(recipeId)
-//            .get()
-//            .addOnSuccessListener { documentSnapShot ->
-//                val recipe = documentSnapShot.toObject<DbRecipe>()
-//                val ownerRef = recipe?.owner
-//                ownerRef?.get()
-//                    ?.addOnSuccessListener { userSnapShot ->
-//                        val recipeUser = userSnapShot.toObject<DbUser>()
-//                        val followersRefList = recipeUser?.followers
-//                        val followersUsersTasks = ArrayList<Task<DocumentSnapshot>>()
-//                        if (followersRefList != null) {
-//                            for (userRef in followersRefList) {
-//                                followersUsersTasks.add(userRef.get())
-//                            }
-//                            Tasks.whenAllSuccess<DocumentSnapshot>(followersUsersTasks)
-//                                .addOnSuccessListener { followersSnapShotList ->
-//                                    val usersFeedTasks = ArrayList<Task<QuerySnapshot>>()
-//                                    for (snapShot in followersSnapShotList) {
-//                                        val user = userSnapShot.toObject<DbUser>()
-//                                        val sinTask = firestore.collection(user?.uid!!)
-//                                            .whereEqualTo("recipeId", recipeId)
-//                                            .get()
-//                                        usersFeedTasks.add(sinTask)
-//
-//                                    }
-//                                    Tasks.whenAllSuccess<QuerySnapshot>(usersFeedTasks)
-//                                        .addOnSuccessListener { querySnapShot ->
-//                                            val updateTasksList = ArrayList<Task<Void>>()
-//                                            for (querySnapShotList in querySnapShot) {
-//                                                for (postDoc in querySnapShotList) {
-//                                                    val recipeToCom = postDoc.toObject<FeedPost>()
-//                                                    when (typeOp) {
-//                                                        "add" -> {
-//                                                            recipeToCom.dbRecipe?.comments?.add(
-//                                                                commentRef
-//                                                            )
-//                                                            recipeToCom.dbRecipe?.comments?.remove(
-//                                                                commentRef
-//                                                            )
-//                                                            val task = postDoc
-//                                                                .reference
-//                                                                .set(
-//                                                                    recipeToCom,
-//                                                                    SetOptions.merge()
-//                                                                )
-//                                                            updateTasksList.add(task)
-//                                                        }
-//                                                        "delete" -> {
-//                                                            if (recipeToCom.dbRecipe?.comments?.contains(
-//                                                                    commentRef
-//                                                                )!!
-//                                                            ) {
-//                                                                recipeToCom.dbRecipe?.comments?.remove(
-//                                                                    commentRef
-//                                                                )
-//                                                                val task = postDoc
-//                                                                    .reference
-//                                                                    .set(
-//                                                                        recipeToCom,
-//                                                                        SetOptions.merge()
-//                                                                    )
-//                                                                updateTasksList.add(task)
-//                                                            }
-//                                                        }
-//                                                    }
-//
-//                                                }
-//                                                Tasks.whenAllSuccess<Void>(updateTasksList)
-//                                                    .addOnSuccessListener {
-//                                                        postInt(1)
-//                                                    }
-//                                            }
-//
-//                                        }
-//                                }
-//                        }
-//                    }
-//            }
-//    }
 
     fun addComment(content: String, recipeId: String, context: Context, type: String) {
         // TODO add worker to update comment in all followers feed collections
@@ -1147,28 +1005,6 @@ class AppDb {
             }
     }
 
-//    fun loadRecipesComments(appRecipe: AppRecipe) {
-//        val recipeCommentsList = appRecipe.comments
-//        val tasks = ArrayList<Task<DocumentSnapshot>>()
-//        if (recipeCommentsList != null) {
-//            val commentsList = ArrayList<Comment>()
-//            for (commentRef in recipeCommentsList) {
-//                val docTask = commentRef.get()
-//                tasks.add(docTask)
-//            }
-//            Tasks.whenAllSuccess<DocumentSnapshot>(tasks)
-//                .addOnSuccessListener { value ->
-//                    for (commentDoc in value) {
-//                        val comment = commentDoc.toObject<Comment>()
-//                        if (comment != null) {
-//                            commentsList.add(comment)
-//                        }
-//                    }
-//                    postCommentsList(commentsList)
-//                }
-//        }
-//    }
-
     fun updateUserFields(fieldName: String, content: String) {
         when (fieldName) {
             "aboutMe" -> currDbUser?.aboutMe = content
@@ -1193,14 +1029,11 @@ class AppDb {
             .addOnSuccessListener { documentSnapShot ->
                 val recipe = documentSnapShot.toObject<DbRecipe>()
                 if (recipe != null) {
-//                    val dbRecipeFromList = userDbRecipes?.find { it.uid == recipe.uid }
                     val appRecipeFromList = userAppRecipes?.find { it.uid == recipe.uid }
-//                    dbRecipeFromList?.likes = appRecipe.likes
                     appRecipeFromList?.likes = appRecipe.likes
                     when (fieldName) {
                         "likes" -> recipe.likes = appRecipe.likes
                     }
-                    // TODO - check likes correct
                     updateRecipeInRecipesCollection(recipe)
                 }
             }
@@ -1218,24 +1051,6 @@ class AppDb {
                 otherDbUser.followers!!.add(currDbUser?.myReference!!)
             }
             updateUserInUsersCollection(otherDbUser)
-
-
-//            firestore.collection(Chefi.getCon()
-//                    .getString(R.string.usersCollection))
-//                .document(currUserId)
-//                .get()
-//                .addOnSuccessListener { documentSnapShot ->
-//                    if (documentSnapShot != null) {
-//                        val currUserRef = documentSnapShot.reference
-//                        if (otherDbUser.followers == null) {
-//                            otherDbUser.followers = ArrayList()
-//                        }
-//                        if (!otherDbUser.followers!!.contains(currUserRef)) {
-//                            otherDbUser.followers!!.add(currUserRef)
-//                        }
-//                    }
-//                    updateUserInUsersCollection(otherDbUser)
-//                }
         }
     }
 
@@ -1276,7 +1091,7 @@ class AppDb {
             .set(currDbUser!!, SetOptions.merge())
             .addOnSuccessListener {
                 Log.d(TAG_APP_DB, "in follow adding another worker")
-                addWorkerUpdateCurrUserFeed("follow", dbUserToFollow.uid!!, context)
+//                addWorkerUpdateCurrUserFeed("follow", dbUserToFollow.uid!!, context)
             }
 
         if (dbUserFollowing == null) {
@@ -1285,33 +1100,6 @@ class AppDb {
         if (!(dbUserFollowing?.contains(dbUserToFollow))!!) {
             dbUserFollowing!!.add(dbUserToFollow)
         }
-
-//        firestore.collection(Chefi.getCon().getString(R.string.usersCollection))
-//            .document(dbUserToFollow.uid!!)
-//            .get()
-//            .addOnSuccessListener { documentSnapshot ->
-//                if (documentSnapshot != null) {
-//                    if (currDbUser?.following != null) {
-//                        if (!currDbUser?.following?.contains(documentSnapshot.reference)!!){
-//                            currDbUser?.following?.add(documentSnapshot.reference)   // TODO check
-//                        }
-//                    } else {
-//                        currDbUser?.following = ArrayList()
-//                        currDbUser?.following?.add(documentSnapshot.reference)
-//                    }
-//                    updateUserInUsersCollection(null)
-//                    addUserToFollowers(dbUserToFollow)
-//                } else {
-//                    Log.d(TAG_APP_DB, "in follow value data: null")
-//                }
-//            }
-//
-//        if (dbUserFollowing == null) {
-//            dbUserFollowing = ArrayList()
-//        }
-//        if (!(dbUserFollowing?.contains(dbUserToFollow))!!) {
-//            dbUserFollowing!!.add(dbUserToFollow)
-//        }
     }
 
     fun getUser(userId: String?) {
@@ -1367,7 +1155,7 @@ class AppDb {
                 .set(currDbUser!!, SetOptions.merge())
                 .addOnSuccessListener {
                     Log.d(TAG_APP_DB, "in unFollow adding another worker")
-                    addWorkerUpdateCurrUserFeed("unfollow", dbUserToUnFollow.uid!!, context)
+//                    addWorkerUpdateCurrUserFeed("unfollow", dbUserToUnFollow.uid!!, context)
                 }
 
             if (dbUserFollowing == null) {
@@ -1378,67 +1166,19 @@ class AppDb {
             } else {
                 Log.d(TAG_APP_DB, "in unFollow local followers list not contains")
             }
-
-//            firestore.collection(
-//                Chefi.getCon()
-//                    .getString(R.string.usersCollection)
-//            )
-//                .document(otherUserId)
-//                .get()
-//                .addOnSuccessListener { documentSnapShot ->
-//                    if (documentSnapShot != null) {
-//                        val userRef = documentSnapShot.reference
-//                        if (currDbUser?.following == null) {
-//                            Log.d(TAG_APP_DB, "in unFollow currUser.following == null")
-//                        }
-//                        if (currDbUser?.following!!.contains(userRef)) {
-//                            currDbUser?.following!!.remove(userRef)
-//                        } else {
-//                            Log.d(TAG_APP_DB, "in unFollow currUser.following not contains")
-//                        }
-//                    }
-//                    // remove currUser from other user followers
-//                    firestore.collection(
-//                        Chefi.getCon()
-//                            .getString(R.string.usersCollection)
-//                    )
-//                        .document(currUserId)
-//                        .get()
-//                        .addOnSuccessListener {
-//                            val userRef = documentSnapShot.reference
-//                            if (dbUserToUnFollow.followers == null) {
-//                                Log.d(TAG_APP_DB, "in unFollow userToUnFollow.followers == null")
-//                            }
-//                            if (dbUserToUnFollow.followers!!.contains(userRef)) {
-//                                dbUserToUnFollow.followers!!.remove(userRef)
-//                            } else {
-//                                Log.d(
-//                                    TAG_APP_DB,
-//                                    "in unFollow userToUnFollow.followers not contains"
-//                                )
-//                            }
-//                        }
-//                    updateUserInUsersCollection(dbUserToUnFollow)
-//                    updateUserInUsersCollection(currDbUser)
-//                }
-//        }
-//        if (dbUserFollowing == null) {
-//            return
-//        }
-//        if (dbUserFollowing!!.contains(dbUserToUnFollow)) {
-//            dbUserFollowing!!.remove(dbUserToUnFollow)
-//        } else {
-//            Log.d(TAG_APP_DB, "in unFollow local followers list not contains")
-//        }
         }
     }
 
     fun addRecipeToFavorites(appRecipe: AppRecipe) {
+        Log.e("favoritesBug", "in addRecipeToFavorites ref = ${appRecipe.myReference}")
         val recipeId = appRecipe.uid
         if (userAppFavorites == null) {
             userAppFavorites = ArrayList()
         }
-        if (!userAppFavorites?.contains(appRecipe)!!) {
+        if (currDbUser?.favorites == null) {
+            currDbUser?.favorites = ArrayList()
+        }
+        if (!currDbUser?.favorites?.contains(appRecipe.myReference)!!) {
             if (recipeId != null) {
                 val recipeRef =
                     firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
@@ -1450,80 +1190,8 @@ class AppDb {
                 updateUserInUsersCollection(currDbUser)
 
                 userAppFavorites!!.add(appRecipe)
-
-//            firestore.collection(Chefi.getCon()
-//                    .getString(R.string.recipesCollection)).document(recipeId)
-//                .get()
-//                .addOnSuccessListener { documentSnapShot ->
-//                    if (documentSnapShot != null) {
-//                        val recipeRef = documentSnapShot.reference
-//                        if (currDbUser?.favorites == null) {
-//                            currDbUser?.favorites = ArrayList()
-//                        }
-//                        currDbUser?.favorites!!.add(recipeRef)
-//                    }
-//                    updateUserInUsersCollection(null)
-//                }
-//        }
-//        if (userFavorites == null) {
-//            userFavorites = ArrayList()
-//        }
-//        userFavorites!!.add(dbRecipe)
             }
 
-        }
-    }
-
-    fun removeRecipeFromFavorites(appRecipe: AppRecipe) {
-        val recipeId = appRecipe.uid
-
-        if (recipeId != null) {
-            val recipeRef =
-                firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
-                    .document(recipeId)
-            if (currDbUser?.favorites == null) {
-                Log.d(TAG_APP_DB, "in addRecipeToFavorites currUser?.favorites == null")
-            }
-            if (currDbUser?.favorites!!.contains(recipeRef)) {
-                currDbUser?.favorites!!.remove(recipeRef)
-            } else {
-                Log.d(
-                    TAG_APP_DB,
-                    "in addRecipeToFavorites currUser?.favorites not contains"
-                )
-            }
-            updateUserInUsersCollection(currDbUser)
-            if (userAppFavorites == null) {
-                Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list = null")
-            }
-            if (userAppFavorites?.contains(appRecipe)!!) {
-                userAppFavorites!!.remove(appRecipe)
-            } else {
-                Log.d(TAG_APP_DB, "in addRecipeToFavorites local favorites list not contains")
-            }
-//            firestore.collection(
-//                Chefi.getCon()
-//                    .getString(R.string.recipesCollection)
-//            )
-//                .document(recipeId)
-//                .get()
-//                .addOnSuccessListener { documentSnapShot ->
-//                    if (documentSnapShot != null) {
-//                        val recipeRef = documentSnapShot.reference
-//                        if (currDbUser?.favorites == null) {
-//                            Log.d(TAG_APP_DB, "in addRecipeToFavorites currUser?.favorites == null")
-//                        }
-//                        if (currDbUser?.favorites!!.contains(recipeRef)) {
-//                            currDbUser?.favorites!!.remove(recipeRef)
-//                        } else {
-//                            Log.d(
-//                                TAG_APP_DB,
-//                                "in addRecipeToFavorites currUser?.favorites not contains"
-//                            )
-//                        }
-//                    }
-//                    updateUserInUsersCollection(null)
-//                }
         }
     }
 
@@ -1552,6 +1220,7 @@ class AppDb {
             }
     }
 
+    // TODO - delete if not needed
     fun updateFeedWithRecipe(type: String, recipeUid: String) {
         Log.e(TAG_UPDATE_FEED, "in updateFeedWithRecipe, recipeId = $recipeUid")
         if (dbUserFollowers != null) {
@@ -1596,28 +1265,11 @@ class AppDb {
                             }
                         }
                     }
-//                    when (type) {
-//                        "add" -> {
-//                            Tasks.whenAllSuccess<Void>(feedAddTasks)
-//                                .addOnSuccessListener {
-//                                    postString(recipeUid)
-//                                }
-//                        }
-//                        "delete" -> {
-//                            Tasks.whenAllSuccess<Void>(feedDeleteTasks)
-//                                .addOnSuccessListener {
-//                                    for (query in it) {
-//
-//                                    }
-//                                    postString(recipeUid)
-//                                }
-//                        }
-//                    }
-
                 }
         }
     }
 
+    // TODO - delete if not needed
     fun uploadFeed(fromBeginning: Boolean) {
         Log.d("updateFeed", "first line")
         val limit = 5
@@ -1726,6 +1378,92 @@ class AppDb {
             }
     }
 
+    private fun parseDbRecipesToAppRecipes(
+        dbRecipesList: ArrayList<DbRecipe>,
+        dbUser: DbUser?,
+        type: String) {
+        val otherAppRecipes = ArrayList<AppRecipe>()
+        for (recipe in dbRecipesList) {
+            val recipeCommentsList = recipe.comments
+            val commentsTasks = ArrayList<Task<DocumentSnapshot>>()
+            if (recipeCommentsList != null) {
+                for (commentRef in recipeCommentsList) {
+                    val docTask = commentRef.get()
+                    commentsTasks.add(docTask)
+                }
+                Tasks.whenAllSuccess<DocumentSnapshot>(commentsTasks)
+                    .addOnSuccessListener { value ->
+                        val commentsList = ArrayList<Comment>()
+                        for (commentDoc in value) {
+                            val comment = commentDoc.toObject<Comment>()
+                            if (comment != null) {
+                                commentsList.add(comment)
+                            }
+                        }
+                        val appRecipe = AppRecipe(
+                            recipe.uid,
+                            recipe.description,
+                            recipe.likes,
+                            recipe.imageUrl,
+                            commentsList,
+                            recipe.directions,
+                            recipe.ingredients,
+                            recipe.status,
+                            dbUser,
+                            recipe.timestamp,
+                            recipe.myReference,
+                            recipe.allowedUsers
+                        )
+                        otherAppRecipes.add(appRecipe)
+                    }
+            }
+        }
+        Log.d(
+            TAG_APP_DB,
+            "in loadRecipesFromReferenceList userRecipesList = ${otherAppRecipes.size}"
+        )
+        if (dbUser == null) {
+            when (type) {
+                "recipes" -> {
+                    Log.d("coLoadTest", "appRecipesList size = ${otherAppRecipes.size}")
+                    userAppRecipes = ArrayList()
+                    userAppRecipes = otherAppRecipes
+                }
+                "favorites" -> {
+                    userAppFavorites = ArrayList()
+                    userAppFavorites = otherAppRecipes
+                }
+            }
+        }
+        Log.e(
+            TAG_APP_DB,
+            "in loadRecipesFromReferenceList userRecipesList size = ${otherAppRecipes.size}"
+        )
+        Log.d(TAG_UPDATE_FEED, "in loadRecipesFromReferenceList otherAppRecipes size = ${otherAppRecipes.size}")
+        postAppRecipes(otherAppRecipes)
+    }
+
+    fun uploadFeed1() {
+        val query =
+            firestore
+                .collection(Chefi.getCon().getString(R.string.recipesCollection))
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+        val dbRecipesFeed = ArrayList<DbRecipe>()
+        query.get()
+            .addOnSuccessListener { snapShotList ->
+                for (snapShot in snapShotList) {
+                    val dbRecipe = snapShot.toObject<DbRecipe>()
+                    if (currDbUser?.following != null
+                        && currDbUser?.following?.contains(dbRecipe.owner)!!)
+                    {
+                        dbRecipesFeed.add(dbRecipe)
+                    }
+                }
+                Log.d(TAG_UPDATE_FEED, "in uploadFeed1 dbRecipesFeed size = ${dbRecipesFeed.size}")
+                parseDbRecipesToAppRecipes(dbRecipesFeed, currDbUser, "feed")
+            }
+    }
+
     // after calling this method, there will be a live query that firestore will trigger
     // every time the collection "pets" is changed
     // (e.g. when a document in this collection gets created, deleted, or getting its data changed)
@@ -1789,12 +1527,4 @@ class AppDb {
             currDbUser?.following?.contains(ref)!! else false
 
     }
-
-//    private suspend fun getRecipeObj() {
-//
-//    }
-
-
 }
-
-// TODO - add on single event listener

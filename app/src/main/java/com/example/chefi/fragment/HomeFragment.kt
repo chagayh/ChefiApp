@@ -62,7 +62,6 @@ class HomeFragment : Fragment() {
         Log.d("updateFeed", "in onResume of HomeFragment")
         super.onResume()
         var items = ArrayList<AppRecipe>()
-        appContext.uploadFeed(true)
         val observer = Observer<ObserveWrapper<MutableList<AppRecipe>>> { value ->
             val content = value.getContentIfNotHandled()
             if (content != null){
@@ -77,6 +76,7 @@ class HomeFragment : Fragment() {
             }
         }
         LiveDataHolder.getRecipeListLiveData().observe(viewLifecycleOwner, observer)
+        appContext.uploadFeed(true)
 //        if (items != null) {
         Log.e("Home fragment", items.size.toString())
     }

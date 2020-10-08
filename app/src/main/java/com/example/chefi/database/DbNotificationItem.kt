@@ -36,8 +36,8 @@ enum class NotificationType{
 
 data class DbNotificationItem (
     var uid: String? = null,
-    var creatorId: DocumentReference? = null,
-    var destinationId: DocumentReference? = null, // no need object
+    var creatorRef: DocumentReference? = null,
+    var destinationRef: DocumentReference? = null, // no need object
     var recipeRef: DocumentReference? = null, // always relevant
     var offeredRecipeRef: DocumentReference? = null, // relevant if status == 3
     var notificationType: NotificationType = NotificationType.DEFAULT,
