@@ -545,7 +545,12 @@ class AppDb {
                     .get()
                     .addOnSuccessListener { documentSnapShot ->
                         val user = documentSnapShot.toObject<DbUser>()
+                        Log.d("notification", "in listener, user name = ${user?.name}, notification ref = ${notificationRef}")
+                        if (user?.notifications == null) {
+                            user?.notifications = ArrayList()
+                        }
                         user?.notifications?.add(notificationRef)
+                        updateUserInUsersCollection(user)
                     }
             }
         val appNotification: AppNotification? = null
