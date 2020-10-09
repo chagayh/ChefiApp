@@ -153,7 +153,12 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
                     }
                     alertDialog.setView(view)
                     alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                        //TODO: update permission
+                        if (recipe != null) {
+                            appContext.getCurrUser()?.myReference?.let { it1 -> appContext.addToUserPermission(recipe, it1) }
+                        }
+                        if (recipeTrade != null) {
+                            user?.myReference?.let { it1 -> appContext.addToUserPermission(recipeTrade, it1) }
+                        }
                         val action = recipe?.let {
                             NotificationFragmentDirections.actionNotificationToRecipe(it)
                         }

@@ -3,6 +3,7 @@ package com.example.chefi.adapters
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -78,6 +79,8 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         }
         else{
             view = LayoutInflater.from(context).inflate(R.layout.item_recipe_profile, parent, false)
+//            val progressBar: androidx.constraintlayout.widget.ConstraintLayout = view.findViewById(R.id.constrainLayoutProgressBar)
+//            progressBar.visibility = View.VISIBLE
             return RecipeHolder(view)
         }
     }
@@ -226,6 +229,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         Picasso.with(appContext)
             .load(item?.imageUrl)
             .into(holder._image)
+        holder._progressBar.visibility = View.GONE
         setRecipeButtons(holder, position)
     }
 

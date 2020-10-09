@@ -9,7 +9,7 @@ import com.example.chefi.R
 
 class FollowerHolder(view: View): RecyclerView.ViewHolder(view) {
     val image: ImageView = view.findViewById(R.id.imageViewFollower)
-    val unfollowButton: Button = view.findViewById(R.id.buttonFollower)
+    val unfollowButton: TextView = view.findViewById(R.id.buttonFollower)
     val name: TextView = view.findViewById(R.id.textViewFollower)
     val username: TextView = view.findViewById(R.id.textViewFollowerSub)
 }

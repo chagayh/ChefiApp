@@ -11,5 +11,5 @@ import com.example.chefi.R
 // and stores as fields all the views we would need to use in the adapter
 class RecipeHolder(view: View): RecyclerView.ViewHolder(view) {
     val _image: ImageView = view.findViewById(R.id.imageViewRecipe)
-    val _card: androidx.cardview.widget.CardView = view.findViewById(R.id.recipeCard)
+    val _progressBar: androidx.constraintlayout.widget.ConstraintLayout = view.findViewById(R.id.constrainLayoutProgressBar)
 }

@@ -133,7 +133,9 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         holder.postDescription.text = item.description
         holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), item.likes)
         if (item.status != item.TRADE_STATUS) holder.forTrade.visibility = View.GONE
-        if(appUser.favorites?.contains(item.myReference)!!) holder.favoritesImage.visibility = View.VISIBLE
+        if (appUser.favorites != null){
+            if(appUser.favorites?.contains(item.myReference)!!) holder.favoritesImage.visibility = View.VISIBLE
+        }
 
         // comment details
 //        holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), 0)
@@ -229,15 +231,23 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
 
         holder.recipeImage.setOnClickListener{
             if(_items[position].status == _items[position].TRADE_STATUS){
-                val alertDialog = AlertDialog.Builder(it.context)
-                val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_move_offer_trade, null)
-                alertDialog.setView(view)
-                alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                    val action = HomeFragmentDirections.actionHomeToTrade(_items[position])
+                if (_items[position].allowedUsers != null){
+                    if((_items[position].allowedUsers?.contains(appUser.myReference)!!)) {
+                        val alertDialog = AlertDialog.Builder(it.context)
+                        val view = LayoutInflater.from(it.context)
+                            .inflate(R.layout.dialog_move_offer_trade, null)
+                        alertDialog.setView(view)
+                        alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                            val action = HomeFragmentDirections.actionHomeToTrade(_items[position])
+                            it.findNavController().navigate(action)
+                        }
+                        alertDialog.setNegativeButton("No") { _: DialogInterface, _: Int -> }
+                        alertDialog.show()
+                }
+                }else{
+                    val action = HomeFragmentDirections.actionHomeToRecipeDetails(_items[position])
                     it.findNavController().navigate(action)
                 }
-                alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
-                alertDialog.show()
             }else{
                 val action = HomeFragmentDirections.actionHomeToRecipeDetails(_items[position])
                 it.findNavController().navigate(action)
