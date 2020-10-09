@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
+import com.example.chefi.activities.MainActivity
 import com.example.chefi.adapters.FollowersAdapter
 import com.example.chefi.adapters.NotificationAdapter
 
@@ -37,6 +38,8 @@ class NotificationFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_notification, container, false)
+        val myActivity = activity as MainActivity
+        myActivity.setNotificationBadge(0)
         recyclerViewNotification = view.findViewById(R.id.recyclerViewNotification)
         notificationAdapter = NotificationAdapter(view)
         // TODO - get items from chagay

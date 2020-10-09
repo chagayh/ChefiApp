@@ -217,15 +217,23 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
 
         holder.recipeImage.setOnLongClickListener {
             val item = _items[position]
-            if(!appUser.favorites?.contains(item.myReference)!!) {
+            if (appUser.favorites != null){
+                if(!appUser.favorites?.contains(item.myReference)!!) {
+                    appContext.addRecipeToFavorites(_items[position])
+                    holder.favoritesImage.visibility = View.VISIBLE
+                    Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
+                        .show()
+                }else{
+                    appContext.deleteRecipeFromFavorites(item)
+                    holder.favoritesImage.visibility = View.GONE
+                }
+            }else{
                 appContext.addRecipeToFavorites(_items[position])
                 holder.favoritesImage.visibility = View.VISIBLE
                 Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
                     .show()
-            }else{
-                appContext.deleteRecipeFromFavorites(item)
-                holder.favoritesImage.visibility = View.GONE
             }
+
             true
         }
 
