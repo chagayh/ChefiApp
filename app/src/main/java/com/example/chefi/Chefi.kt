@@ -217,8 +217,8 @@ class Chefi : Application() {
         appDb.setUnseenNotification(num)
     }
 
-    fun setUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
-        appDb.setUserPermission(appRecipe, userRef)
+    fun addToUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
+        appDb.addToUserPermission(appRecipe, userRef)
     }
 
     fun addNotification(userDestRef: DocumentReference,

@@ -3,8 +3,10 @@ package com.example.chefi.activities
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.chefi.Chefi
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private var currentPhotoPath: String? = null
     private var capturedImageUri: Uri? = null
+    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var bottomMenu: Menu
 
     companion object{
         // TAGS
@@ -35,9 +39,10 @@ class MainActivity : AppCompatActivity() {
 
         setObserver()
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
         val navController = findNavController(R.id.navHostFragment)
         bottomNavigationView.setupWithNavController(navController)
+        bottomMenu = bottomNavigationView.menu
 
     }
 
@@ -55,6 +60,13 @@ class MainActivity : AppCompatActivity() {
                 appContext.loadFollowers(null)
                 appContext.loadFollowing(null)
                 appContext.loadNotifications()
+                val notificationItemId = bottomMenu.getItem(3).itemId
+                val badge = bottomNavigationView.getOrCreateBadge(notificationItemId)
+                badge.isVisible = true
+                if (content.lastSeenNotification != null) {
+                    Log.d("badge", "${content.lastSeenNotification}")
+                    badge.number = content.lastSeenNotification!!
+                }
             }
         }
         LiveDataHolder.getUserLiveData().observe (this, observer)

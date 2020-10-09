@@ -82,7 +82,7 @@ class AppDb {
         return unseenNotification
     }
 
-    fun setUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
+    fun addToUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
         if (appRecipe.status == 3) {
             if (appRecipe.allowedUsers == null) {
                 appRecipe.allowedUsers = ArrayList()
@@ -137,8 +137,10 @@ class AppDb {
     }
 
     private fun printNotificationToLog() {
-        for (not in userAppNotification!!) {
-            Log.d("notificationPrint", "notification uid = ${not.uid}")
+        if (userAppNotification != null) {
+            for (not in userAppNotification!!) {
+                Log.d("notificationPrint", "notification uid = ${not.uid}")
+            }
         }
     }
 
@@ -515,6 +517,7 @@ class AppDb {
                         recipeRef: DocumentReference?,
                         offeredRecipeRef: DocumentReference?,
                         type: NotificationType) {
+
         val notificationRef = firestore
             .collection(Chefi.getCon().getString(R.string.notificationsCollection))
             .document()
@@ -540,8 +543,12 @@ class AppDb {
                         if (user?.notifications == null) {
                             user?.notifications = ArrayList()
                         }
+                        if (user?.lastSeenNotification == null) {
+                            user?.lastSeenNotification = 1
+                        } else {
+                            user.lastSeenNotification?.plus(1)
+                        }
                         user?.notifications?.add(notificationRef)
-                        user?.lastSeenNotification?.plus(1)
                         updateUserInUsersCollection(user)
                     }
             }
@@ -657,6 +664,7 @@ class AppDb {
                     mainJob.invokeOnCompletion {
                         Log.d(TAG_UPDATE_FEED, "in loadNotification invokeOnCompletion appNotificationsList size = ${appNotificationsList.size}")
                         CoroutineScope(Main).launch {
+                            appNotificationsList.sortByDescending { it.timestamp }
                             userAppNotification = appNotificationsList
                             postNotificationList(appNotificationsList)
                         }
