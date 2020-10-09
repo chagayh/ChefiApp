@@ -85,7 +85,6 @@ class MainActivity : AppCompatActivity() {
             notificationBadge.isVisible = false
             notificationBadge.number = 0
         }
-        appContext.setUnseenNotificationNumber(num)
     }
 
     fun getCurrentPhotoPath() : String?{

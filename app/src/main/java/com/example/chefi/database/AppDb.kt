@@ -74,17 +74,11 @@ class AppDb {
 
     // set and get
 
-    fun setUnseenNotification(num: Int) {
-        unseenNotification = num
-        currDbUser?.lastSeenNotification = num
-        updateUserInUsersCollection(currDbUser)
-    }
-
     fun getUnseenNotification() : Int {
         return unseenNotification
     }
 
-    fun addToUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
+    fun addToRecipePermission(appRecipe: AppRecipe, userRef: DocumentReference) {
         if (appRecipe.status == 3) {
             if (appRecipe.allowedUsers == null) {
                 appRecipe.allowedUsers = ArrayList()
@@ -97,10 +91,14 @@ class AppDb {
                     .document(appRecipe.uid!!)
                     .get()
                     .addOnSuccessListener {
-                        val dbUser = it.toObject<DbRecipe>()
-                        if (dbUser != null) {
-                            updateRecipeInRecipesCollection(dbUser)
+                        val dbRecipe = it.toObject<DbRecipe>()
+                        if (dbRecipe?.allowedUsers == null) {
+                            dbRecipe?.allowedUsers = ArrayList()
                         }
+                        if (!dbRecipe?.allowedUsers?.contains(userRef)!!) {
+                            dbRecipe.allowedUsers!!.add(userRef)
+                        }
+                        updateRecipeInRecipesCollection(dbRecipe)
                     }
             } else {
                 Log.w(
@@ -545,10 +543,12 @@ class AppDb {
                         if (user?.notifications == null) {
                             user?.notifications = ArrayList()
                         }
+                        Log.d("lastSeenNotificationTag", "lastSeenNotification = ${user?.lastSeenNotification}")
                         if (user?.lastSeenNotification == null) {
                             user?.lastSeenNotification = 1
                         } else {
-                            user.lastSeenNotification?.plus(1)
+                            user.lastSeenNotification = user.lastSeenNotification!! + 1 
+                            Log.d("lastSeenNotificationTag", "in else lastSeenNotification = ${user?.lastSeenNotification}")
                         }
                         user?.notifications?.add(notificationRef)
                         updateUserInUsersCollection(user)
@@ -1163,6 +1163,7 @@ class AppDb {
     }
 
     fun uploadFeed() {
+        // TODO - add limit and lastVisited...
         val query =
             firestore
                 .collection(Chefi.getCon().getString(R.string.recipesCollection))

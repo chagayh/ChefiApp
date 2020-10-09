@@ -213,12 +213,8 @@ class Chefi : Application() {
         appDb.deleteComment(comment, appRecipe)
     }
 
-    fun setUnseenNotificationNumber(num : Int) {
-        appDb.setUnseenNotification(num)
-    }
-
     fun addToUserPermission(appRecipe: AppRecipe, userRef: DocumentReference) {
-        appDb.addToUserPermission(appRecipe, userRef)
+        appDb.addToRecipePermission(appRecipe, userRef)
     }
 
     fun addNotification(userDestRef: DocumentReference,
