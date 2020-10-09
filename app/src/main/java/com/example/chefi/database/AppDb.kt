@@ -76,6 +76,8 @@ class AppDb {
 
     fun setUnseenNotification(num: Int) {
         unseenNotification = num
+        currDbUser?.lastSeenNotification = num
+        updateUserInUsersCollection(currDbUser)
     }
 
     fun getUnseenNotification() : Int {
