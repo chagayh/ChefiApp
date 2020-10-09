@@ -6,16 +6,18 @@ import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.chefi.Chefi
-import com.example.chefi.R
-import com.example.chefi.database.DbUser
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.lifecycle.Observer
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.ObserveWrapper
+import com.example.chefi.R
+import com.example.chefi.database.DbUser
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var capturedImageUri: Uri? = null
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var bottomMenu: Menu
+    private lateinit var notificationBadge: BadgeDrawable
 
     companion object{
         // TAGS
@@ -35,7 +38,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.d(TAG_MAIN_ACTIVITY, "in onCreate of mainActivity user's name =${appContext.getCurrUser()?.name}")
+        Log.d(
+            TAG_MAIN_ACTIVITY,
+            "in onCreate of mainActivity user's name =${appContext.getCurrUser()?.name}"
+        )
 
         setObserver()
 
@@ -43,7 +49,10 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.navHostFragment)
         bottomNavigationView.setupWithNavController(navController)
         bottomMenu = bottomNavigationView.menu
-
+        val notificationItemId = bottomMenu.getItem(3).itemId
+        notificationBadge = bottomNavigationView.getOrCreateBadge(notificationItemId)
+//        val layoutParams = bottomNavigationView.layoutParams as CoordinatorLayout.LayoutParams
+//        layoutParams.behavior = BottomNavigationView
     }
 
     private fun setObserver() {
@@ -60,16 +69,23 @@ class MainActivity : AppCompatActivity() {
                 appContext.loadFollowers(null)
                 appContext.loadFollowing(null)
                 appContext.loadNotifications()
-                val notificationItemId = bottomMenu.getItem(3).itemId
-                val badge = bottomNavigationView.getOrCreateBadge(notificationItemId)
-                badge.isVisible = true
                 if (content.lastSeenNotification != null) {
-                    Log.d("badge", "${content.lastSeenNotification}")
-                    badge.number = content.lastSeenNotification!!
+                    setNotificationBadge(content.lastSeenNotification!!)
                 }
             }
         }
-        LiveDataHolder.getUserLiveData().observe (this, observer)
+        LiveDataHolder.getUserLiveData().observe(this, observer)
+    }
+
+    fun setNotificationBadge(num: Int) {
+        if (num > 0) {
+            notificationBadge.isVisible = true
+            notificationBadge.number = num
+        } else {
+            notificationBadge.isVisible = false
+            notificationBadge.number = 0
+        }
+        appContext.setUnseenNotificationNumber(num)
     }
 
     fun getCurrentPhotoPath() : String?{

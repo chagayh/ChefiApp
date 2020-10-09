@@ -89,15 +89,8 @@ class AddFragment : Fragment() {
 
     private fun setComponents() {
         galleryBtn.setOnClickListener { v ->
-            val intent = Intent()
-            with(intent) {
-                type = "image/*"
-                action = Intent.ACTION_GET_CONTENT
-            }
-            startActivityForResult(
-                Intent.createChooser(intent, "Select Picture"),
-                REQUEST_PICK_IMAGE_FROM_GALLERY
-            )
+
+
         }
         cameraBtn.setOnClickListener {
             showUploadPicOptions()
