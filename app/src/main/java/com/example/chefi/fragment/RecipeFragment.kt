@@ -87,7 +87,7 @@ class RecipeFragment : Fragment() {
     private fun customizeComponents(){
         val item = appRecipe
         val curUser: DbUser? = item.owner
-        Log.e("Recipe Fragment", curUser?.name.toString())
+        Log.e("Nug", item.toString())
         // user details:
         if(curUser != null){
             userNameUp.text = curUser.name
@@ -113,7 +113,10 @@ class RecipeFragment : Fragment() {
         postDescription.text = item.description
         likesTitle.text = String.format(likesTitle.text.toString(), item.likes)
         if (item.status != item.TRADE_STATUS) forTrade.visibility = View.GONE
-        if(appUser.favorites?.contains(appRecipe.myReference)!!) favoritesImage.visibility = View.VISIBLE
+        Log.e("Bug", appUser.toString())
+        if (appUser.favorites != null){
+            if(appUser.favorites?.contains(appRecipe.myReference)!!) favoritesImage.visibility = View.VISIBLE
+        }
         // comment details
         if (item.comments != null){
             commentTitle.text = String.format(commentTitle.text.toString(), item.comments!!.size)

@@ -88,7 +88,7 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
         }
         if(recipeTrade?.imageUrl != null){
             Picasso.with(appContext)
-                .load(recipe?.imageUrl)
+                .load(recipeTrade.imageUrl)
                 .into(holder.recipeImageTwo)
         }
 
@@ -103,6 +103,15 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
             }
             if (action != null) {
                 it.findNavController().navigate(action)
+            }
+        }
+
+        if(item.notificationType != NotificationType.TRADE && item.notificationType != NotificationType.DEFAULT) {
+            holder.recipeImageOne.setOnClickListener {
+                if (recipe != null) {
+                    val action = NotificationFragmentDirections.actionNotificationToRecipe(recipe)
+                    it.findNavController().navigate(action)
+                }
             }
         }
 
@@ -127,34 +136,46 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
                 }
             }
             NotificationType.TRADE -> {
-                val alertDialog = AlertDialog.Builder(appContext)
-                val view = LayoutInflater.from(appContext).inflate(R.layout.dialog_trade_layout, null)
-                val imageTradeOne: ImageView = view.findViewById(R.id.imageViewTradeRecipeOne)
-                val imageTradeTwo: ImageView = view.findViewById(R.id.imageViewTradeRecipeTwo)
-                if(recipe?.imageUrl != null){
-                    Picasso.with(appContext)
-                        .load(recipe.imageUrl)
-                        .into(imageTradeOne)
-                }
-                if(recipeTrade?.imageUrl != null){
-                    Picasso.with(appContext)
-                        .load(recipe?.imageUrl)
-                        .into(imageTradeTwo)
-                }
-                alertDialog.setView(view)
-                alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                    //TODO: update permission
-//                    appContext.setUserPermission(userRef)
-//
-                    val action = recipeTrade?.let {
-                        NotificationFragmentDirections.actionNotificationToRecipe(it)
+                holder.linearLayout.setOnClickListener {
+                    val alertDialog = AlertDialog.Builder(it.context)
+                    val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_trade_layout, null)
+                    val imageTradeOne: ImageView = view.findViewById(R.id.imageViewTradeRecipeOne)
+                    val imageTradeTwo: ImageView = view.findViewById(R.id.imageViewTradeRecipeTwo)
+                    if(recipe?.imageUrl != null){
+                        Picasso.with(appContext)
+                            .load(recipe.imageUrl)
+                            .into(imageTradeOne)
                     }
-                    if (action != null) {
-                        view.findNavController().navigate(action)
+                    if(recipeTrade?.imageUrl != null){
+                        Picasso.with(appContext)
+                            .load(recipeTrade.imageUrl)
+                            .into(imageTradeTwo)
+                    }
+                    alertDialog.setView(view)
+                    alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                        //TODO: update permission
+                        val action = recipe?.let {
+                            NotificationFragmentDirections.actionNotificationToRecipe(it)
+                        }
+                        if (action != null) {
+                            it.findNavController().navigate(action)
+                        }
+                        if (user != null) {
+                            user.myReference?.let { it1 -> appContext.addNotification(it1, recipe?.myReference, recipeTrade?.myReference, NotificationType.DEFAULT) }
+                        }
+                    }
+                    alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
+                    alertDialog.show()
+                }
+            }
+
+            NotificationType.DEFAULT->{
+                holder.linearLayout.setOnClickListener {
+                    if (recipeTrade != null) {
+                        val action = NotificationFragmentDirections.actionNotificationToRecipe(recipeTrade)
+                        it.findNavController().navigate(action)
                     }
                 }
-                alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
-                alertDialog.show()
             }
             else ->{
                 holder.recipeCardTwo.visibility = View.GONE
@@ -162,8 +183,10 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
             }
         }
         holder.linearLayoutOverall.setOnLongClickListener(){
-            // TODO: delete On long
-            // appContext.deleteNotification()
+//            Log.e("Claire3", "KAS")
+            _items.remove(item)
+            appContext.deleteNotification(item)
+            notifyDataSetChanged()
             true
         }
     }

@@ -48,7 +48,7 @@
                 android:paddingRight="40dp"
                 android:paddingLeft="40dp"
                 android:textColor="@color/white"
-                android:textSize="30sp">
+                android:textSize="20sp">
 
             </TextView>
 
@@ -65,7 +65,7 @@
             android:outlineSpotShadowColor="@color/kas"
             app:layout_constraintVertical_bias="1"
             android:layout_width="150dp"
-            android:layout_height="60dp" />
+            android:layout_height="30dp" />
 
         <Space
             android:id="@+id/progressBarSpace"

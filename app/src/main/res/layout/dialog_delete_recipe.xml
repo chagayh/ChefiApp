@@ -29,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/proximanovaregular"
-                    android:text="Would you like to remove this recipe from favorites?"
+                    android:text="Would you like to remove this recipe?"
                     android:textColor="@color/blue"
                     android:textSize="16sp"/>
 

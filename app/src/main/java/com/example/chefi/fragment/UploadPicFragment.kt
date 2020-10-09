@@ -213,7 +213,7 @@ class UploadPicFragment : Fragment() {
                     if (imageUrl != null) {
                         appContext.updateUserFields("imageUrl", imageUrl)
                     }
-                    view?.findNavController()?.navigate(R.id.profileFragment)
+                    view?.findNavController()?.popBackStack()
                 }
             })
     }

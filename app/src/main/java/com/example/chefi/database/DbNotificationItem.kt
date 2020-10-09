@@ -29,7 +29,7 @@ enum class NotificationType{
     },
     DEFAULT{
         override fun toString(): String {
-            return ""
+            return "accept your trade!"
         }
     }
 }
