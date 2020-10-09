@@ -138,7 +138,6 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         }
 
         // comment details
-//        holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), 0)
         if (item.comments != null){
             holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), item.comments!!.size)
             setNavigateToCommentComponents(holder, item)
@@ -197,6 +196,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
                         appContext.addNotification(it2, it1, null, NotificationType.COMMENT)
                     }
                 }
+                notifyItemChanged(position)
             }
         }
     }

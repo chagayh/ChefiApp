@@ -86,7 +86,7 @@ class RecipeFragment : Fragment() {
 
     private fun customizeComponents(){
         val item = appRecipe
-        val curUser: DbUser? = item.owner
+        val curUser: DbUser? = if(item.owner != null) item.owner else (appUser)
         Log.e("Nug", item.toString())
         // user details:
         if(curUser != null){
@@ -176,6 +176,20 @@ class RecipeFragment : Fragment() {
                 appRecipe.myReference?.let { it1 ->
                     appRecipe.owner?.myReference?.let { it2 ->
                         appContext.addNotification(it2, it1, null, NotificationType.COMMENT)
+                    }
+                }
+
+
+                // update view:
+                if(appRecipe.comments!!.size > 0)
+                {
+                    var tempComment = appRecipe.comments!![0]
+                    commentOneUsername.text = tempComment.userName
+                    commentOneContent.text = tempComment.commentContent
+                    if (appRecipe.comments!!.size > 1){
+                        tempComment = appRecipe.comments!![1]
+                        commentTwoUsername.text = tempComment.userName
+                        commentTwoContent.text = tempComment.commentContent
                     }
                 }
             }
