@@ -8,23 +8,23 @@ import java.util.*
 enum class NotificationType{
     LIKE{
         override fun toString(): String {
-            return "%s like your recipe_profile"
+            return "like your recipe."
 
         }
     },
     FOLLOW{
         override fun toString(): String {
-            return "%s is now follow you"
+            return "is now follow you."
         }
     },
     COMMENT{
         override fun toString(): String {
-            return "%s leave a comment"
+            return "leave a comment."
         }
     },
     TRADE{
         override fun toString(): String {
-            return "%s offer you a trade!"
+            return "offer you a trade!"
         }
     },
     DEFAULT{

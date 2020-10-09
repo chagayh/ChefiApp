@@ -11,7 +11,8 @@ import com.example.chefi.R
 class NotificationHolder(view: View): RecyclerView.ViewHolder(view) {
     val profileImage: ImageView = view.findViewById(R.id.imageViewNotificationProfile)
     val profileCard: androidx.cardview.widget.CardView = view.findViewById(R.id.notificationCardProfile)
-    val text: TextView = view.findViewById(R.id.textViewNotificationUsername)
+    val content: TextView = view.findViewById(R.id.textViewNotificationContent)
+    val username: TextView = view.findViewById(R.id.textViewNotificationUsername)
     // options:
     val followButton: Button = view.findViewById(R.id.buttonNotification)
     val recipeCardOne: androidx.cardview.widget.CardView = view.findViewById(R.id.notificationCardRecipeOne)
@@ -20,5 +21,5 @@ class NotificationHolder(view: View): RecyclerView.ViewHolder(view) {
     val recipeImageTwo: ImageView = view.findViewById(R.id.imageViewNotificationRecipeTwo)
     val arrow: ImageView = view.findViewById(R.id.imageViewArrow)
     val linearLayout: LinearLayout = view.findViewById(R.id.linearLayoutNotificationTrade)
-    val linearLayoutOverall: LinearLayout = view.findViewById(R.id.innerConstraintNotifiaction)
+    val linearLayoutOverall: androidx.constraintlayout.widget.ConstraintLayout = view.findViewById(R.id.innerConstraintNotifiaction)
 }

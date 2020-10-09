@@ -39,7 +39,7 @@
             android:id="@+id/action_profile_to_recipe"
             app:destination="@id/recipeFragment" />
         <action
-            android:id="@+id/action_profile_to_upload"
+            android:id="@+id/action_profile_to_uploadPic"
             app:destination="@id/uploadPicFragment" />
     </fragment>
     <fragment

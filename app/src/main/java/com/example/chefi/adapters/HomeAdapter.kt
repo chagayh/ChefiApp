@@ -24,8 +24,6 @@ import com.squareup.picasso.Picasso
 import androidx.lifecycle.Observer
 import com.example.chefi.database.Comment
 import com.example.chefi.database.NotificationType
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 import kotlin.collections.ArrayList
 

@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.navigation.findNavController
@@ -27,11 +28,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.lifecycle.Observer
 
-/**
- * A simple [Fragment] subclass.
- * Use the [UploadPicFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UploadPicFragment : Fragment() {
 
     val appContext: Chefi
@@ -39,8 +35,8 @@ class UploadPicFragment : Fragment() {
 
     private var currentPhotoPath: String? = null
     private var imageUri: Uri? = null
-    private lateinit var cameraBtn: Button
-    private lateinit var galleryBtn: Button
+    private lateinit var cameraBtn: TextView
+    private lateinit var galleryBtn: TextView
 
     private val REQUEST_PICK_IMAGE_FROM_GALLERY = 3242
     private val REQUEST_IMAGE_FROM_CAMERA = 44
@@ -57,7 +53,7 @@ class UploadPicFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_upload_pic, container, false)
-        cameraBtn = view.findViewById(R.id.searchBtn)
+        cameraBtn = view.findViewById(R.id.cameraBtn)
         galleryBtn = view.findViewById(R.id.galleryBtn)
         setButtons()
         checkForPermissions()

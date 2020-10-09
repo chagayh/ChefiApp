@@ -1,8 +1,10 @@
 package com.example.chefi.adapters
 
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,20 +54,24 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
 
     override fun getItemCount(): Int {
         return _items.size
-//        return 35
     }
 
 
     override fun onBindViewHolder(holder: NotificationHolder, position: Int) {
         holder.profileImage.setImageResource(R.drawable.guypp)
+        setComponents(holder, position)
     }
 
+    @SuppressLint("SetTextI18n")
     fun setComponents(holder: NotificationHolder, position: Int){
         val item = _items[position]
         val user: DbUser? = item.creator
-        val recipe: AppRecipe = item.recipe!!
-        val recipeTrade: AppRecipe = item.offeredRecipe!!
+        val recipe: AppRecipe? = item.recipe
+        val recipeTrade: AppRecipe? = item.offeredRecipe
 
+        Log.e("Claire1", recipe?.myReference.toString())
+        Log.e("Claire2", recipeTrade?.myReference.toString())
+        //images:
         if(user?.imageUrl != null){
             Picasso.with(appContext)
                 .load(user.imageUrl)
@@ -75,6 +81,22 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
             holder.profileImage.setImageResource(R.drawable.defpp)
         }
 
+        if(recipe?.imageUrl != null){
+            Picasso.with(appContext)
+                .load(recipe.imageUrl)
+                .into(holder.recipeImageOne)
+        }
+        if(recipeTrade?.imageUrl != null){
+            Picasso.with(appContext)
+                .load(recipe?.imageUrl)
+                .into(holder.recipeImageTwo)
+        }
+
+        // content:
+        holder.username.text =  "@${user?.userName}"
+        holder.content.text = item.notificationType.toString()
+
+        // Clicks
         holder.profileImage.setOnClickListener {
             val action = user?.let { it1 ->
                 NotificationFragmentDirections.actionNotificationToProfileOther(it1)
@@ -109,14 +131,14 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
                 val view = LayoutInflater.from(appContext).inflate(R.layout.dialog_trade_layout, null)
                 val imageTradeOne: ImageView = view.findViewById(R.id.imageViewTradeRecipeOne)
                 val imageTradeTwo: ImageView = view.findViewById(R.id.imageViewTradeRecipeTwo)
-                if(recipe.imageUrl != null){
+                if(recipe?.imageUrl != null){
                     Picasso.with(appContext)
                         .load(recipe.imageUrl)
                         .into(imageTradeOne)
                 }
-                if(recipeTrade.imageUrl != null){
+                if(recipeTrade?.imageUrl != null){
                     Picasso.with(appContext)
-                        .load(recipe.imageUrl)
+                        .load(recipe?.imageUrl)
                         .into(imageTradeTwo)
                 }
                 alertDialog.setView(view)
@@ -124,8 +146,12 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
                     //TODO: update permission
 //                    appContext.setUserPermission(userRef)
 //
-                    val action = NotificationFragmentDirections.actionNotificationToRecipe(recipeTrade)
-                    view.findNavController().navigate(action)
+                    val action = recipeTrade?.let {
+                        NotificationFragmentDirections.actionNotificationToRecipe(it)
+                    }
+                    if (action != null) {
+                        view.findNavController().navigate(action)
+                    }
                 }
                 alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
                 alertDialog.show()

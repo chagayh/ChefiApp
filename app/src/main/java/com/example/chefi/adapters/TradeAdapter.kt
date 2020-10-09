@@ -59,7 +59,7 @@ class TradeAdapter(val recipe: AppRecipe?): RecyclerView.Adapter<TradeHolder>() 
             alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                 // TODO: create notification
                 recipe?.owner?.myReference?.let { it1 -> recipe.myReference?.let { it2 ->
-                    appContext.addNotification(it1, it2, item.myReference, NotificationType.TRADE) } }
+                    appContext.addNotification(it1, item.myReference, it2, NotificationType.TRADE) } }
                 val unseen = appContext.getUnseenNotification()
                 appContext.setUnseenNotificationNumber(unseen + 1)
                 it.findNavController().popBackStack()

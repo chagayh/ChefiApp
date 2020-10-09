@@ -25,7 +25,7 @@ import com.example.chefi.fragment.ProfileOtherFragmentDirections
 import com.squareup.picasso.Picasso
 
 
-class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleOwner): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleOwner, val fragmentView: View): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var appContext: Chefi
     private val TYPE_HEADER = 0
@@ -179,22 +179,11 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                 alertDialog.create().show()
             }
 
-            holder.editMainCard.setOnClickListener(){
+            holder.editMainCard.setOnClickListener{
                 val alertDialog = AlertDialog.Builder(it.context)
                 val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_edit_main_card, null)
                 alertDialog.setView(view)
                 val fullName: EditText = view.findViewById(R.id.editTextFullName)
-//                val uploadProfilePictureCamera: TextView = view.findViewById(R.id.uploadProfilePictureCamera)
-                val uploadProfilePictureGallery: TextView = view.findViewById(R.id.uploadProfilePictureGallery)
-                uploadProfilePictureGallery.setOnClickListener(){
-                    //action_profile_to_upload
-                    // do not forget to pop back to this dialog after you upload the image successfully
-                    val action = ProfileFragmentDirections.actionProfileToUpload()
-                    it.findNavController().navigate(action)
-                }
-//                uploadProfilePictureGallery.setOnClickListener(){
-//                    //TODO: Use Chagay API
-//                }
                 alertDialog.setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
                     if (fullName.text.toString().trim().isNotEmpty()){
                         holder.nameTextView.text = fullName.text
@@ -202,6 +191,12 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                     }
                 })
                 alertDialog.create().show()
+            }
+
+            holder.image.setOnLongClickListener {
+                val action = ProfileFragmentDirections.actionProfileToUploadPic()
+                it.findNavController().navigate(action)
+                true
             }
         }
     }
