@@ -176,7 +176,7 @@ class Chefi : Application() {
         appDb.deleteRecipeFromFavorites(appRecipe)
     }
 
-    fun deleteImage(imageUrl: String?, dbRecipe: DbRecipe?) {
+    fun deleteImage(imageUrl: String?) {
         appDb.deleteImageFromStorage(imageUrl, null)
     }
 

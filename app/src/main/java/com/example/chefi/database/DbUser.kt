@@ -20,7 +20,7 @@ data class DbUser(
     var following: ArrayList<DocumentReference>? = null,
     var followers: ArrayList<DocumentReference>? = null,
     var myReference: DocumentReference? = null,
-    var myFeedCollectionReference: CollectionReference? = null
+    var lastSeenNotification: Int? = 0
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

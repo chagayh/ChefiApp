@@ -149,7 +149,7 @@ class AddRecipeDetailsFragment : Fragment() {
                 override fun handleOnBackPressed() {
                     Log.d(TAG_RECIPE_FRAGMENT, "delete the recipe_profile from storage and database")
                     Log.d("change_url", "in setCustomOnBackPressed of recipeFragment, imageUrl = $imageUrl")
-                    appContext.deleteImage(imageUrl, null)
+                    appContext.deleteImage(imageUrl)
                     if (isEnabled) {
                         isEnabled = false
                         requireActivity().onBackPressed()

@@ -23,6 +23,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -131,7 +132,14 @@ class AppDb {
     }
 
     fun getUserNotification() : ArrayList<AppNotification>? {
+        printNotificationToLog()
         return userAppNotification
+    }
+
+    private fun printNotificationToLog() {
+        for (not in userAppNotification!!) {
+            Log.d("notificationPrint", "notification uid = ${not.uid}")
+        }
     }
 
     fun getCurrUser(): DbUser? {
@@ -190,10 +198,10 @@ class AppDb {
                         user?.uid,
                         email = user?.email,
                         userName = userName,
-                        userName_lowerCase = userName.toLowerCase(Locale.ROOT)
+                        userName_lowerCase = userName.toLowerCase(Locale.ROOT),
+                        lastSeenNotification = 0
                     )
                     addUserToUsersCollection(newUser)
-                    postUser(newUser)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG_APP_DB, "createUserWithEmail:failure ${task.exception?.message}")
@@ -262,23 +270,6 @@ class AppDb {
                 .addOnSuccessListener {
                     initCurrentUserFields()
                 }
-
-//            val emptyRecipe = DbRecipe()
-//            val collectionPath = dbUser.uid!!
-//            val emptyPostRef = firestore
-//                .collection(collectionPath)
-//                .document()
-//
-//            emptyRecipe.uid = emptyPostRef.id
-//            val feedPost = FeedPost(uid = emptyRecipe.uid, null, null, null)
-//
-//            emptyPostRef.set(feedPost)
-//                .addOnSuccessListener {
-//                    myReference.set(dbUser)
-//                        .addOnSuccessListener {
-//                            updateCurrentUserField()
-//                        }
-//                }
         }
     }
 
@@ -550,15 +541,18 @@ class AppDb {
                             user?.notifications = ArrayList()
                         }
                         user?.notifications?.add(notificationRef)
+                        user?.lastSeenNotification?.plus(1)
                         updateUserInUsersCollection(user)
                     }
             }
-        val appNotification: AppNotification? = null
+        var appNotification: AppNotification? = null
         CoroutineScope(Default).launch {
             val job = buildNotificationFlow(dbNotificationItem)
-            job.collect { appNot -> appNotification }
+            job.collect { appNot ->
+                appNotification = appNot
+            }
             if (appNotification != null) {
-                userAppNotification?.add(appNotification)
+                userAppNotification?.add(appNotification!!)
             }
         }
     }
@@ -660,7 +654,7 @@ class AppDb {
                             dbNotificationsList.add(notification)
                         }
                     }
-                    val mainJob = CoroutineScope(Default).launch {
+                    val mainJob = CoroutineScope(IO).launch {
                         for (dbNotification in dbNotificationsList) {
                             val job = buildNotificationFlow(dbNotification)
                             job.collect { appNot -> appNotificationsList.add(appNot) }
@@ -829,8 +823,13 @@ class AppDb {
                 currDbUser?.name = content
                 currDbUser?.name_lowerCase = content.toLowerCase(Locale.ROOT)
             }
-            "imageUrl" -> currDbUser?.imageUrl =
-                content  // TODO - if changed maybe delete the old one ?
+            "imageUrl" -> {
+                val temp = currDbUser?.imageUrl
+                if (temp != null) {
+                    deleteImageFromStorage(temp, null)
+                }
+                currDbUser?.imageUrl = content
+            }
         }
         updateUserInUsersCollection(currDbUser)
     }
@@ -1022,7 +1021,7 @@ class AppDb {
 
         val mainJob = CoroutineScope(Default).launch {
             for (dbRecipe in dbRecipesList) {
-                val job = buildRecipeFlow(dbRecipe)
+                val job = buildSingleRecipeFlow(dbRecipe)
                 job.collect { appRecipe -> otherAppRecipes.add(appRecipe) }
             }
         }
@@ -1052,6 +1051,11 @@ class AppDb {
             ?.get()
             ?.await()
 
+    private suspend fun getSingleRecipe(dbUserRef: DocumentReference?) =
+        dbUserRef
+            ?.get()
+            ?.await()
+
     private fun buildNotificationFlow(dbNotificationItem: DbNotificationItem):
             Flow<AppNotification> = flow {
 
@@ -1060,19 +1064,23 @@ class AppDb {
         val userNotificationCreator = notificationCreatorSnapShot?.toObject<DbUser>()
 
         // appRecipe 1
-        val userSnapShot = getSingleUser(dbNotificationItem.creatorRef)
-        val dbRecipe = userSnapShot?.toObject<DbRecipe>()
-        val recipeJob = dbRecipe?.let { buildRecipeFlow(it) }
-        val appRecipe = AppRecipe()
-        recipeJob?.collect { value -> appRecipe }
+        val recipeSnapShot = getSingleRecipe(dbNotificationItem.recipeRef)
+        val dbRecipe = recipeSnapShot?.toObject<DbRecipe>()
+        val recipeJob = dbRecipe?.let { buildSingleRecipeFlow(it) }
+        var appRecipe = AppRecipe()
+        recipeJob?.collect { value ->
+            appRecipe = value
+        }
 
         // appRecipe 2 if exist
-        val offeredRecipe: AppRecipe? = null
+        var offeredRecipe: AppRecipe? = null
         if (dbNotificationItem.offeredRecipeRef != null) {
-            val offeredRecipeSnapShot = getSingleUser(dbNotificationItem.offeredRecipeRef)
+            val offeredRecipeSnapShot = getSingleRecipe(dbNotificationItem.offeredRecipeRef)
             val dbOfferedRecipe = offeredRecipeSnapShot?.toObject<DbRecipe>()
-            val offeredRecipeJob = dbOfferedRecipe?.let { buildRecipeFlow(it) }
-            offeredRecipeJob?.collect { value -> offeredRecipe }
+            val offeredRecipeJob = dbOfferedRecipe?.let { buildSingleRecipeFlow(it) }
+            offeredRecipeJob?.collect { value ->
+                offeredRecipe = value
+            }
         }
 
         val appNotification = AppNotification(
@@ -1084,7 +1092,9 @@ class AppDb {
             notificationType = dbNotificationItem.notificationType,
             timestamp = dbNotificationItem.timestamp
         )
-        Log.d("notificationFlow", "creator uid = ${userNotificationCreator?.uid}, recipe uid = ${appRecipe.uid}")
+        Log.d("notificationFlow",
+            "creator uid = ${userNotificationCreator?.uid}, recipe1 uid = ${appRecipe.uid}, " +
+                    "recipe2 uid = ${offeredRecipe?.uid}")
         emit(appNotification)
     }
 
@@ -1099,7 +1109,7 @@ class AppDb {
         return forTradeList
     }
 
-    private fun buildRecipeFlow(dbRecipe: DbRecipe):
+    private fun buildSingleRecipeFlow(dbRecipe: DbRecipe):
             Flow<AppRecipe> = flow {
 
         val commentsList = ArrayList<Comment>()
@@ -1145,7 +1155,7 @@ class AppDb {
             Flow<ArrayList<AppRecipe>> = flow {
         val appRecipesList = ArrayList<AppRecipe>()
         for (dbRecipe in dbRecipesFeed) {
-            val job = buildRecipeFlow(dbRecipe)
+            val job = buildSingleRecipeFlow(dbRecipe)
             job.collect { appRecipe -> appRecipesList.add(appRecipe) }
             Log.d(TAG_UPDATE_FEED, "in uploadFeed1 for flow appRecipesList size = ${appRecipesList.size}")
         }

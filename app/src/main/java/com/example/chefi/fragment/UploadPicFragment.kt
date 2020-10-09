@@ -210,8 +210,10 @@ class UploadPicFragment : Fragment() {
                     Log.d("change_url", "value.outputData.size() == 0")
                     val imageUrl =
                         value.outputData.getString(getString(R.string.keyUrl))
-                    val action = AddFragmentDirections.actionAddToAddRecipeDetails(imageUrl!!)
-                    view?.findNavController()?.navigate(action)
+                    if (imageUrl != null) {
+                        appContext.updateUserFields("imageUrl", imageUrl)
+                    }
+                    view?.findNavController()?.navigate(R.id.profileFragment)
                 }
             })
     }
