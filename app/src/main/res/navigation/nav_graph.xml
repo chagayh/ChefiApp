@@ -69,6 +69,9 @@
             android:name="imageUrl"
             app:argType="string"
             android:defaultValue="default" />
+        <action
+            android:id="@+id/action_addRecipeDetails_to_recipe"
+            app:destination="@id/recipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/followersFragment"

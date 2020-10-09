@@ -238,24 +238,17 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         }
 
         holder.recipeImage.setOnClickListener{
-            if(_items[position].status == _items[position].TRADE_STATUS){
-                if (_items[position].allowedUsers != null){
-                    if((_items[position].allowedUsers?.contains(appUser.myReference)!!)) {
-                        val alertDialog = AlertDialog.Builder(it.context)
-                        val view = LayoutInflater.from(it.context)
-                            .inflate(R.layout.dialog_move_offer_trade, null)
-                        alertDialog.setView(view)
-                        alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                            val action = HomeFragmentDirections.actionHomeToTrade(_items[position])
-                            it.findNavController().navigate(action)
-                        }
-                        alertDialog.setNegativeButton("No") { _: DialogInterface, _: Int -> }
-                        alertDialog.show()
-                }
-                }else{
-                    val action = HomeFragmentDirections.actionHomeToRecipeDetails(_items[position])
+            if((_items[position].status == _items[position].TRADE_STATUS) && (_items[position].allowedUsers != null) && (_items[position].allowedUsers?.contains(appUser.myReference)) == false){
+                val alertDialog = AlertDialog.Builder(it.context)
+                val view = LayoutInflater.from(it.context)
+                    .inflate(R.layout.dialog_move_offer_trade, null)
+                alertDialog.setView(view)
+                alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                    val action = HomeFragmentDirections.actionHomeToTrade(_items[position])
                     it.findNavController().navigate(action)
                 }
+                alertDialog.setNegativeButton("No") { _: DialogInterface, _: Int -> }
+                alertDialog.show()
             }else{
                 val action = HomeFragmentDirections.actionHomeToRecipeDetails(_items[position])
                 it.findNavController().navigate(action)

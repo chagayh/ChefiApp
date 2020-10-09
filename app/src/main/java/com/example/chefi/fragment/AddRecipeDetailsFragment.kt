@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.chefi.Chefi
 import com.example.chefi.R
@@ -137,7 +138,8 @@ class AddRecipeDetailsFragment : Fragment() {
                     Toast.makeText(appContext, "Recipe was CREATED by @${user.userName}", Toast.LENGTH_SHORT)
                         .show()
                     // TODO - maybe add a preview page
-                    findNavController().navigate(R.id.addFragment)
+                    val action = AddRecipeDetailsFragmentDirections.actionAddRecipeDetailsToRecipe(appRecipeReturned)
+                    view?.findNavController()?.navigate(action)
                 }
             })
     }

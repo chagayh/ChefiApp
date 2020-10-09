@@ -210,15 +210,16 @@ class RecipeFragment : Fragment() {
         }
 
         recipeImage.setOnClickListener{
-            if(appRecipe.status == appRecipe.TRADE_STATUS && appRecipe.allowedUsers?.contains(appUser.myReference) == false){
+            if((appRecipe.status == appRecipe.TRADE_STATUS) && (appRecipe.allowedUsers != null) && (appRecipe.allowedUsers?.contains(appUser.myReference)) == false){
                 val alertDialog = AlertDialog.Builder(it.context)
-                val view = LayoutInflater.from(it.context).inflate(R.layout.dialog_move_offer_trade, null)
+                val view = LayoutInflater.from(it.context)
+                    .inflate(R.layout.dialog_move_offer_trade, null)
                 alertDialog.setView(view)
                 alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                    val action = RecipeFragmentDirections.actionRecipeToTrade(appRecipe)
+                    val action = HomeFragmentDirections.actionHomeToTrade(appRecipe)
                     it.findNavController().navigate(action)
                 }
-                alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
+                alertDialog.setNegativeButton("No") { _: DialogInterface, _: Int -> }
                 alertDialog.show()
             }else{
                 val action = RecipeFragmentDirections.actionRecipeToRecipeDetails(appRecipe)
