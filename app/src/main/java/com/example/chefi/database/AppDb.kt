@@ -545,16 +545,6 @@ class AppDb {
                         updateUserInUsersCollection(user)
                     }
             }
-        var appNotification: AppNotification? = null
-        CoroutineScope(Default).launch {
-            val job = buildNotificationFlow(dbNotificationItem)
-            job.collect { appNot ->
-                appNotification = appNot
-            }
-            if (appNotification != null) {
-                userAppNotification?.add(appNotification!!)
-            }
-        }
     }
 
     fun addComment(content: String, recipeId: String, context: Context, type: String) {
