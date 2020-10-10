@@ -38,7 +38,7 @@ class TradeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_trade, container, false)
         val recipe = args.recipe
         recyclerViewTrade = view.findViewById(R.id.recyclerViewTrade)
-        tradeRecipesAdapter = TradeAdapter(recipe)
+        tradeRecipesAdapter = TradeAdapter(recipe, view)
         recyclerViewTrade.adapter = tradeRecipesAdapter
 //        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 //        recyclerViewRecipes.layoutManager = lm

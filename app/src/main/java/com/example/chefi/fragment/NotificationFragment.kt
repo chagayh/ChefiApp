@@ -51,5 +51,4 @@ class NotificationFragment : Fragment() {
         recyclerViewNotification.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         return view
     }
-
 }

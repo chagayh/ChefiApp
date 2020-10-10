@@ -6,20 +6,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.fragment.navArgs
 import com.example.chefi.Chefi
 import com.example.chefi.R
+import com.example.chefi.activities.MainActivity
 import com.example.chefi.database.AppRecipe
 
-class RecipeDetailsFragment : Fragment() {
+class RecipeDetailsFragment : Fragment(){
 
     val appContext: Chefi
         get() = activity?.applicationContext as Chefi
 
     private val args: CommentFragmentArgs by navArgs()
+    private lateinit var speechBtn: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +36,7 @@ class RecipeDetailsFragment : Fragment() {
         val descriptionEditText: TextView =  view.findViewById(R.id.editTextDescriptionDetails)
         val firstIngredientEditText: TextView =  view.findViewById(R.id.editTextIngredientsDetails)
         val firstDirectionEditText: TextView =  view.findViewById(R.id.editTextDirections)
+        speechBtn =  view.findViewById(R.id.addRecipeBtn)
         val linearLayoutIngredients: LinearLayout =  view.findViewById(R.id.LinearLayoutIngredientsDetails)
         val linearLayoutDirections: LinearLayout =  view.findViewById(R.id.LinearLayoutDirectionsDetails)
         val ingredientsArray = curRecipe?.ingredients
@@ -64,6 +66,20 @@ class RecipeDetailsFragment : Fragment() {
             }
         }
 
+        speechBtn.setOnClickListener {
+            val myActivity = activity as MainActivity
+            myActivity.speak("Description")
+            myActivity.speak(descriptionEditText.text.toString())
+            myActivity.speak("    ")
+            myActivity.speak("Ingredients")
+            for(text in ingredientsArray){
+                myActivity.speak(text)
+            }
+            myActivity.speak("Instructions")
+            for(text in directionsArray){
+                myActivity.speak(text)
+            }
+        }
         return view
     }
 }

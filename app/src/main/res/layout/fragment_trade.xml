@@ -6,6 +6,17 @@
     android:background="@color/lightgrey"
     tools:context=".fragment.TradeFragment">
 
+    <TextView
+        android:id="@+id/noTradeToShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="You have no recipes for trade"
+        android:textSize="16sp"
+        android:fontFamily="@font/proximanovaregular"
+        android:textColor="@color/blue">
+    </TextView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewTrade"
         android:layout_margin="20dp"

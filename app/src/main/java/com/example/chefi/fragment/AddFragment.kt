@@ -23,7 +23,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Environment
 import android.provider.MediaStore
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
 import com.example.chefi.activities.MainActivity
 import java.io.File
@@ -43,7 +45,8 @@ class AddFragment : Fragment() {
     private var imageUri: Uri? = null
     private lateinit var galleryBtn: TextView
     private lateinit var cameraBtn: TextView
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: ConstraintLayout
+    private lateinit var mainBts: LinearLayout
 
     companion object {
         private val REQUEST_PICK_IMAGE_FROM_GALLERY = 71
@@ -61,7 +64,8 @@ class AddFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_add, container, false)
         galleryBtn = view.findViewById(R.id.galleryBtn)
         cameraBtn = view.findViewById(R.id.cameraBtn)
-        progressBar = view.findViewById(R.id.progressBar)
+        progressBar = view.findViewById(R.id.constrainLayoutProgressBar)
+        mainBts = view.findViewById(R.id.mainLinearLayoutAdd)
         setComponents()
         checkForPermissions()
         return view
@@ -88,6 +92,9 @@ class AddFragment : Fragment() {
     }
 
     private fun setComponents() {
+        mainBts.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+
         galleryBtn.setOnClickListener { v ->
             launchGallery()
         }
@@ -112,6 +119,11 @@ class AddFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG_ADD_FRAGMENT, "onActivityResult, requestCode = $requestCode")
         // TODO - add Progress BAR
+        val progressBar: ConstraintLayout? = view?.findViewById(R.id.constrainLayoutProgressBar)
+        val mainBts: LinearLayout? = view?.findViewById(R.id.mainLinearLayoutAdd)
+        mainBts?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
+
         when {
             (requestCode == REQUEST_PICK_IMAGE_FROM_GALLERY
                     && resultCode == RESULT_OK

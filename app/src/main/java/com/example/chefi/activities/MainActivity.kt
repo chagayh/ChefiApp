@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
+import android.speech.tts.TextToSpeech
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.chefi.Chefi
@@ -17,9 +18,10 @@ import com.example.chefi.R
 import com.example.chefi.database.DbUser
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
 
     private val appContext: Chefi
         get() = applicationContext as Chefi
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var bottomMenu: Menu
     private lateinit var notificationBadge: BadgeDrawable
+    private var tts: TextToSpeech? = null
+    private var ttsFlag: Boolean = false
 
     companion object{
         // TAGS
@@ -42,7 +46,8 @@ class MainActivity : AppCompatActivity() {
             TAG_MAIN_ACTIVITY,
             "in onCreate of mainActivity user's name =${appContext.getCurrUser()?.name}"
         )
-
+        tts = TextToSpeech(this, this)
+        tts?.setSpeechRate(0.6F)
         setObserver()
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
@@ -123,5 +128,34 @@ class MainActivity : AppCompatActivity() {
             currentPhotoPath = savedInstanceState.getString(getString(R.string.keyPathPhoto))
         }
         super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS)
+        {
+            Log.e("speecher" ,"kas")
+            val result = tts!!.setLanguage(Locale.US)
+            if (result != TextToSpeech.LANG_MISSING_DATA ||
+                result != TextToSpeech.LANG_NOT_SUPPORTED)
+            {
+                Log.e("speecher" ,"kas2")
+                ttsFlag = true
+            }
+        }
+    }
+
+    fun speak(text: String){
+        if (ttsFlag){
+            tts!!.speak(text, TextToSpeech.QUEUE_ADD, null, null)
+        }
+    }
+    override fun onDestroy()
+    {
+        if(tts != null)
+        {
+            tts!!.stop()
+            tts!!.shutdown()
+        }
+        super.onDestroy()
     }
 }

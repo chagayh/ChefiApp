@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
@@ -17,17 +18,23 @@ import com.example.chefi.holders.TradeHolder
 import com.squareup.picasso.Picasso
 
 
-class TradeAdapter(val recipe: AppRecipe?): RecyclerView.Adapter<TradeHolder>() {
+class TradeAdapter(val recipe: AppRecipe?, private val fragmentView: View): RecyclerView.Adapter<TradeHolder>() {
 
     private lateinit var appContext: Chefi
     private var _items: ArrayList<AppRecipe> = ArrayList()
 
     // public method to show a new list of items
     fun setItems(items: ArrayList<AppRecipe>?){
-        _items.clear()
-        if (items != null) {
+        val notTradeToShow: TextView = fragmentView.findViewById(R.id.noTradeToShow)
+        if (items != null){
+            if (items.size > 0){
+                notTradeToShow.visibility = View.GONE
+            }
+            _items.clear()
             _items.addAll(items)
             notifyDataSetChanged()
+        }else{
+            notTradeToShow.visibility = View.VISIBLE
         }
     }
 

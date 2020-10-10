@@ -229,7 +229,7 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
         Picasso.with(appContext)
             .load(item?.imageUrl)
             .into(holder._image)
-        holder._progressBar.visibility = View.GONE
+//        holder._progressBar.visibility = View.GONE
         setRecipeButtons(holder, position)
     }
 

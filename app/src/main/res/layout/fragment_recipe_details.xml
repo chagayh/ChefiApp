@@ -122,7 +122,7 @@
                         android:background="@drawable/circularbordersolid"
                         android:fontFamily="@font/proximanovaregular"
                         android:padding="10dp"
-                        android:text="Directions"
+                        android:text="Instructions"
                         android:textStyle="bold"
                         android:textColor="@color/blue"
                         android:textSize="12sp" />
@@ -150,7 +150,7 @@
 
             <LinearLayout
                 android:id="@+id/LinearLayoutBtns"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:gravity="left"
                 android:layout_marginTop="40dp"
                 android:layout_marginStart="10dp"
@@ -159,25 +159,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
                 <TextView
                     android:id="@+id/addRecipeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circularbordersolid"
-                    android:paddingRight="20dp"
-                    android:paddingLeft="20dp"
+                    android:paddingLeft="50dp"
                     android:paddingTop="10dp"
+                    android:paddingRight="50dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:paddingBottom="10dp"
-                    android:text="SPEECH"
+                    android:text="Speech Recipe"
                     android:fontFamily="@font/proximanovaregular"
                     android:textStyle="bold"
                     android:textColor="@color/blue"
-                    android:textSize="12sp"  />
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>

@@ -3,15 +3,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightgrey"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/addFragment"
     tools:context=".fragment.AddFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
+        android:id="@+id/constrainLayoutProgressBar"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/progressBarLinearLayout"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/progressBarHome"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/progress_bar_outline">
+
+            <TextView
+                android:id="@+id/textViewChefi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/welcomesummer"
+                android:text="Chefi"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingRight="40dp"
+                android:paddingLeft="40dp"
+                android:textColor="@color/white"
+                android:textSize="20sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/progressBarHome"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/progressBarSpace"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:src="@drawable/prog_bar"
+            android:outlineAmbientShadowColor="@color/white"
+            android:outlineSpotShadowColor="@color/kas"
+            app:layout_constraintVertical_bias="1"
+            android:layout_width="150dp"
+            android:layout_height="30dp" />
+
+        <Space
+            android:id="@+id/progressBarSpace"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintVertical_bias="1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp">
+        </Space>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <LinearLayout
+        android:id="@+id/mainLinearLayoutAdd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:background="@color/lightgrey"
         android:weightSum="1"
         android:paddingTop="280dp"
         android:paddingBottom="280dp"
@@ -48,19 +114,5 @@
             android:text="Camera"
             android:textColor="@color/blue" />
     </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="50dp"
-        android:minWidth="50dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
