@@ -89,17 +89,29 @@ class AddFragment : Fragment() {
 
     private fun setComponents() {
         galleryBtn.setOnClickListener { v ->
-
-
+            launchGallery()
         }
         cameraBtn.setOnClickListener {
             showUploadPicOptions()
         }
     }
 
+    private fun launchGallery() {
+        val intent = Intent()
+        with(intent) {
+            type = "image/*"
+            action = Intent.ACTION_GET_CONTENT
+        }
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Picture"),
+            REQUEST_PICK_IMAGE_FROM_GALLERY
+        )
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG_ADD_FRAGMENT, "onActivityResult, requestCode = $requestCode")
+        // TODO - add Progress BAR
         when {
             (requestCode == REQUEST_PICK_IMAGE_FROM_GALLERY
                     && resultCode == RESULT_OK
@@ -141,6 +153,7 @@ class AddFragment : Fragment() {
                 )
                 Log.d("change_url", "in setWorkObserver image url = ${value.outputData.getString(getString(R.string.keyUrl))}")
                 if (value.outputData.size() != 0) {
+                    // TODO - STOP Progress BAR
                     Log.d("change_url", "value.outputData.size() == 0")
                     val imageUrl =
                         value.outputData.getString(getString(R.string.keyUrl))

@@ -45,7 +45,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
         val recipeIngredients = Gson().fromJson<ArrayList<String>>(recipeIngredientsAsString, listType)
         val recipeImageUrl = inputData.getString(appContext.getString(R.string.keyRecipeImageUrl))
         val recipeName = inputData.getString(appContext.getString(R.string.keyRecipeName))
-        val recipeStatus = inputData.getInt(appContext.getString(R.string.keyRecipeStatus), -1)
+        val recipeStatus = inputData.getBoolean(appContext.getString(R.string.keyRecipeStatus), false)
 
         appContext.addRecipeToDb(recipeName=recipeName,
                                  imageUrl=recipeImageUrl,
@@ -70,7 +70,7 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
                     .putString(appContext.getString(R.string.keyComments), gson.toJson(content.comments))
                     .putString(appContext.getString(R.string.keyDirections), gson.toJson(content.directions))
                     .putString(appContext.getString(R.string.keyIngredients), gson.toJson(content.ingredients))
-                    .putInt(appContext.getString(R.string.keyStatus), content.status!!)
+                    .putBoolean(appContext.getString(R.string.keyStatus), content.status!!)
                     .putString(appContext.getString(R.string.keyTimestamp), gson.toJson(content.timestamp))
                     .build()
                 LiveDataHolder.getRecipeLiveData().removeObserver(observer!!)

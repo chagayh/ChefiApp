@@ -112,7 +112,7 @@ class RecipeFragment : Fragment() {
         }
         postDescription.text = item.description
         likesTitle.text = String.format(likesTitle.text.toString(), item.likes)
-        if (item.status != item.TRADE_STATUS) forTrade.visibility = View.GONE
+        if (item.status != true) forTrade.visibility = View.GONE
         Log.e("Bug", appUser.toString())
         if (appUser.favorites != null){
             if(appUser.favorites?.contains(appRecipe.myReference)!!) favoritesImage.visibility = View.VISIBLE
@@ -224,7 +224,7 @@ class RecipeFragment : Fragment() {
         }
 
         recipeImage.setOnClickListener{
-            if((appRecipe.status == appRecipe.TRADE_STATUS) && (appRecipe.allowedUsers != null) && (appRecipe.allowedUsers?.contains(appUser.myReference)) == false){
+            if((appRecipe.status == true) && (appRecipe.allowedUsers != null) && (appRecipe.allowedUsers?.contains(appUser.myReference)) == false){
                 val alertDialog = AlertDialog.Builder(it.context)
                 val view = LayoutInflater.from(it.context)
                     .inflate(R.layout.dialog_move_offer_trade, null)

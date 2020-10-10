@@ -132,7 +132,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         }
         holder.postDescription.text = item.description
         holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), item.likes)
-        if (item.status != item.TRADE_STATUS) holder.forTrade.visibility = View.GONE
+        if (item.status != true) holder.forTrade.visibility = View.GONE
         if (appUser.favorites != null){
             if(appUser.favorites?.contains(item.myReference)!!) holder.favoritesImage.visibility = View.VISIBLE
         }
@@ -238,7 +238,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         }
 
         holder.recipeImage.setOnClickListener{
-            if((_items[position].status == _items[position].TRADE_STATUS) && (_items[position].allowedUsers != null) && (_items[position].allowedUsers?.contains(appUser.myReference)) == false){
+            if((_items[position].status == true) && (_items[position].allowedUsers != null) && (_items[position].allowedUsers?.contains(appUser.myReference)) == false){
                 val alertDialog = AlertDialog.Builder(it.context)
                 val view = LayoutInflater.from(it.context)
                     .inflate(R.layout.dialog_move_offer_trade, null)

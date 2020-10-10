@@ -15,8 +15,8 @@ data class DbRecipe(
     var comments: ArrayList<DocumentReference>? = null,
     var directions: ArrayList<String>? = null,
     var ingredients: ArrayList<String>? = null,
-    var status: Int? = null, // TODO - new
-    var owner: DocumentReference? = null, // TODO - new
+    var status: Boolean? = null,
+    var owner: DocumentReference? = null,
     @ServerTimestamp
     var timestamp: Date? = null,
     var myReference: DocumentReference? = null,
@@ -30,7 +30,11 @@ data class DbRecipe(
         TODO("comments"),
         TODO("directions"),
         TODO("ingredients"),
-        parcel.readValue(Int::class.java.classLoader) as? Int
+        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        TODO("owner"),
+        TODO("timestamp"),
+        TODO("myReference"),
+        TODO("allowedUsers")
     ) {
     }
 

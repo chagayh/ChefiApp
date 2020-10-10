@@ -15,13 +15,13 @@ data class AppRecipe (
     var comments: ArrayList<Comment>? = null,
     var directions: ArrayList<String>? = null,
     var ingredients: ArrayList<String>? = null,
-    var status: Int? = null,    // trade = 3
+    var status: Boolean? = null,    // trade = 3
     var owner: DbUser? = null,
     @ServerTimestamp
     var timestamp: Date? = null,
     var myReference: DocumentReference? = null,
     var allowedUsers: ArrayList<DocumentReference>? = null
-): Parcelable{
+): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -30,12 +30,13 @@ data class AppRecipe (
         TODO("comments"),
         TODO("directions"),
         TODO("ingredients"),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
-        parcel.readParcelable(AppRecipe::class.java.classLoader),
-        TODO("timestamp")
-    ) {}
-
-    val TRADE_STATUS = 3
+        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+        parcel.readParcelable(DbUser::class.java.classLoader),
+        TODO("timestamp"),
+        TODO("myReference"),
+        TODO("allowedUsers")
+    ) {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(uid)

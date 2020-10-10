@@ -79,7 +79,7 @@ class AppDb {
     }
 
     fun addToRecipePermission(appRecipe: AppRecipe, userRef: DocumentReference) {
-        if (appRecipe.status == 3) {
+        if (appRecipe.status != null && appRecipe.status == true) {
             if (appRecipe.allowedUsers == null) {
                 appRecipe.allowedUsers = ArrayList()
             }
@@ -280,7 +280,7 @@ class AppDb {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Int?
+        status: Boolean
     ) {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
         val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
@@ -1099,7 +1099,7 @@ class AppDb {
     }
 
     fun filterForTradeRecipesList(): ArrayList<AppRecipe> {
-        val filteredList = userAppRecipes?.filter { it.status == 3 }
+        val filteredList = userAppRecipes?.filter { it.status == true }
         val forTradeList = ArrayList<AppRecipe>()
         if (filteredList != null) {
             for (recipe in filteredList) {

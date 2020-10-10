@@ -103,7 +103,7 @@ class Chefi : Application() {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Int?
+        status: Boolean
     ) {
         appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status)
     }
@@ -132,7 +132,7 @@ class Chefi : Application() {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Int
+        status: Boolean
     ) : UUID {
         val workId = UUID.randomUUID()
         val constraints = Constraints.Builder()
@@ -147,7 +147,7 @@ class Chefi : Application() {
             )
             .putString(getString(R.string.keyRecipeDirections), Gson().toJson(direction))
             .putString(getString(R.string.keyRecipeIngredients), Gson().toJson(ingredients))
-            .putInt(getString(R.string.keyRecipeStatus), status)
+            .putBoolean(getString(R.string.keyRecipeStatus), status)
             .build()
         val oneTimeWorkRequest = OneTimeWorkRequest.Builder(AddRecipeWorker::class.java)
             .setConstraints(constraints)

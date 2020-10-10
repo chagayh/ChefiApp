@@ -80,7 +80,7 @@ class AddRecipeDetailsFragment : Fragment() {
                                               imageUrl,
                                               convertViewArrayToStringsArray(false),
                                               convertViewArrayToStringsArray(true),
-                                              Integer.parseInt(switchStatus.isChecked.toString()))
+                                              switchStatus.isChecked)
             setWorkObserver(workId)
         }
 
@@ -114,7 +114,7 @@ class AddRecipeDetailsFragment : Fragment() {
                     val commentsAsJson = value.outputData.getString(appContext.getString(R.string.keyComments))
                     val directionsAsJson = value.outputData.getString(appContext.getString(R.string.keyUid))
                     val ingredientsAsJson = value.outputData.getString(appContext.getString(R.string.keyUid))
-                    val status = value.outputData.getInt(appContext.getString(R.string.keyStatus), 3)
+                    val status = value.outputData.getBoolean(appContext.getString(R.string.keyStatus), false)
                     val timeStampAsJson = value.outputData.getString(appContext.getString(R.string.keyTimestamp))
 
                     val stringArrayListType = object : TypeToken<ArrayList<String>>() {}.type
