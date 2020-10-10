@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/circularbordersolid"
-        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_bias="0.5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -350,6 +350,7 @@
                 android:hint="  Add a comment"
                 android:padding="3dp"
                 android:textColor="#808080"
+                android:theme="@style/SCBSwitch"
                 android:textSize="11sp"
                 app:layout_constraintHorizontal_chainStyle="packed">
 
