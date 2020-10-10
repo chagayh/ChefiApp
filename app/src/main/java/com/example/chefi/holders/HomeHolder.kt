@@ -25,4 +25,6 @@ class HomeHolder(view: View): RecyclerView.ViewHolder(view) {
     val commentPostBtn: TextView = view.findViewById(R.id.textViewPostCommentBtn)
     val commentContent: EditText = view.findViewById(R.id.editTextPostComment)
     val forTrade: TextView = view.findViewById(R.id.textViewForTrade)
+    val locationImage: ImageView = view.findViewById(R.id.locationImage)
+    val locationContent: TextView = view.findViewById(R.id.textViewLocation)
 }

@@ -92,8 +92,6 @@ class AddFragment : Fragment() {
     }
 
     private fun setComponents() {
-        mainBts.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
 
         galleryBtn.setOnClickListener { v ->
             launchGallery()
@@ -119,10 +117,6 @@ class AddFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG_ADD_FRAGMENT, "onActivityResult, requestCode = $requestCode")
         // TODO - add Progress BAR
-        val progressBar: ConstraintLayout? = view?.findViewById(R.id.constrainLayoutProgressBar)
-        val mainBts: LinearLayout? = view?.findViewById(R.id.mainLinearLayoutAdd)
-        mainBts?.visibility = View.GONE
-        progressBar?.visibility = View.VISIBLE
 
         when {
             (requestCode == REQUEST_PICK_IMAGE_FROM_GALLERY
@@ -173,6 +167,8 @@ class AddFragment : Fragment() {
                     view?.findNavController()?.navigate(action)
                 }
             })
+        mainBts.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun onRequestPermissionsResult(

@@ -1,6 +1,7 @@
 package com.example.chefi.fragment
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,6 +13,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chefi.Chefi
 import com.example.chefi.R
@@ -49,6 +52,9 @@ class ProfileFragment : Fragment() {
         recyclerViewRecipes.adapter = recipesAdapter
 //        val lm = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 //        recyclerViewRecipes.layoutManager = lm
+        if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            SPAN_VALUE = 6
+        }
         val gridLayoutManager: GridLayoutManager = GridLayoutManager(activity, SPAN_VALUE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {

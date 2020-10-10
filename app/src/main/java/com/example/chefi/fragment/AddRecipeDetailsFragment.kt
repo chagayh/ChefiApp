@@ -1,25 +1,29 @@
 package com.example.chefi.fragment
 
 import android.annotation.SuppressLint
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.chefi.Chefi
 import com.example.chefi.R
-import java.util.*
+import com.example.chefi.activities.MainActivity
 import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.*
 import kotlin.collections.ArrayList
+
 
 /**
  * A simple [Fragment] subclass.
@@ -76,14 +80,20 @@ class AddRecipeDetailsFragment : Fragment() {
         Log.e("Switch", switchStatus.isChecked.toString())
         addBtn.setOnClickListener {
             Log.d(TAG_RECIPE_FRAGMENT, "${arrayListOf(textViewDirections.text.toString())}")
-            val workId = appContext.addRecipe(textViewName.text.toString(),
-                                              imageUrl,
-                                              convertViewArrayToStringsArray(false),
-                                              convertViewArrayToStringsArray(true),
-                                              switchStatus.isChecked)
+            val workId = appContext.addRecipe(
+                textViewName.text.toString(),
+                imageUrl,
+                convertViewArrayToStringsArray(false),
+                convertViewArrayToStringsArray(true),
+                switchStatus.isChecked
+            )
             setWorkObserver(workId)
         }
 
+        switchLocation.setOnClickListener(){
+            convertLatiAndLongToLand(32.794044, 34.989571)
+            convertLatiAndLongToLand(34.989571, 32.794044)
+        }
 
         addIngredientBtn.setOnClickListener {
             val tempEditText = inflater.inflate(R.layout.inflate_ingredient, container, false)
@@ -108,39 +118,66 @@ class AddRecipeDetailsFragment : Fragment() {
                     val gson = Gson()
 
                     val uid = value.outputData.getString(appContext.getString(R.string.keyUid))
-                    val description = value.outputData.getString(appContext.getString(R.string.keyDescription))
+                    val description =
+                        value.outputData.getString(appContext.getString(R.string.keyDescription))
                     val likes = value.outputData.getInt(appContext.getString(R.string.keyLikes), 0)
-                    val imageUrl = value.outputData.getString(appContext.getString(R.string.keyImageUrl))
-                    val commentsAsJson = value.outputData.getString(appContext.getString(R.string.keyComments))
-                    val directionsAsJson = value.outputData.getString(appContext.getString(R.string.keyUid))
-                    val ingredientsAsJson = value.outputData.getString(appContext.getString(R.string.keyUid))
-                    val status = value.outputData.getBoolean(appContext.getString(R.string.keyStatus), false)
-                    val timeStampAsJson = value.outputData.getString(appContext.getString(R.string.keyTimestamp))
+                    val imageUrl =
+                        value.outputData.getString(appContext.getString(R.string.keyImageUrl))
+                    val commentsAsJson =
+                        value.outputData.getString(appContext.getString(R.string.keyComments))
+                    val directionsAsJson =
+                        value.outputData.getString(appContext.getString(R.string.keyUid))
+                    val ingredientsAsJson =
+                        value.outputData.getString(appContext.getString(R.string.keyUid))
+                    val status = value.outputData.getBoolean(
+                        appContext.getString(R.string.keyStatus),
+                        false
+                    )
+                    val timeStampAsJson =
+                        value.outputData.getString(appContext.getString(R.string.keyTimestamp))
 
                     val stringArrayListType = object : TypeToken<ArrayList<String>>() {}.type
-                    val referenceArrayListType = object : TypeToken<ArrayList<DocumentReference>>() {}.type
+                    val referenceArrayListType =
+                        object : TypeToken<ArrayList<DocumentReference>>() {}.type
                     val dateType = object : TypeToken<Date>() {}.type
 
-                    val appRecipeReturned = AppRecipe(uid=uid,
-                                                      description=description,
-                                                      likes=likes,
-                                                      imageUrl=imageUrl,
-                                                      comments=gson.fromJson(commentsAsJson, referenceArrayListType),
-                                                      directions=arrayListOf(textViewDirections.text.toString()),
-                                                      ingredients=arrayListOf(textViewIngredients.text.toString()),
-                                                      status=status,
-                                                      owner=null,   // curr user own the recipe
-                                                      timestamp=gson.fromJson(timeStampAsJson, dateType))
+                    val appRecipeReturned = AppRecipe(
+                        uid = uid,
+                        description = description,
+                        likes = likes,
+                        imageUrl = imageUrl,
+                        comments = gson.fromJson(
+                            commentsAsJson,
+                            referenceArrayListType
+                        ),
+                        directions = arrayListOf(textViewDirections.text.toString()),
+                        ingredients = arrayListOf(textViewIngredients.text.toString()),
+                        status = status,
+                        owner = null,   // curr user own the recipe
+                        timestamp = gson.fromJson(
+                            timeStampAsJson,
+                            dateType
+                        )
+                    )
 
 //                    val recipeAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipeType))
 //                    val recipeType = object : TypeToken<AppRecipe>() {}.type
 //
 //                    val returnedRecipe = Gson().fromJson<AppRecipe>(recipeAsJson, recipeType)
-                    Log.d("change_url", "in recipeFragment in setWorkObserver, recipe image url = ${appRecipeReturned.imageUrl}")
-                    Toast.makeText(appContext, "Recipe was CREATED by @${user.userName}", Toast.LENGTH_SHORT)
+                    Log.d(
+                        "change_url",
+                        "in recipeFragment in setWorkObserver, recipe image url = ${appRecipeReturned.imageUrl}"
+                    )
+                    Toast.makeText(
+                        appContext,
+                        "Recipe was CREATED by @${user.userName}",
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                     // TODO - maybe add a preview page
-                    val action = AddRecipeDetailsFragmentDirections.actionAddRecipeDetailsToRecipe(appRecipeReturned)
+                    val action = AddRecipeDetailsFragmentDirections.actionAddRecipeDetailsToRecipe(
+                        appRecipeReturned
+                    )
                     view?.findNavController()?.navigate(action)
                 }
             })
@@ -149,10 +186,16 @@ class AddRecipeDetailsFragment : Fragment() {
     private fun setCustomOnBackPressed() {
         requireActivity()
             .onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Log.d(TAG_RECIPE_FRAGMENT, "delete the recipe_profile from storage and database")
-                    Log.d("change_url", "in setCustomOnBackPressed of recipeFragment, imageUrl = $imageUrl")
+                    Log.d(
+                        TAG_RECIPE_FRAGMENT,
+                        "delete the recipe_profile from storage and database"
+                    )
+                    Log.d(
+                        "change_url",
+                        "in setCustomOnBackPressed of recipeFragment, imageUrl = $imageUrl"
+                    )
                     appContext.deleteImage(imageUrl)
                     if (isEnabled) {
                         isEnabled = false
@@ -176,4 +219,27 @@ class AddRecipeDetailsFragment : Fragment() {
         }
         return result
     }
+
+    private fun convertLatiAndLongToLand(latitude: Double, longitude: Double): String?{
+        val geocoder: Geocoder
+        val myActivity = activity as MainActivity
+        val addresses: List<Address>
+        geocoder = Geocoder(myActivity, Locale.getDefault())
+        addresses = geocoder.getFromLocation(
+            latitude,
+            longitude,
+            1
+        ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        val address: String =
+            addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+
+//        val city: String = addresses[0].getLocality()
+//        val state: String = addresses[0].getAdminArea()
+//        val country: String = addresses[0].getCountryName()
+//        val postalCode: String = addresses[0].getPostalCode()
+//        val knownName: String = addresses[0].getFeatureName()
+        Log.e("Checker", address)
+        return address
+    }
+
 }

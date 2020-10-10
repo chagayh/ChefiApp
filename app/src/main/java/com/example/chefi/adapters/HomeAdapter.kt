@@ -3,6 +3,7 @@ package com.example.chefi.adapters
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -137,6 +138,11 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
             if(appUser.favorites?.contains(item.myReference)!!) holder.favoritesImage.visibility = View.VISIBLE
         }
 
+        // location details
+//        if(true){
+//            holder.locationContent.visibility = View.GONE
+//            holder.locationImage.visibility = View.GONE
+//        }
         // comment details
         if (item.comments != null){
             holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), item.comments!!.size)

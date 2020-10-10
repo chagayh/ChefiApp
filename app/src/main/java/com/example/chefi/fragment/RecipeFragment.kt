@@ -51,6 +51,8 @@ class RecipeFragment : Fragment() {
     private lateinit var commentPostBtn: TextView
     private lateinit var commentContent: EditText
     private lateinit var forTrade: TextView
+    private lateinit var locationImage: ImageView
+    private lateinit var locationContent: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +82,8 @@ class RecipeFragment : Fragment() {
         commentPostBtn = view.findViewById(R.id.textViewPostCommentBtn)
         commentContent = view.findViewById(R.id.editTextPostComment)
         forTrade = view.findViewById(R.id.textViewForTrade)
+        locationImage = view.findViewById(R.id.locationImage)
+        locationContent = view.findViewById(R.id.textViewLocation)
         customizeComponents()
         return view
     }
@@ -117,6 +121,9 @@ class RecipeFragment : Fragment() {
         if (appUser.favorites != null){
             if(appUser.favorites?.contains(appRecipe.myReference)!!) favoritesImage.visibility = View.VISIBLE
         }
+
+        // location details
+        // TODO: location details
         // comment details
         if (item.comments != null){
             commentTitle.text = String.format(commentTitle.text.toString(), item.comments!!.size)
