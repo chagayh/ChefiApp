@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         bottomMenu = bottomNavigationView.menu
         val notificationItemId = bottomMenu.getItem(3).itemId
         notificationBadge = bottomNavigationView.getOrCreateBadge(notificationItemId)
+        notificationBadge.isVisible = false
 //        val layoutParams = bottomNavigationView.layoutParams as CoordinatorLayout.LayoutParams
 //        layoutParams.behavior = BottomNavigationView
     }

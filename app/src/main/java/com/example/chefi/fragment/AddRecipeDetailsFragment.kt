@@ -14,7 +14,6 @@ import androidx.navigation.fragment.navArgs
 import com.example.chefi.Chefi
 import com.example.chefi.R
 import java.util.*
-import androidx.navigation.fragment.findNavController
 import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
 import com.google.firebase.firestore.DocumentReference
@@ -36,7 +35,8 @@ class AddRecipeDetailsFragment : Fragment() {
     private lateinit var textViewName: EditText
     private lateinit var textViewDirections: EditText
     private lateinit var textViewIngredients: EditText
-    private lateinit var textViewStatus: EditText
+    private lateinit var switchStatus: Switch
+    private lateinit var switchLocation: Switch
     private lateinit var imageUrl: String
     private lateinit var addBtn: TextView
     private lateinit var addIngredientBtn: ImageButton
@@ -63,7 +63,8 @@ class AddRecipeDetailsFragment : Fragment() {
         textViewName = view.findViewById(R.id.editTextDescription)
         textViewDirections = view.findViewById(R.id.editTextDirections)
         textViewIngredients = view.findViewById(R.id.editTextIngredients)
-        textViewStatus = view.findViewById(R.id.editTextStatus)
+        switchStatus = view.findViewById(R.id.switchForTrade)
+        switchLocation = view.findViewById(R.id.switchLocation)
         addBtn = view.findViewById(R.id.addRecipeBtn)
 
         addIngredientBtn = view.findViewById(R.id.plusIngredientsBtn)
@@ -72,13 +73,14 @@ class AddRecipeDetailsFragment : Fragment() {
         linearLayoutDirections =  view.findViewById(R.id.LinearLayoutDirections)
 
         user = appContext.getCurrUser()!!
+        Log.e("Switch", switchStatus.isChecked.toString())
         addBtn.setOnClickListener {
             Log.d(TAG_RECIPE_FRAGMENT, "${arrayListOf(textViewDirections.text.toString())}")
             val workId = appContext.addRecipe(textViewName.text.toString(),
                                               imageUrl,
                                               convertViewArrayToStringsArray(false),
                                               convertViewArrayToStringsArray(true),
-                                              Integer.parseInt(textViewStatus.text.toString()))
+                                              Integer.parseInt(switchStatus.isChecked.toString()))
             setWorkObserver(workId)
         }
 

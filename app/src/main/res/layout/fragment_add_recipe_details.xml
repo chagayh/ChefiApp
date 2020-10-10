@@ -179,82 +179,79 @@
 
             <LinearLayout
                 android:id="@+id/LinearLayoutStatus"
-                android:orientation="vertical"
-                android:gravity="left"
-                android:layout_marginTop="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:weightSum="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textViewStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/circularbordersolid"
-                        android:fontFamily="@font/proximanovaregular"
-                        android:padding="10dp"
-                        android:text="Status"
-                        android:textStyle="bold"
-                        android:textColor="@color/blue"
-                        android:textSize="12sp" />
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-
-
-                </LinearLayout>
-
-
-                <EditText
-                    android:id="@+id/editTextStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/circularbordersolid"
-                    android:fontFamily="@font/proximanovaregular"
-
-                    android:hint="Insert recipe instruction"
-                    android:padding="10dp"
-                    android:textColor="@color/blue"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/LinearLayoutBtns"
                 android:orientation="horizontal"
                 android:gravity="left"
                 android:layout_marginTop="40dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:weightSum="1"
                 android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Space
+                <Switch
+                    android:id="@+id/switchForTrade"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:background="@drawable/circularbordersolid"
+                    android:fontFamily="@font/proximanovaregular"
+                    android:padding="10dp"
+                    android:text="For Trade"
+                    android:textColorHighlight="@color/blue"
+                    android:textColorHint="@color/blue"
+                    android:textColorLink="@color/blue"
+                    android:outlineSpotShadowColor="@color/blue"
+                    android:outlineAmbientShadowColor="@color/blue"
+                    android:shadowColor="@color/blue"
+                    android:textStyle="bold"
+                    android:textColor="@color/blue"
+                    android:textSize="12sp"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                </Space>
+
+                <Switch
+                    android:id="@+id/switchLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circularbordersolid"
+                    android:fontFamily="@font/proximanovaregular"
+                    android:padding="10dp"
+                    android:text="Location"
+                    android:textStyle="bold"
+                    android:textColor="@color/blue"
+                    android:textSize="12sp"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LinearLayoutBtns"
+                android:orientation="vertical"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/addRecipeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circularbordersolid"
-                    android:paddingLeft="20dp"
+                    android:paddingLeft="80dp"
                     android:paddingTop="10dp"
-                    android:paddingRight="20dp"
+                    android:paddingRight="80dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:paddingBottom="10dp"
-                    android:text="ADD"
+                    android:text="Add Recipe"
                     android:fontFamily="@font/proximanovaregular"
                     android:textStyle="bold"
                     android:textColor="@color/blue"
