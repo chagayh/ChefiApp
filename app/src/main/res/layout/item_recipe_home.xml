@@ -396,6 +396,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
+                android:theme="@style/SCBSwitch"
                 android:background="@drawable/follow_button_outline"
                 android:fontFamily="@font/proximanovaregular"
                 android:hint="  Add a comment"
