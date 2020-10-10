@@ -184,6 +184,10 @@ class Chefi : Application() {
         appDb.updateUserFields(fieldName, content)
     }
 
+    fun initLastSeenNotification() {
+        appDb.initLastSeenNotification()
+    }
+
     fun loadRecipes(user: DbUser?) {
         appDb.loadRecipes(user, "recipes")
     }

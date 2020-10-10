@@ -78,6 +78,11 @@ class AppDb {
         return unseenNotification
     }
 
+    fun initLastSeenNotification() {
+        currDbUser?.lastSeenNotification = 0
+        updateUserInUsersCollection(currDbUser)
+    }
+
     fun addToRecipePermission(appRecipe: AppRecipe, userRef: DocumentReference) {
         if (appRecipe.status != null && appRecipe.status == true) {
             if (appRecipe.allowedUsers == null) {

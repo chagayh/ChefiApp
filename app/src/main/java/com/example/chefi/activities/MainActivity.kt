@@ -57,8 +57,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         val notificationItemId = bottomMenu.getItem(3).itemId
         notificationBadge = bottomNavigationView.getOrCreateBadge(notificationItemId)
         notificationBadge.isVisible = false
-//        val layoutParams = bottomNavigationView.layoutParams as CoordinatorLayout.LayoutParams
-//        layoutParams.behavior = BottomNavigationView
     }
 
     private fun setObserver() {
@@ -87,9 +85,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         if (num > 0) {
             notificationBadge.isVisible = true
             notificationBadge.number = num
-        } else {
+        } else if (num == 0) {
             notificationBadge.isVisible = false
             notificationBadge.number = 0
+            appContext.initLastSeenNotification()
         }
     }
 
