@@ -547,24 +547,26 @@ class AppDb {
         notificationRef
             .set(dbNotificationItem)
             .addOnSuccessListener {
-                Log.d(TAG_APP_DB, "notification added")
+                Log.d("addNotification", "notification added")
                 // add the notification to the user dest notification list
                 userDestRef
                     .get()
                     .addOnSuccessListener { documentSnapShot ->
                         val user = documentSnapShot.toObject<DbUser>()
-                        Log.d("notification", "in listener, user name = ${user?.name}, notification ref = ${notificationRef}")
+                        Log.d("addNotification", "in listener, user name = ${user?.name}, " +
+                                "notification uid = ${notificationRef.id}")
                         if (user?.notifications == null) {
                             user?.notifications = ArrayList()
                         }
-                        Log.d("lastSeenNotificationTag", "lastSeenNotification = ${user?.lastSeenNotification}")
+                        Log.d("addNotification", "lastSeenNotification = ${user?.lastSeenNotification}")
                         if (user?.lastSeenNotification == null) {
                             user?.lastSeenNotification = 1
                         } else {
                             user.lastSeenNotification = user.lastSeenNotification!! + 1 
-                            Log.d("lastSeenNotificationTag", "in else lastSeenNotification = ${user?.lastSeenNotification}")
+                            Log.d("addNotification", "in else lastSeenNotification = ${user.lastSeenNotification}")
                         }
                         user?.notifications?.add(notificationRef)
+                        Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
                         updateUserInUsersCollection(user)
                     }
             }
@@ -1278,6 +1280,7 @@ class AppDb {
             for (document: QueryDocumentSnapshot in value) {
                 val dbNotification =
                     document.toObject(DbNotificationItem::class.java) // convert to item
+                Log.d("queryNotification", "in QueryDocumentSnapshot notification uid = ${dbNotification.uid}")
                 userDbNotificationItem.add(dbNotification)
 //                if ((userNotification != null) && !userNotification?.contains(dbNotification)!!) {
 //                    userNotification?.add(dbNotification)
@@ -1286,14 +1289,18 @@ class AppDb {
         }
         referenceToCollection.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Log.d("notificationQuery", "task.isSuccessful")
+                Log.d("queryNotification", "task.isSuccessful, userDbNotificationItem size = ${userDbNotificationItem.size}")
                 var counter = 0
                 val dbNotificationItemList = ArrayList<DbNotificationItem>()
                 for (notification in userDbNotificationItem) {
+                    Log.d("queryNotification", "notification uid = ${notification.uid}")
                     if (notification.destinationRef == currDbUser?.myReference) {
-                        counter += 1
+                        val dbNot = userAppNotification?.find { it.uid == notification.uid }
+                        if (dbNot == null) {
+                            dbNotificationItemList.add(notification)
+                            counter += 1
+                        }
                     }
-                    dbNotificationItemList.add(notification)
                 }
                 updateLocalAppNotificationList(dbNotificationItemList, counter)
             }
