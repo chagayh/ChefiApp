@@ -546,35 +546,59 @@ class AppDb {
                 recipeRef,
                 offeredRecipeRef,
                 type)
+        
+        userDestRef
+            .get()
+            .addOnSuccessListener { documentSnapShot ->
+                val user = documentSnapShot.toObject<DbUser>()
+                Log.d("addNotification", "in listener, user name = ${user?.name}, " +
+                        "notification uid = ${notificationRef.id}")
+                if (user?.notifications == null) {
+                    user?.notifications = ArrayList()
+                }
+                user?.notifications?.add(notificationRef)
+                Log.d("addNotification", "lastSeenNotification = ${user?.lastSeenNotification}")
+                if (user?.lastSeenNotification == null) {
+                    user?.lastSeenNotification = 1
+                } else {
+                    user.lastSeenNotification = user.lastSeenNotification!!.plus(1)
+                    Log.d("addNotification", "in else lastSeenNotification = ${user.lastSeenNotification}")
+                }
+                Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
+                updateUserInUsersCollection(user)
 
-        notificationRef
-            .set(dbNotificationItem)
-            .addOnSuccessListener {
-                Log.d("addNotification", "notification added")
-                // add the notification to the user dest notification list
-                Log.d("addNotification", "in listener, user ref = $userDestRef")
-                userDestRef
-                    .get()
-                    .addOnSuccessListener { documentSnapShot ->
-                        val user = documentSnapShot.toObject<DbUser>()
-                        Log.d("addNotification", "in listener, user name = ${user?.name}, " +
-                                "notification uid = ${notificationRef.id}")
-                        if (user?.notifications == null) {
-                            user?.notifications = ArrayList()
-                        }
-                        user?.notifications?.add(notificationRef)
-                        Log.d("addNotification", "lastSeenNotification = ${user?.lastSeenNotification}")
-                        if (user?.lastSeenNotification == null) {
-                            user?.lastSeenNotification = 1
-                        } else {
-                            user.lastSeenNotification = user.lastSeenNotification!!.plus(1)
-                            Log.d("addNotification", "in else lastSeenNotification = ${user.lastSeenNotification}")
-                        }
-                        Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
-                        updateUserInUsersCollection(user)
-                        Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
-                    }
+                notificationRef
+                    .set(dbNotificationItem)
             }
+
+//        notificationRef
+//            .set(dbNotificationItem)
+//            .addOnSuccessListener {
+//                Log.d("addNotification", "notification added")
+//                // add the notification to the user dest notification list
+//                Log.d("addNotification", "in listener, user ref = $userDestRef")
+//                userDestRef
+//                    .get()
+//                    .addOnSuccessListener { documentSnapShot ->
+//                        val user = documentSnapShot.toObject<DbUser>()
+//                        Log.d("addNotification", "in listener, user name = ${user?.name}, " +
+//                                "notification uid = ${notificationRef.id}")
+//                        if (user?.notifications == null) {
+//                            user?.notifications = ArrayList()
+//                        }
+//                        user?.notifications?.add(notificationRef)
+//                        Log.d("addNotification", "lastSeenNotification = ${user?.lastSeenNotification}")
+//                        if (user?.lastSeenNotification == null) {
+//                            user?.lastSeenNotification = 1
+//                        } else {
+//                            user.lastSeenNotification = user.lastSeenNotification!!.plus(1)
+//                            Log.d("addNotification", "in else lastSeenNotification = ${user.lastSeenNotification}")
+//                        }
+//                        Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
+//                        updateUserInUsersCollection(user)
+//                        Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
+//                    }
+//            }
     }
 
     fun addComment(content: String, recipeId: String, context: Context, type: String) {
