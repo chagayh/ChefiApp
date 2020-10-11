@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:869501740673:android:87170ba5a7d272eedc0f80",
+        "mobilesdk_app_id": "1:869501740673:android:3e3b481f0fe359abdc0f80",
         "android_client_info": {
-          "package_name": "com.example.chefi"
+          "package_name": "com.postpc.chefi"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "869501740673-vuml7tedufin9ihckkb3ei5cr7al944f.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.chefi",
-            "certificate_hash": "22fb75b420d7cd85e028cb764bb673e40caeb7b1"
-          }
-        },
         {
           "client_id": "869501740673-qote6fhs6ep7eatjct0d9q5min8mogqs.apps.googleusercontent.com",
           "client_type": 3

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.chefi.fragment.HomeFragment"
+        android:name="com.postpc.chefi.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.chefi.fragment.ProfileFragment"
+        android:name="com.postpc.chefi.fragment.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/addFragment"
-        android:name="com.example.chefi.fragment.AddFragment"
+        android:name="com.postpc.chefi.fragment.AddFragment"
         android:label="fragment_add"
         tools:layout="@layout/fragment_add" >
         <action
@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.chefi.fragment.SearchFragment"
+        android:name="com.postpc.chefi.fragment.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/addRecipeDetailsFragment"
-        android:name="com.example.chefi.fragment.AddRecipeDetailsFragment"
+        android:name="com.postpc.chefi.fragment.AddRecipeDetailsFragment"
         android:label="fragment_recipe"
         tools:layout="@layout/fragment_add_recipe_details" >
         <argument
@@ -75,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/followersFragment"
-        android:name="com.example.chefi.fragment.FollowersFragment"
+        android:name="com.postpc.chefi.fragment.FollowersFragment"
         android:label="fragment_follwers"
         tools:layout="@layout/fragment_follwers" >
         <argument
@@ -83,7 +83,7 @@
             app:argType="boolean" />
         <argument
             android:name="curUser"
-            app:argType="com.example.chefi.database.DbUser"
+            app:argType="com.postpc.chefi.database.DbUser"
             app:nullable="true" />
         <action
             android:id="@+id/action_followers_to_profileOther"
@@ -91,40 +91,40 @@
     </fragment>
     <fragment
         android:id="@+id/profileOtherFragment"
-        android:name="com.example.chefi.fragment.ProfileOtherFragment"
+        android:name="com.postpc.chefi.fragment.ProfileOtherFragment"
         android:label="ProfileOtherFragment" >
         <action
             android:id="@+id/action_profileOther_to_followers"
             app:destination="@id/followersFragment" />
         <argument
             android:name="curUser"
-            app:argType="com.example.chefi.database.DbUser" />
+            app:argType="com.postpc.chefi.database.DbUser" />
         <action
             android:id="@+id/action_profileOther_to_recipe"
             app:destination="@id/recipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/commentFragment"
-        android:name="com.example.chefi.fragment.CommentFragment"
+        android:name="com.postpc.chefi.fragment.CommentFragment"
         android:label="fragment_comment"
         tools:layout="@layout/fragment_comment" >
         <argument
             android:name="curRecipe"
-            app:argType="com.example.chefi.database.AppRecipe"
+            app:argType="com.postpc.chefi.database.AppRecipe"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/recipeDetailsFragment"
-        android:name="com.example.chefi.fragment.RecipeDetailsFragment"
+        android:name="com.postpc.chefi.fragment.RecipeDetailsFragment"
         android:label="RecipeDetailsFragment" >
         <argument
             android:name="curRecipe"
-            app:argType="com.example.chefi.database.AppRecipe"
+            app:argType="com.postpc.chefi.database.AppRecipe"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
-        android:name="com.example.chefi.fragment.RecipeFragment"
+        android:name="com.postpc.chefi.fragment.RecipeFragment"
         android:label="fragment_recipe"
         tools:layout="@layout/fragment_recipe" >
         <action
@@ -138,24 +138,24 @@
             app:destination="@id/profileOtherFragment" />
         <argument
             android:name="curRecipe"
-            app:argType="com.example.chefi.database.AppRecipe" />
+            app:argType="com.postpc.chefi.database.AppRecipe" />
         <action
             android:id="@+id/action_recipe_to_trade"
             app:destination="@id/tradeFragment" />
     </fragment>
     <fragment
         android:id="@+id/tradeFragment"
-        android:name="com.example.chefi.fragment.TradeFragment"
+        android:name="com.postpc.chefi.fragment.TradeFragment"
         android:label="fragment_trade"
         tools:layout="@layout/fragment_trade" >
         <argument
             android:name="recipe"
-            app:argType="com.example.chefi.database.AppRecipe"
+            app:argType="com.postpc.chefi.database.AppRecipe"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.example.chefi.fragment.NotificationFragment"
+        android:name="com.postpc.chefi.fragment.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" >
         <action
@@ -167,7 +167,7 @@
     </fragment>
     <fragment
         android:id="@+id/uploadPicFragment"
-        android:name="com.example.chefi.fragment.UploadPicFragment"
+        android:name="com.postpc.chefi.fragment.UploadPicFragment"
         android:label="fragment_upload_pic"
         tools:layout="@layout/fragment_upload_pic" />
 </navigation>
