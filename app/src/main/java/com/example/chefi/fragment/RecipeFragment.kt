@@ -225,7 +225,7 @@ class RecipeFragment : Fragment() {
         }
 
         recipeImage.setOnLongClickListener {
-            if(!appUser.favorites?.contains(appRecipe.myReference)!!) {
+            if(appUser.favorites == null || !appUser.favorites?.contains(appRecipe.myReference)!!) {
                 appContext.addRecipeToFavorites(appRecipe)
                 favoritesImage.visibility = View.VISIBLE
                 Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)

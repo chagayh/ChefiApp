@@ -258,7 +258,8 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                         alertDialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                             _recipesItems?.remove(item)
                             appContext.deleteRecipe(item)
-                            _recipesItems?.let { it1 -> setItems(it1, false) }
+//                            _recipesItems?.let { it1 -> setItems(it1, false) }
+                            notifyDataSetChanged()
                         }
                         alertDialog.setNegativeButton("No"){ _: DialogInterface, _: Int -> }
                         alertDialog.show()
