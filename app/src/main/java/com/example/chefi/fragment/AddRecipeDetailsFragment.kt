@@ -1,8 +1,17 @@
 package com.example.chefi.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Context.LOCATION_SERVICE
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,6 +28,8 @@ import com.example.chefi.R
 import com.example.chefi.activities.MainActivity
 import com.example.chefi.database.AppRecipe
 import com.example.chefi.database.DbUser
+import com.example.chefi.track.LocationInfo
+import com.example.chefi.track.LocationTracker
 import com.google.firebase.firestore.DocumentReference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -39,6 +51,7 @@ class AddRecipeDetailsFragment : Fragment() {
     private lateinit var textViewName: EditText
     private lateinit var textViewDirections: EditText
     private lateinit var textViewIngredients: EditText
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private lateinit var switchStatus: Switch
     private lateinit var switchLocation: Switch
     private lateinit var imageUrl: String
@@ -48,6 +61,11 @@ class AddRecipeDetailsFragment : Fragment() {
     private lateinit var addDirectionsBtn: ImageButton
     private lateinit var linearLayoutDirections: LinearLayout
     private lateinit var user: DbUser
+    private lateinit var broadcastReceiver: BroadcastReceiver
+    private val REQUEST_CODE_GPS_PERMISSIN = 778
+    private var locationTracker : LocationTracker? = null
+    private var locationInfo : LocationInfo? = null
+    private var locationInfoAsString : String? = null
 
     private val ingredientsViewsList = ArrayList<View>()
     private val directionsViewsList = ArrayList<View>()
@@ -76,9 +94,16 @@ class AddRecipeDetailsFragment : Fragment() {
         addDirectionsBtn = view.findViewById(R.id.plusDirectionsBtn)
         linearLayoutDirections =  view.findViewById(R.id.LinearLayoutDirections)
 
+        locationInfo = LocationInfo()
+        locationTracker = activity?.let { LocationTracker(it, locationInfo!!) }
+        createBroadcastReceiver()
+        val intent = IntentFilter("tracker")
+        activity?.registerReceiver(broadcastReceiver, intent)
+
         user = appContext.getCurrUser()!!
         Log.e("Switch", switchStatus.isChecked.toString())
         addBtn.setOnClickListener {
+            Log.d("location", "location = $locationInfoAsString")
             Log.d(TAG_RECIPE_FRAGMENT, "${arrayListOf(textViewDirections.text.toString())}")
             val workId = appContext.addRecipe(
                 textViewName.text.toString(),
@@ -91,6 +116,14 @@ class AddRecipeDetailsFragment : Fragment() {
         }
 
         switchLocation.setOnClickListener(){
+            val permission = Manifest.permission.ACCESS_FINE_LOCATION
+            if (ActivityCompat.checkSelfPermission(appContext, permission)
+                == PackageManager.PERMISSION_GRANTED) {
+                trackCurrLocation()
+            } else {
+                askForPermission()
+            }
+
             convertLatiAndLongToLand(32.794044, 34.989571)
             convertLatiAndLongToLand(34.989571, 32.794044)
         }
@@ -107,6 +140,67 @@ class AddRecipeDetailsFragment : Fragment() {
             linearLayoutDirections.addView(tempEditText)
         }
         return view
+    }
+
+    private fun createBroadcastReceiver() {
+        broadcastReceiver = (object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                when (intent?.action) {
+                    "tracker" -> {
+                        Log.d("tracker", "gps coor = $locationInfo")
+                        locationInfoAsString = locationInfo?._latitude?.let {
+                            locationInfo?._longitude?.let { it1 ->
+                                convertLatiAndLongToLand(
+                                    it,
+                                    it1
+                                )
+                            }
+                        }
+                        locationTracker?.stopTracking()
+                    }
+                }
+            }
+        })
+    }
+
+
+    private fun askForPermission() {
+
+        val permissionsArray = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION)
+
+        requestPermissions(permissionsArray, REQUEST_CODE_GPS_PERMISSIN)
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            REQUEST_CODE_GPS_PERMISSIN -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    TODO(" rational dialog ")
+                } else {
+                    trackCurrLocation()
+                }
+            }
+        }
+    }
+
+    private fun trackCurrLocation() {
+        if (checkUnderlyingProviders()) {
+            locationTracker?.startTracking()
+        } else {
+            Toast.makeText(activity, "turn GPS on first", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    private fun checkUnderlyingProviders() : Boolean {
+        val locationManager = activity?.getSystemService(LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     @SuppressLint("RestrictedApi", "VisibleForTests")
@@ -233,13 +327,18 @@ class AddRecipeDetailsFragment : Fragment() {
         val address: String =
             addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
 
-//        val city: String = addresses[0].getLocality()
+//        val city: String = addresses[0].locality
 //        val state: String = addresses[0].getAdminArea()
 //        val country: String = addresses[0].getCountryName()
 //        val postalCode: String = addresses[0].getPostalCode()
 //        val knownName: String = addresses[0].getFeatureName()
         Log.e("Checker", address)
         return address
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.unregisterReceiver(broadcastReceiver)
     }
 
 }

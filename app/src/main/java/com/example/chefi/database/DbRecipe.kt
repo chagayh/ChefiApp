@@ -20,7 +20,8 @@ data class DbRecipe(
     @ServerTimestamp
     var timestamp: Date? = null,
     var myReference: DocumentReference? = null,
-    var allowedUsers: ArrayList<DocumentReference>? = null
+    var allowedUsers: ArrayList<DocumentReference>? = null,
+    var location: String? = null
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

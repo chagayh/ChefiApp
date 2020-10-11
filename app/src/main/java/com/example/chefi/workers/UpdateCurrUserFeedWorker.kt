@@ -10,7 +10,6 @@ import androidx.work.WorkerParameters
 import com.example.chefi.Chefi
 import com.example.chefi.LiveDataHolder
 import com.example.chefi.ObserveWrapper
-import com.example.chefi.database.AppDb
 import com.google.common.util.concurrent.ListenableFuture
 
 class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
@@ -54,11 +53,11 @@ class UpdateCurrUserFeedWorker(context: Context, workerParams: WorkerParameters)
                 val outPutData = Data.Builder()
                     .putString("string", userIdTo)
                     .build()
-                LiveDataHolder.getIntLiveData().removeObserver(observer!!)
+                LiveDataHolder.getNotificationIntLiveData().removeObserver(observer!!)
                 Log.d(TAG_UPDATE_FEED_FOLLOW_WORKER, "in set observer recipeId = $value")
                 this.callback?.set(Result.success(outPutData))
             }
         }
-        LiveDataHolder.getIntLiveData().observeForever(observer!!)
+        LiveDataHolder.getNotificationIntLiveData().observeForever(observer!!)
     }
 }

@@ -56,12 +56,12 @@ class UpdateFollowersFeedWorker(context: Context, workerParams: WorkerParameters
                 val outPutData = Data.Builder()
                     .putString("string", recipeId)
                     .build()
-                LiveDataHolder.getIntLiveData().removeObserver(observer!!)
+                LiveDataHolder.getNotificationIntLiveData().removeObserver(observer!!)
                 Log.d(TAG_UPDATE_FEED_WORKER, "in set observer recipeId = $value")
                 this.callback?.set(Result.success(outPutData))
             }
         }
-        LiveDataHolder.getIntLiveData().observeForever(observer!!)
+        LiveDataHolder.getNotificationIntLiveData().observeForever(observer!!)
     }
 
 }

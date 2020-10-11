@@ -80,11 +80,11 @@ object LiveDataHolder {
         return stringLiveData
     }
 
-    fun getIntLiveData() : LiveData<ObserveWrapper<Int>>{
+    fun getNotificationIntLiveData() : LiveData<ObserveWrapper<Int>>{
         return updateFeedLiveData
     }
 
-    fun getIntMutableLiveData() : MutableLiveData<ObserveWrapper<Int>>{
+    fun getNotificationIntMutableLiveData() : MutableLiveData<ObserveWrapper<Int>>{
         return updateFeedLiveData
     }
 

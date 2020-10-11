@@ -48,6 +48,7 @@ class NotificationFragment : Fragment() {
         recyclerViewNotification = view.findViewById(R.id.recyclerViewNotification)
         notificationAdapter = NotificationAdapter(view)
         // TODO - get items from chagay
+
         Log.e("Notification", notifications?.size.toString())
         setNotificationBadgeObserver()
         recyclerViewNotification.adapter = notificationAdapter
@@ -64,6 +65,14 @@ class NotificationFragment : Fragment() {
                     notificationAdapter.setItems(notifications)
                 }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("notResume", "onResume of Notification Fragment")
+        notifications = appContext.getUserNotifications()
+        Log.d("notResume", "onResume of Notification Fragment size = ${notifications?.size}")
+        notificationAdapter.setItems(notifications)
     }
 
 }

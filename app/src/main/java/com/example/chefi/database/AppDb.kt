@@ -371,6 +371,11 @@ class AppDb {
         LiveDataHolder.getFeedMutableLiveData().value = ObserveWrapper(recipesList)
     }
 
+    private fun postNotificationInt(recipesList: ArrayList<AppRecipe>) {
+        Log.d("coUpload", "in postAppRecipes recipesList.size = ${recipesList.size}")
+        LiveDataHolder.getFeedMutableLiveData().value = ObserveWrapper(recipesList)
+    }
+
     private fun postUsersList(usersList: ArrayList<DbUser>) {
 //        LiveDataHolder.getUsersListMutableLiveData().postValue(usersList)
         LiveDataHolder.getUsersListMutableLiveData().value = ObserveWrapper(usersList)
@@ -1262,6 +1267,7 @@ class AppDb {
         referenceToCollection.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("notificationQuery", "task.isSuccessful")
+//                LiveDataHolder.getNotificationIntMutableLiveData()
 //                loadOwnersToNotifications(userDbNotificationItem)
             }
         }
