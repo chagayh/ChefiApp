@@ -58,7 +58,7 @@ class NotificationFragment : Fragment() {
     }
 
     private fun setNotificationObserver() {
-        LiveDataHolder.getNotificationsLiveData().observe(this,
+        LiveDataHolder.getNotificationsLiveData().observe(viewLifecycleOwner,
             Observer { value ->
                 val content = value.getContentIfNotHandled()
                 if (content != null){

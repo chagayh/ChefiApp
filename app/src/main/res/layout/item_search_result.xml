@@ -68,7 +68,8 @@
             android:textColor="@color/blue"
             app:layout_constraintBottom_toBottomOf="@id/searchCard"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintLeft_toLeftOf="@id/textViewSearch"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintLeft_toRightOf="@id/searchCard"
             app:layout_constraintRight_toRightOf="@id/textViewSearch"
             app:layout_constraintTop_toBottomOf="@id/textViewSearch"
             app:layout_constraintVertical_bias="0.2"  />

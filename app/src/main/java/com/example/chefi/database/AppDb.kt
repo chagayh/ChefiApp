@@ -69,7 +69,7 @@ class AppDb {
 
     init {
         initCurrentUserFields()
-        createNotificationsLiveQuery()
+//        createNotificationsLiveQuery()
     }
 
     // set and get

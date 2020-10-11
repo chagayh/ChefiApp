@@ -95,6 +95,7 @@ class RecipeFragment : Fragment() {
         // user details:
         if(curUser != null){
             userNameUp.text = curUser.name
+            userNameUp.text = curUser.name
             userNameDown.text = curUser.userName
             if(curUser.imageUrl != null){
                 Picasso.with(appContext)
@@ -115,7 +116,8 @@ class RecipeFragment : Fragment() {
             userImage.setImageResource(R.drawable.pasta3)
         }
         postDescription.text = item.description
-        likesTitle.text = String.format(likesTitle.text.toString(), item.likes)
+        val likesNum = if(item.likes != null) item.likes  else 0
+        likesTitle.text = String.format(likesTitle.text.toString(), likesNum)
         if (item.status != true) forTrade.visibility = View.GONE
         Log.e("Bug", appUser.toString())
         if (appUser.favorites != null){
@@ -123,7 +125,12 @@ class RecipeFragment : Fragment() {
         }
 
         // location details
-        // TODO: location details
+        if(item.location != null){
+            locationContent.text = item.location
+        }else{
+            locationContent.visibility = View.GONE
+            locationImage.visibility = View.GONE
+        }
         // comment details
         if (item.comments != null){
             commentTitle.text = String.format(commentTitle.text.toString(), item.comments!!.size)

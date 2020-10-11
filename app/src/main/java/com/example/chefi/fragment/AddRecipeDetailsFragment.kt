@@ -2,11 +2,9 @@ package com.example.chefi.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
+import android.app.AlertDialog
+import android.content.*
 import android.content.Context.LOCATION_SERVICE
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -124,9 +122,6 @@ class AddRecipeDetailsFragment : Fragment() {
             } else {
                 askForPermission()
             }
-
-            convertLatiAndLongToLand(32.794044, 34.989571)
-            convertLatiAndLongToLand(34.989571, 32.794044)
         }
 
         addIngredientBtn.setOnClickListener {
@@ -148,16 +143,21 @@ class AddRecipeDetailsFragment : Fragment() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 when (intent?.action) {
                     "tracker" -> {
-                        Log.d("tracker", "gps coor = $locationInfo")
-                        locationInfoAsString = locationInfo?._latitude?.let {
-                            locationInfo?._longitude?.let { it1 ->
-                                convertLatiAndLongToLand(
-                                    it,
-                                    it1
-                                )
+                        if(switchLocation.isChecked && (locationInfo?._latitude == null || locationInfo?._longitude == null)){
+                            switchLocation.isChecked = false
+                            Toast.makeText(activity, "Track location. Please try again.", Toast.LENGTH_LONG).show()
+                        }else{
+                            Log.d("tracker", "gps coor = $locationInfo")
+                            locationInfoAsString = locationInfo?._latitude?.let {
+                                locationInfo?._longitude?.let { it1 ->
+                                    convertLatiAndLongToLand(
+                                        it,
+                                        it1
+                                    )
+                                }
                             }
+                            locationTracker?.stopTracking()
                         }
-                        locationTracker?.stopTracking()
                     }
                 }
             }
@@ -182,7 +182,12 @@ class AddRecipeDetailsFragment : Fragment() {
         when (requestCode) {
             REQUEST_CODE_GPS_PERMISSIN -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    TODO(" rational dialog ")
+                    val alertDialog = AlertDialog.Builder(activity)
+                    val view = LayoutInflater.from(activity)
+                        .inflate(R.layout.dialog_gps_rational, null)
+                    alertDialog.setView(view)
+                    alertDialog.setPositiveButton("OK") { _: DialogInterface, _: Int -> }
+                    alertDialog.show()
                 } else {
                     trackCurrLocation()
                 }
@@ -194,6 +199,7 @@ class AddRecipeDetailsFragment : Fragment() {
         if (checkUnderlyingProviders()) {
             locationTracker?.startTracking()
         } else {
+            switchLocation.isChecked = false
             Toast.makeText(activity, "turn GPS on first", Toast.LENGTH_SHORT)
                 .show()
         }
