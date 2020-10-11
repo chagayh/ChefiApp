@@ -173,7 +173,7 @@ class AppDb {
             val documentUser = firestore.collection(usersCollectionPath).document(userId)
             documentUser.get().addOnSuccessListener { documentSnapshot ->
                 val user = documentSnapshot.toObject<DbUser>()
-                Log.d("initCurrentUserFields", "user?.name = ${user?.name} in updateCurrentUser")
+                Log.d("initCurrentUserFields", "user?.ref = ${user?.uid} in updateCurrentUser")
                 if (user != null) {
                     currDbUser = user
                     dbUserFollowers = null
@@ -552,6 +552,7 @@ class AppDb {
             .addOnSuccessListener {
                 Log.d("addNotification", "notification added")
                 // add the notification to the user dest notification list
+                Log.d("addNotification", "in listener, user ref = $userDestRef")
                 userDestRef
                     .get()
                     .addOnSuccessListener { documentSnapShot ->
@@ -561,14 +562,14 @@ class AppDb {
                         if (user?.notifications == null) {
                             user?.notifications = ArrayList()
                         }
+                        user?.notifications?.add(notificationRef)
                         Log.d("addNotification", "lastSeenNotification = ${user?.lastSeenNotification}")
                         if (user?.lastSeenNotification == null) {
                             user?.lastSeenNotification = 1
                         } else {
-                            user.lastSeenNotification = user.lastSeenNotification!! + 1
+                            user.lastSeenNotification = user.lastSeenNotification!!.plus(1)
                             Log.d("addNotification", "in else lastSeenNotification = ${user.lastSeenNotification}")
                         }
-                        user?.notifications?.add(notificationRef)
                         Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
                         updateUserInUsersCollection(user)
                     }
@@ -1224,7 +1225,7 @@ class AppDb {
             }
     }
 
-    private fun updateLocalAppNotificationList(dbNotificationItemList: ArrayList<DbNotificationItem>, counter: Int) {
+    private fun updateLocalAppNotificationList(dbNotificationItemList: ArrayList<DbNotificationItem>) {
         val mainJob = CoroutineScope(IO).launch {
             for (notification in dbNotificationItemList) {
                 val job = buildNotificationFlow(notification)
@@ -1237,7 +1238,7 @@ class AppDb {
         mainJob.invokeOnCompletion {
             CoroutineScope(Main).launch {
                 userAppNotification?.sortByDescending { it.timestamp }
-                postNotificationInt(counter)
+                postNotificationInt(currDbUser?.lastSeenNotification!!)
                 if (userAppNotification != null) {
                     postNotificationList(userAppNotification!!)
                 }
@@ -1283,20 +1284,31 @@ class AppDb {
             // reached here? we got data! yay :)
             // let's refresh the local arrayList
 
+            val dbNotificationItemList = ArrayList<DbNotificationItem>()
+
             for (document: QueryDocumentSnapshot in value) {
                 val dbNotification =
-                    document.toObject(DbNotificationItem::class.java) // convert to item
-                Log.d("queryNotification", "in QueryDocumentSnapshot notification uid = ${dbNotification.uid}")
+                    document.toObject<DbNotificationItem>()
                 userDbNotificationItem.add(dbNotification)
-//                if ((userNotification != null) && !userNotification?.contains(dbNotification)!!) {
-//                    userNotification?.add(dbNotification)
-//                }
+                val currRef = auth.currentUser?.uid?.let {
+                    firestore
+                        .collection(Chefi.getCon().getString(R.string.usersCollection))
+                        .document(it)
+                }
+                if (dbNotification.destinationRef == currRef) {
+                    val dbNot = userAppNotification?.find { it.uid == dbNotification.uid }
+                    Log.d("queryNotification", "dbNot uid = ${dbNot?.uid}")
+                    if (dbNot == null) {
+                        dbNotificationItemList.add(dbNotification)
+                    }
+                }
             }
+            updateLocalAppNotificationList(dbNotificationItemList)
         }
+
         referenceToCollection.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("queryNotification", "task.isSuccessful, userDbNotificationItem size = ${userDbNotificationItem.size}")
-                var counter = 0
                 val dbNotificationItemList = ArrayList<DbNotificationItem>()
                 for (notification in userDbNotificationItem) {
                     val currRef = auth.currentUser?.uid?.let {
@@ -1310,11 +1322,10 @@ class AppDb {
                         Log.d("queryNotification", "dbNot uid = ${dbNot?.uid}")
                         if (dbNot == null) {
                             dbNotificationItemList.add(notification)
-                            counter += 1
                         }
                     }
                 }
-                updateLocalAppNotificationList(dbNotificationItemList, counter)
+                updateLocalAppNotificationList(dbNotificationItemList)
             }
         }
 
