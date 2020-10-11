@@ -214,7 +214,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
             Log.e("Home Adapter: likes", _items[position].likes.toString())
             _items[position].likes = _items[position].likes?.plus(1)
             Log.e("Home Adapter: likes", _items[position].likes.toString())
-            appContext.updateRecipeFields(_items[position], "likes", null)
+            appContext.updateRecipeFields(_items[position], "likes")
             holder.likesTitle.text = String.format(likeMsg, _items[position].likes)
             _items[position].myReference?.let { it1 ->
                 _items[position].owner?.myReference?.let { it2 ->

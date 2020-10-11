@@ -215,7 +215,7 @@ class RecipeFragment : Fragment() {
             Log.e("Home Adapter: likes", appRecipe.likes.toString())
             appRecipe.likes = appRecipe.likes?.plus(1)
             Log.e("Home Adapter: likes", appRecipe.likes.toString())
-            appContext.updateRecipeFields(appRecipe, "likes", null)
+            appContext.updateRecipeFields(appRecipe, "likes")
             likesTitle.text = String.format(likeMsg, appRecipe.likes)
             appRecipe.myReference?.let { it1 ->
                 appRecipe.owner?.myReference?.let { it2 ->

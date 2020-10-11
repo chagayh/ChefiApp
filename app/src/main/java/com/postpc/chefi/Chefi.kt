@@ -144,7 +144,7 @@ class Chefi : Application() {
     }
 
     fun follow(dbUserToFollow: DbUser) {
-        appDb.follow(dbUserToFollow, this)
+        appDb.follow(dbUserToFollow)
     }
 
     fun getCurrUser() : DbUser? {
@@ -212,11 +212,11 @@ class Chefi : Application() {
     }
 
     fun addComment(content: String, recipeId: String) {
-        appDb.addComment(content, recipeId, this, "add")
+        appDb.addComment(content, recipeId)
     }
 
-    fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String, content: String?) {
-        appDb.updateRecipeFields(appRecipe, fieldName, content)
+    fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String) {
+        appDb.updateRecipeFields(appRecipe, fieldName)
     }
 
     fun getUserRecipes() : ArrayList<AppRecipe>? {
@@ -240,7 +240,7 @@ class Chefi : Application() {
     }
 
     fun unFollow(dbUserToUnFollow: DbUser) {
-        appDb.unFollow(dbUserToUnFollow, this)
+        appDb.unFollow(dbUserToUnFollow)
     }
 
     fun addRecipeToFavorites(appRecipe: AppRecipe) {

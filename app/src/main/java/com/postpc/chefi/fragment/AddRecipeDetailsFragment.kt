@@ -225,10 +225,6 @@ class AddRecipeDetailsFragment : Fragment() {
                         value.outputData.getString(appContext.getString(R.string.keyImageUrl))
                     val commentsAsJson =
                         value.outputData.getString(appContext.getString(R.string.keyComments))
-                    val directionsAsJson =
-                        value.outputData.getString(appContext.getString(R.string.keyUid))
-                    val ingredientsAsJson =
-                        value.outputData.getString(appContext.getString(R.string.keyUid))
                     val location = value.outputData.getString(appContext.getString(R.string.keyRecipeLocation))
                     val status = value.outputData.getBoolean(
                         appContext.getString(R.string.keyStatus),
@@ -237,7 +233,6 @@ class AddRecipeDetailsFragment : Fragment() {
                     val timeStampAsJson =
                         value.outputData.getString(appContext.getString(R.string.keyTimestamp))
 
-                    val stringArrayListType = object : TypeToken<ArrayList<String>>() {}.type
                     val referenceArrayListType =
                         object : TypeToken<ArrayList<DocumentReference>>() {}.type
                     val dateType = object : TypeToken<Date>() {}.type

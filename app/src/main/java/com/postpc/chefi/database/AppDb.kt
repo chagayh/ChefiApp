@@ -606,7 +606,7 @@ class AppDb {
 //            }
     }
 
-    fun addComment(content: String, recipeId: String, context: Context, type: String) {
+    fun addComment(content: String, recipeId: String) {
         Log.d("addComment", "start of addComment")
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
             .document(recipeId)
@@ -749,7 +749,7 @@ class AppDb {
                 Log.d("AppDb", "fail upload image - ${exeption.message}")
                 // TODO
             }
-            .addOnProgressListener { taskSnapshot ->
+            .addOnProgressListener {
 //                val progress = (100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
 //                progressBar.progress = progress.toInt()
             }
@@ -885,7 +885,7 @@ class AppDb {
         updateUserInUsersCollection(currDbUser)
     }
 
-    fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String, content: String?) {
+    fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String) {
         // TODO - updates options - like, comment per recipe
         val recipeId = appRecipe.uid
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
@@ -904,7 +904,7 @@ class AppDb {
 
     //
 
-    fun follow(dbUserToFollow: DbUser, context: Context) {
+    fun follow(dbUserToFollow: DbUser) {
         // TODO: check duplicate, write to DB
         Log.e(TAG_APP_DB, dbUserToFollow.name.toString())
         // add user to the firestore
@@ -933,7 +933,7 @@ class AppDb {
         }
     }
 
-    fun unFollow(dbUserToUnFollow: DbUser, context: Context) {
+    fun unFollow(dbUserToUnFollow: DbUser) {
         val currUserId = currDbUser?.uid
         val otherUserId = dbUserToUnFollow.uid
 
@@ -1217,7 +1217,6 @@ class AppDb {
                 .collection(Chefi.getCon().getString(R.string.recipesCollection))
                 .orderBy("timestamp", Query.Direction.DESCENDING)
         val dbRecipesFeed = ArrayList<DbRecipe>()
-        val appRecipesList = ArrayList<AppRecipe>()
         query.get()
             .addOnSuccessListener { snapShotList ->
                 for (snapShot in snapShotList) {
@@ -1230,12 +1229,7 @@ class AppDb {
                     }
                 }
                 Log.d(TAG_UPDATE_FEED, "in uploadFeed1 dbRecipesFeed size = ${dbRecipesFeed.size}")
-                val mainJob = CoroutineScope(Default).launch {
-//                    for (dbRecipe in dbRecipesFeed) {
-//                        val job = buildRecipeFlow(dbRecipe)
-//                        job.collect { appRecipe -> appRecipesList.add(appRecipe) }
-//                        Log.d(TAG_UPDATE_FEED, "in uploadFeed1 for flow appRecipesList size = ${appRecipesList.size}")
-//                    }
+                CoroutineScope(Default).launch {
                     val job = mainFeedFlow(dbRecipesFeed)
                     job.collect { value ->
                         withContext(Main) {
@@ -1244,14 +1238,6 @@ class AppDb {
                         }
                     }
                 }
-
-//                mainJob.invokeOnCompletion {
-//                    Log.d(TAG_UPDATE_FEED, "it = ${mainJob.isCancelled}")
-//                    Log.d(TAG_UPDATE_FEED, "in uploadFeed1 invokeOnCompletion appRecipesList size = ${appRecipesList.size}")
-//                    CoroutineScope(Main).launch {
-//                        postFeedRecipes(appRecipesList)
-//                    }
-//                }
             }
     }
 
@@ -1303,7 +1289,7 @@ class AppDb {
         // the code in ".addSnapshotListener {}" will execute in the future, first time when firestore
         // will finish downloading the collection to the phone,
         // and then each time when documents in the collection get changed
-        val liveQuery = referenceToCollection.addSnapshotListener { value, exception ->
+        referenceToCollection.addSnapshotListener { value, exception ->
             if (exception != null) {
                 // problems...
                 Log.d(TAG_APP_DB, "exception in snapshot :(" + exception.message)
