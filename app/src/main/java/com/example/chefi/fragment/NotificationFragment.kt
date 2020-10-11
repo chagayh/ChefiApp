@@ -36,6 +36,8 @@ class NotificationFragment : Fragment() {
     private var notifications: ArrayList<AppNotification>? = null
     private lateinit var myActivity: MainActivity
     private var appUser: DbUser? = null
+    private lateinit var notNotificationToShow: TextView
+    private lateinit var constraintLayoutProgressBar: androidx.constraintlayout.widget.ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,12 @@ class NotificationFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_notification, container, false)
+
+        notNotificationToShow = view.findViewById(R.id.noNotificationToShow)
+        constraintLayoutProgressBar = view.findViewById(R.id.constrainLayoutProgressBar)
+        notNotificationToShow.visibility = View.GONE
+        constraintLayoutProgressBar.visibility = View.VISIBLE
+
         myActivity = activity as MainActivity
         myActivity.setNotificationBadge(0)
         appUser = appContext.getCurrUser()
@@ -62,10 +70,22 @@ class NotificationFragment : Fragment() {
     private fun setNotificationObserver() {
         LiveDataHolder.getNotificationsLiveData().observe(viewLifecycleOwner,
             Observer { value ->
+                notNotificationToShow.visibility = View.GONE
+                constraintLayoutProgressBar.visibility = View.VISIBLE
                 val content = value.getContentIfNotHandled()
-                if (content != null){
-                    notifications = ArrayList(content)
-                    notificationAdapter.setItems(notifications)
+                if (content != null) {
+                    if (content.size == 0) {
+                        notNotificationToShow.visibility = View.VISIBLE
+                        constraintLayoutProgressBar.visibility = View.GONE
+                    } else {
+                        notNotificationToShow.visibility = View.GONE
+                        constraintLayoutProgressBar.visibility = View.GONE
+                        notifications = ArrayList(content)
+                        notificationAdapter.setItems(notifications)
+                    }
+                } else {
+                    notNotificationToShow.visibility = View.VISIBLE
+                    constraintLayoutProgressBar.visibility = View.GONE
                 }
             })
     }

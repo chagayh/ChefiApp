@@ -512,8 +512,6 @@ class AppDb {
 
     fun deleteNotification(appNotificationItem: AppNotification) {
         Log.d("deleteNotification", "app notification uid = ${appNotificationItem.uid}")
-        val notification = userAppNotification?.find { it.uid == appNotificationItem.uid }
-        userAppNotification?.remove(notification)
         val notificationRef = appNotificationItem.uid?.let {
             firestore
                 .collection(Chefi.getCon().getString(R.string.notificationsCollection))
@@ -521,6 +519,9 @@ class AppDb {
         }
         if (notificationRef != null) {
             if (currDbUser?.notifications?.contains(notificationRef)!!) {
+                val notification = userAppNotification?.find { it.uid == appNotificationItem.uid }
+                userAppNotification?.remove(notification)
+
                 currDbUser?.notifications?.remove(notificationRef)
                 updateUserInUsersCollection(currDbUser)
                 notificationRef.delete()
@@ -1328,9 +1329,13 @@ class AppDb {
                         .document(it)
                 }
                 if (dbNotification.destinationRef == currRef) {
-                    val dbNot = userAppNotification?.find { it.uid == dbNotification.uid }
-                    Log.d("queryNotification", "dbNot uid = ${dbNot?.uid}")
+                    val dbNot = userAppNotification?.find {
+                        Log.d("queryNotification", "dbNotification uid = ${dbNotification.uid}, it.uid = ${it.uid}")
+                        it.uid == dbNotification.uid
+                        }
                     if (dbNot == null) {
+                        Log.d("queryNotification", "KASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+                        Log.d("queryNotification", "dbNot uid = ${dbNot?.uid}")
                         dbNotificationItemList.add(dbNotification)
                     }
                 }
@@ -1340,6 +1345,7 @@ class AppDb {
 
         referenceToCollection.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
+                Log.d("queryNotification", "task.isSuccessful KASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSssss")
                 Log.d("queryNotification", "task.isSuccessful, userDbNotificationItem size = ${userDbNotificationItem.size}")
                 val dbNotificationItemList = ArrayList<DbNotificationItem>()
                 for (notification in userDbNotificationItem) {
@@ -1351,8 +1357,9 @@ class AppDb {
 //                    Log.d("queryNotification", "currDbUser?.myReference uid = $currRef")
                     if (notification.destinationRef == currRef) {
                         val dbNot = userAppNotification?.find { it.uid == notification.uid }
-                        Log.d("queryNotification", "dbNot uid = ${dbNot?.uid}")
                         if (dbNot == null) {
+                            Log.d("queryNotification", "in SUCCESS KASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+                            Log.d("queryNotification", "dbNot uid = ${dbNot?.uid}")
                             dbNotificationItemList.add(notification)
                         }
                     }
