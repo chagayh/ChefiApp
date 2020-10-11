@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
     private lateinit var notificationBadge: BadgeDrawable
     private var tts: TextToSpeech? = null
     private var ttsFlag: Boolean = false
+    private var firstLogin: Boolean = true
 
     companion object{
         // TAGS
@@ -91,8 +92,10 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         LiveDataHolder.getNotificationIntLiveData().observe(this,
             Observer { value ->
                 val content = value.getContentIfNotHandled()
-                if (content != null){
+                if (content != null && !firstLogin){
                     setNotificationBadge(content)
+                } else {
+                    firstLogin = false
                 }
             })
     }

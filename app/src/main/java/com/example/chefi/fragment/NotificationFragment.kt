@@ -53,7 +53,19 @@ class NotificationFragment : Fragment() {
         Log.e("Notification", notifications?.size.toString())
         recyclerViewNotification.adapter = notificationAdapter
         recyclerViewNotification.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        setNotificationObserver()
         return view
+    }
+
+    private fun setNotificationObserver() {
+        LiveDataHolder.getNotificationsLiveData().observe(this,
+            Observer { value ->
+                val content = value.getContentIfNotHandled()
+                if (content != null){
+                    notifications = ArrayList(content)
+                    notificationAdapter.setItems(notifications)
+                }
+            })
     }
 
     override fun onResume() {

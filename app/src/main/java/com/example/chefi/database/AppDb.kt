@@ -508,7 +508,7 @@ class AppDb {
         }
     }
 
-    fun deleteNotification(appNotificationItem: AppNotification) {
+        fun deleteNotification(appNotificationItem: AppNotification) {
         val notification = userAppNotification?.find { it.uid == appNotificationItem.uid }
         userAppNotification?.remove(notification)
         val notificationRef = appNotificationItem.uid?.let {
@@ -521,6 +521,7 @@ class AppDb {
                 currDbUser?.notifications?.remove(notificationRef)
                 updateUserInUsersCollection(currDbUser)
             }
+            notificationRef.delete()
         } else {
             Log.e(TAG_APP_DB, "notification uid wrong = ${appNotificationItem.uid}")
         }
