@@ -172,7 +172,7 @@ class AppDb {
             val documentUser = firestore.collection(usersCollectionPath).document(userId)
             documentUser.get().addOnSuccessListener { documentSnapshot ->
                 val user = documentSnapshot.toObject<DbUser>()
-                Log.d(TAG_APP_DB, "user?.name = ${user?.name} in updateCurrentUser")
+                Log.d("initCurrentUserFields", "user?.name = ${user?.name} in updateCurrentUser")
                 if (user != null) {
                     currDbUser = user
                     dbUserFollowers = null
@@ -285,7 +285,8 @@ class AppDb {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Boolean
+        status: Boolean,
+        location: String?
     ) {
         val recipeCollectionPath = Chefi.getCon().getString(R.string.recipesCollection)
         val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
@@ -306,7 +307,8 @@ class AppDb {
             status = status,
             owner = userDocument,
             myReference = newDocument,
-            allowedUsers = ArrayList()
+            allowedUsers = ArrayList(),
+            location = location
         )
 
         val appRecipe = AppRecipe(
@@ -320,7 +322,8 @@ class AppDb {
             status = status,
             owner = currDbUser,
             myReference = newDocument,
-            allowedUsers = ArrayList()
+            allowedUsers = ArrayList(),
+            location = location
         )
         dbRecipe.allowedUsers?.add(userDocument)
         appRecipe.allowedUsers?.add(userDocument)
@@ -371,9 +374,9 @@ class AppDb {
         LiveDataHolder.getFeedMutableLiveData().value = ObserveWrapper(recipesList)
     }
 
-    private fun postNotificationInt(recipesList: ArrayList<AppRecipe>) {
-        Log.d("coUpload", "in postAppRecipes recipesList.size = ${recipesList.size}")
-        LiveDataHolder.getFeedMutableLiveData().value = ObserveWrapper(recipesList)
+    private fun postNotificationInt(num: Int) {
+        Log.d("notificationCounter", "in postNotificationInt num = $num")
+        LiveDataHolder.getNotificationIntMutableLiveData().value = ObserveWrapper(num)
     }
 
     private fun postUsersList(usersList: ArrayList<DbUser>) {
@@ -1154,7 +1157,8 @@ class AppDb {
                 recipeOwner,
                 dbRecipe.timestamp,
                 dbRecipe.myReference,
-                dbRecipe.allowedUsers
+                dbRecipe.allowedUsers,
+                dbRecipe.location
             )
             Log.d("flow", "comments size = ${commentsList.size}, owner = ${recipeOwner?.uid}")
             emit(appRecipe)
@@ -1217,6 +1221,21 @@ class AppDb {
             }
     }
 
+    private fun updateLocalAppNotificationList(dbNotificationItemList: ArrayList<DbNotificationItem>, counter: Int) {
+        val mainJob = CoroutineScope(IO).launch {
+            for (notification in dbNotificationItemList) {
+                val job = buildNotificationFlow(notification)
+                job.collect { appNot -> userAppNotification?.add(appNot) }
+            }
+        }
+        mainJob.invokeOnCompletion {
+            CoroutineScope(Main).launch {
+                userAppNotification?.sortByDescending { it.timestamp }
+                postNotificationInt(counter)
+            }
+        }
+    }
+
     // live Query
 
     // after calling this method, there will be a live query that firestore will trigger
@@ -1267,8 +1286,15 @@ class AppDb {
         referenceToCollection.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("notificationQuery", "task.isSuccessful")
-//                LiveDataHolder.getNotificationIntMutableLiveData()
-//                loadOwnersToNotifications(userDbNotificationItem)
+                var counter = 0
+                val dbNotificationItemList = ArrayList<DbNotificationItem>()
+                for (notification in userDbNotificationItem) {
+                    if (notification.destinationRef == currDbUser?.myReference) {
+                        counter += 1
+                    }
+                    dbNotificationItemList.add(notification)
+                }
+                updateLocalAppNotificationList(dbNotificationItemList, counter)
             }
         }
 

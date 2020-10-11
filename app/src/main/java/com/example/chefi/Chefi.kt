@@ -8,7 +8,6 @@ import android.webkit.MimeTypeMap
 import androidx.work.*
 import com.example.chefi.database.*
 import com.example.chefi.workers.AddRecipeWorker
-import com.example.chefi.workers.UpdateFollowersFeedWorker
 import com.example.chefi.workers.UploadImageWorker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -103,28 +102,10 @@ class Chefi : Application() {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Boolean
+        status: Boolean,
+        location: String?
     ) {
-        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status)
-    }
-
-    fun addWorkerUpdateFeedToFollowers(type: String, recipeId: String) {
-        val workId = UUID.randomUUID()
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val inputData = Data.Builder()
-            .putString("type", type)
-            .putString("recipeUid", recipeId)
-            .build()
-        val oneTimeWorkRequest = OneTimeWorkRequest
-            .Builder(UpdateFollowersFeedWorker::class.java)
-            .setConstraints(constraints)
-            .setInputData(inputData)
-            .addTag(workId.toString())
-            .build()
-        WorkManager.getInstance(this)
-            .enqueue(oneTimeWorkRequest)
+        appDb.addRecipeToRecipesCollection(recipeName, imageUrl, direction, ingredients, status, location)
     }
 
     fun addRecipe(
@@ -132,7 +113,8 @@ class Chefi : Application() {
         imageUrl: String?,
         direction: ArrayList<String>?,
         ingredients: ArrayList<String>?,
-        status: Boolean
+        status: Boolean,
+        location: String?
     ) : UUID {
         val workId = UUID.randomUUID()
         val constraints = Constraints.Builder()
@@ -141,6 +123,7 @@ class Chefi : Application() {
         val inputData = Data.Builder()
             .putString(getString(R.string.keyRecipeName), name)
             .putString(getString(R.string.keyRecipeImageUrl), imageUrl)
+            .putString(getString(R.string.keyRecipeLocation), location)
             .putString(
                 getString(R.string.keyRecipeTimeStamp),
                 DateFormat.getDateTimeInstance().format(Date())

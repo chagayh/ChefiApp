@@ -32,6 +32,7 @@ class NotificationFragment : Fragment() {
     private lateinit var recyclerViewNotification: RecyclerView
     private lateinit var notificationAdapter: NotificationAdapter
     private var notifications: ArrayList<AppNotification>? = null
+    private lateinit var myActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,28 +44,16 @@ class NotificationFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_notification, container, false)
-        val myActivity = activity as MainActivity
+        myActivity = activity as MainActivity
         myActivity.setNotificationBadge(0)
         recyclerViewNotification = view.findViewById(R.id.recyclerViewNotification)
         notificationAdapter = NotificationAdapter(view)
         // TODO - get items from chagay
 
         Log.e("Notification", notifications?.size.toString())
-        setNotificationBadgeObserver()
         recyclerViewNotification.adapter = notificationAdapter
         recyclerViewNotification.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         return view
-    }
-
-    private fun setNotificationBadgeObserver() {
-        LiveDataHolder.getNotificationsLiveData().observe(viewLifecycleOwner,
-            Observer { value ->
-                val content = value.getContentIfNotHandled()
-                if (content != null){
-                    notifications = ArrayList(content)
-                    notificationAdapter.setItems(notifications)
-                }
-        })
     }
 
     override fun onResume() {

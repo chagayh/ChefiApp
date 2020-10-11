@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import android.speech.tts.TextToSpeech
 import androidx.navigation.findNavController
@@ -48,8 +47,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         )
         tts = TextToSpeech(this, this)
         tts?.setSpeechRate(0.6F)
-        setObserver()
 
+
+//        setUserObserver()
+
+        setNotificationBadgeObserver()
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         val navController = findNavController(R.id.navHostFragment)
         bottomNavigationView.setupWithNavController(navController)
@@ -57,9 +59,13 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         val notificationItemId = bottomMenu.getItem(3).itemId
         notificationBadge = bottomNavigationView.getOrCreateBadge(notificationItemId)
         notificationBadge.isVisible = false
+        val user = appContext.getCurrUser()
+        if (user?.lastSeenNotification != null) {
+            setNotificationBadge(user.lastSeenNotification!!)
+        }
     }
 
-    private fun setObserver() {
+    private fun setUserObserver() {
         // data class User observer
         val observer = Observer<ObserveWrapper<DbUser>> { value ->
             val content = value.getContentIfNotHandled()
@@ -79,6 +85,16 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
             }
         }
         LiveDataHolder.getUserLiveData().observe(this, observer)
+    }
+
+    private fun setNotificationBadgeObserver() {
+        LiveDataHolder.getNotificationIntLiveData().observe(this,
+            Observer { value ->
+                val content = value.getContentIfNotHandled()
+                if (content != null){
+                    setNotificationBadge(content)
+                }
+            })
     }
 
     fun setNotificationBadge(num: Int) {

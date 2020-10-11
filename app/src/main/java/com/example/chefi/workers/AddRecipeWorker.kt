@@ -45,13 +45,15 @@ class AddRecipeWorker(context: Context, workerParams: WorkerParameters)
         val recipeIngredients = Gson().fromJson<ArrayList<String>>(recipeIngredientsAsString, listType)
         val recipeImageUrl = inputData.getString(appContext.getString(R.string.keyRecipeImageUrl))
         val recipeName = inputData.getString(appContext.getString(R.string.keyRecipeName))
+        val location = inputData.getString(appContext.getString(R.string.keyRecipeLocation))
         val recipeStatus = inputData.getBoolean(appContext.getString(R.string.keyRecipeStatus), false)
 
         appContext.addRecipeToDb(recipeName=recipeName,
                                  imageUrl=recipeImageUrl,
                                  direction=recipeDirections,
                                  ingredients=recipeIngredients,
-                                 status=recipeStatus)
+                                 status=recipeStatus,
+                                 location=location)
 
         return future
     }

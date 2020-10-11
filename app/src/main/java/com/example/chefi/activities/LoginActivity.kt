@@ -4,9 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.chefi.*
 import com.example.chefi.database.AppRecipe
+import com.example.chefi.database.DbUser
 import com.example.chefi.fragment.*
 import com.google.firebase.auth.FirebaseAuth
 
@@ -26,6 +28,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         checkUserConnection()
         setContentView(R.layout.activity_login)
+        setUserObserver()
         this.supportFragmentManager
             .beginTransaction()
             .replace(R.id.user_email_frame, UserEmailFragment())
@@ -62,14 +65,32 @@ class LoginActivity : AppCompatActivity() {
             Log.d(TAG_LOGIN_ACTIVITY, "in LoginActivity usr.email = ${user?.email}")
             if (user != null) {
                 Log.d(TAG_LOGIN_ACTIVITY, "in LoginActivity checkUser")
+            }
+        }
+        appContext.getFirebaseAuth()
+            .addAuthStateListener(authStateListener)
+    }
 
+    private fun setUserObserver() {
+        // data class User observer
+        val observer = Observer<ObserveWrapper<DbUser>> { value ->
+            val content = value.getContentIfNotHandled()
+            if (content == null){
+                Log.d("LoginActivity", "null user, live data")
+            } else {
+                Toast.makeText(this, "@${content.userName} was connected", Toast.LENGTH_LONG)
+                    .show()
+                appContext.loadRecipes(null)
+                appContext.loadFavorites()
+                appContext.loadFollowers(null)
+                appContext.loadFollowing(null)
+                appContext.loadNotifications()
                 val appIntent = Intent(this, MainActivity::class.java)
                 appIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 startActivity(appIntent)
                 finish()
             }
         }
-        appContext.getFirebaseAuth()
-            .addAuthStateListener(authStateListener)
+        LiveDataHolder.getUserLiveData().observe(this, observer)
     }
 }

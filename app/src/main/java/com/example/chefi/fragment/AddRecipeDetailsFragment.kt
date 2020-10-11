@@ -110,7 +110,8 @@ class AddRecipeDetailsFragment : Fragment() {
                 imageUrl,
                 convertViewArrayToStringsArray(false),
                 convertViewArrayToStringsArray(true),
-                switchStatus.isChecked
+                switchStatus.isChecked,
+                locationInfoAsString
             )
             setWorkObserver(workId)
         }

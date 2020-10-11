@@ -55,6 +55,7 @@
     <string name="keyRecipesData">recipesArray</string>
     <string name="keyRecipeTitle">recipeTitle</string>
     <string name="keyRecipeName">recipeName</string>
+    <string name="keyRecipeLocation">recipeLocation</string>
     <string name="keyRecipeIngredients">recipeIngredients</string>
     <string name="keyRecipeStatus">recipeStatus</string>
     <string name="keyRecipeImageUrl">recipeImageUrl</string>
