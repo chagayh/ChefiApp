@@ -80,7 +80,8 @@ class AppDb {
 
     fun initLastSeenNotification() {
         currDbUser?.lastSeenNotification = 0
-        updateUserInUsersCollection(currDbUser)
+        currDbUser?.myReference
+            ?.update("lastSeenNotification", 0)
     }
 
     fun addToRecipePermission(appRecipe: AppRecipe, userRef: DocumentReference) {
@@ -385,6 +386,7 @@ class AppDb {
     }
 
     private fun postNotificationList(notificationList: ArrayList<AppNotification>) {
+        Log.d("setNotificationObserver", "content size = ${notificationList.size}")
 //        LiveDataHolder.getNotificationsMutableLiveData().postValue(notificationList)
         LiveDataHolder.getNotificationsMutableLiveData().value = ObserveWrapper(notificationList)
     }
@@ -508,7 +510,8 @@ class AppDb {
         }
     }
 
-        fun deleteNotification(appNotificationItem: AppNotification) {
+    fun deleteNotification(appNotificationItem: AppNotification) {
+        Log.d("deleteNotification", "app notification uid = ${appNotificationItem.uid}")
         val notification = userAppNotification?.find { it.uid == appNotificationItem.uid }
         userAppNotification?.remove(notification)
         val notificationRef = appNotificationItem.uid?.let {
@@ -520,8 +523,8 @@ class AppDb {
             if (currDbUser?.notifications?.contains(notificationRef)!!) {
                 currDbUser?.notifications?.remove(notificationRef)
                 updateUserInUsersCollection(currDbUser)
+                notificationRef.delete()
             }
-            notificationRef.delete()
         } else {
             Log.e(TAG_APP_DB, "notification uid wrong = ${appNotificationItem.uid}")
         }
@@ -562,7 +565,7 @@ class AppDb {
                         if (user?.lastSeenNotification == null) {
                             user?.lastSeenNotification = 1
                         } else {
-                            user.lastSeenNotification = user.lastSeenNotification!! + 1 
+                            user.lastSeenNotification = user.lastSeenNotification!! + 1
                             Log.d("addNotification", "in else lastSeenNotification = ${user.lastSeenNotification}")
                         }
                         user?.notifications?.add(notificationRef)
@@ -684,7 +687,8 @@ class AppDb {
                         CoroutineScope(Main).launch {
                             appNotificationsList.sortByDescending { it.timestamp }
                             userAppNotification = appNotificationsList
-                            postNotificationList(appNotificationsList)
+                            postNotificationList(ArrayList(appNotificationsList))
+                            createNotificationsLiveQuery()
                         }
                     }
                 }
@@ -851,8 +855,6 @@ class AppDb {
     }
 
     fun updateRecipeFields(appRecipe: AppRecipe, fieldName: String, content: String?) {
-        val recipeFromList = userAppRecipes?.find { it.uid == appRecipe.uid }
-        recipeFromList?.likes = recipeFromList?.likes?.plus(1)
         // TODO - updates options - like, comment per recipe
         val recipeId = appRecipe.uid
         firestore.collection(Chefi.getCon().getString(R.string.recipesCollection))
@@ -861,8 +863,6 @@ class AppDb {
             .addOnSuccessListener { documentSnapShot ->
                 val recipe = documentSnapShot.toObject<DbRecipe>()
                 if (recipe != null) {
-                    val appRecipeFromList = userAppRecipes?.find { it.uid == recipe.uid }
-                    appRecipeFromList?.likes = appRecipe.likes
                     when (fieldName) {
                         "likes" -> recipe.likes = appRecipe.likes
                     }
@@ -1228,6 +1228,9 @@ class AppDb {
         val mainJob = CoroutineScope(IO).launch {
             for (notification in dbNotificationItemList) {
                 val job = buildNotificationFlow(notification)
+                if (userAppNotification == null) {
+                    userAppNotification = ArrayList()
+                }
                 job.collect { appNot -> userAppNotification?.add(appNot) }
             }
         }
@@ -1235,6 +1238,9 @@ class AppDb {
             CoroutineScope(Main).launch {
                 userAppNotification?.sortByDescending { it.timestamp }
                 postNotificationInt(counter)
+                if (userAppNotification != null) {
+                    postNotificationList(userAppNotification!!)
+                }
             }
         }
     }
@@ -1293,9 +1299,15 @@ class AppDb {
                 var counter = 0
                 val dbNotificationItemList = ArrayList<DbNotificationItem>()
                 for (notification in userDbNotificationItem) {
-                    Log.d("queryNotification", "notification uid = ${notification.uid}")
-                    if (notification.destinationRef == currDbUser?.myReference) {
+                    val currRef = auth.currentUser?.uid?.let {
+                        firestore
+                            .collection(Chefi.getCon().getString(R.string.usersCollection))
+                            .document(it)
+                    }
+//                    Log.d("queryNotification", "currDbUser?.myReference uid = $currRef")
+                    if (notification.destinationRef == currRef) {
                         val dbNot = userAppNotification?.find { it.uid == notification.uid }
+                        Log.d("queryNotification", "dbNot uid = ${dbNot?.uid}")
                         if (dbNot == null) {
                             dbNotificationItemList.add(notification)
                             counter += 1

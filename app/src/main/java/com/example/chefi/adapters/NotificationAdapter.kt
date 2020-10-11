@@ -188,7 +188,7 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
             }
         }
         holder.linearLayoutOverall.setOnLongClickListener(){
-//            Log.e("Claire3", "KAS")
+            Log.e("notificationDelete", "in setOnLongClickListener")
             _items.remove(item)
             appContext.deleteNotification(item)
             notifyDataSetChanged()
