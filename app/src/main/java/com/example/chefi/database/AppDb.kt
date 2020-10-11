@@ -546,7 +546,7 @@ class AppDb {
                 recipeRef,
                 offeredRecipeRef,
                 type)
-        
+
         userDestRef
             .get()
             .addOnSuccessListener { documentSnapShot ->
@@ -560,6 +560,7 @@ class AppDb {
                 Log.d("addNotification", "lastSeenNotification = ${user?.lastSeenNotification}")
                 if (user?.lastSeenNotification == null) {
                     user?.lastSeenNotification = 1
+
                 } else {
                     user.lastSeenNotification = user.lastSeenNotification!!.plus(1)
                     Log.d("addNotification", "in else lastSeenNotification = ${user.lastSeenNotification}")
@@ -1263,6 +1264,12 @@ class AppDb {
         mainJob.invokeOnCompletion {
             CoroutineScope(Main).launch {
                 userAppNotification?.sortByDescending { it.timestamp }
+                val userSnapShot = firestore
+                    .collection(Chefi.getCon().getString(R.string.usersCollection))
+                    .document(currDbUser?.uid!!)
+                    .get()
+                    .await()
+                currDbUser = userSnapShot.toObject<DbUser>()
                 postNotificationInt(currDbUser?.lastSeenNotification!!)
                 if (userAppNotification != null) {
                     postNotificationList(userAppNotification!!)
