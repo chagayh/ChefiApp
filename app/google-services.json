@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "869501740673",
-    "firebase_url": "https://chefi-24c01.firebaseio.com",
-    "project_id": "chefi-24c01",
-    "storage_bucket": "chefi-24c01.appspot.com"
+    "project_number": "483687168948",
+    "firebase_url": "https://chefi-180f0.firebaseio.com",
+    "project_id": "chefi-180f0",
+    "storage_bucket": "chefi-180f0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:869501740673:android:3e3b481f0fe359abdc0f80",
+        "mobilesdk_app_id": "1:483687168948:android:8c47093b35bd411712d0e1",
         "android_client_info": {
           "package_name": "com.postpc.chefi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "869501740673-qote6fhs6ep7eatjct0d9q5min8mogqs.apps.googleusercontent.com",
+          "client_id": "483687168948-2fvk7c5gbncfbohlaa1k37n63c4vmndu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBxWxBATi3ApG0-SFaT1OeXFglQjR_u8UY"
+          "current_key": "AIzaSyAYwhZY2MaHUjzQ-MkMs_860_l_jr-jBSc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "869501740673-qote6fhs6ep7eatjct0d9q5min8mogqs.apps.googleusercontent.com",
+              "client_id": "483687168948-2fvk7c5gbncfbohlaa1k37n63c4vmndu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
