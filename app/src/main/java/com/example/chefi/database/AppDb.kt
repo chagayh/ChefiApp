@@ -400,18 +400,21 @@ class AppDb {
     fun deleteRecipe(recipe: AppRecipe) {
         // delete from local array
         Log.d("favoritesBug", "in deleteRecipe in appDb recipe uid = ${recipe.uid}")
-        if (userAppRecipes?.contains(recipe)!!) {
-            userAppRecipes?.remove(recipe)
+        if (userAppRecipes != null) {
+            if (userAppRecipes?.contains(recipe)!!) {
+                userAppRecipes?.remove(recipe)
 
-        } else {
-            Log.d(TAG_APP_DB, "in deleteRecipe, local recipe list not contains")
+            } else {
+                Log.d(TAG_APP_DB, "in deleteRecipe, local recipe list not contains")
+            }
         }
         // delete from storage and data base
         val imageUrl = recipe.imageUrl
-        if (currDbUser?.favorites?.contains(recipe.myReference)!!) {
-            deleteRecipeFromFavorites(recipe)
+        if (currDbUser?.favorites != null) {
+            if (currDbUser?.favorites?.contains(recipe.myReference)!!) {
+                deleteRecipeFromFavorites(recipe)
+            }
         }
-        deleteRecipeFromFavorites(recipe)
         deleteImageFromStorage(imageUrl, recipe)
     }
 
