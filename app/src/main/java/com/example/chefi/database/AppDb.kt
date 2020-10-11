@@ -572,6 +572,7 @@ class AppDb {
                         }
                         Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
                         updateUserInUsersCollection(user)
+                        Log.d("addNotification", "user?.notifications size = ${user?.notifications?.size}")
                     }
             }
     }
