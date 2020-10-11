@@ -70,8 +70,8 @@ class NotificationFragment : Fragment() {
     private fun setNotificationObserver() {
         LiveDataHolder.getNotificationsLiveData().observe(viewLifecycleOwner,
             Observer { value ->
-                notNotificationToShow.visibility = View.GONE
-                constraintLayoutProgressBar.visibility = View.VISIBLE
+//                notNotificationToShow.visibility = View.GONE
+//                constraintLayoutProgressBar.visibility = View.VISIBLE
                 val content = value.getContentIfNotHandled()
                 if (content != null) {
                     if (content.size == 0) {

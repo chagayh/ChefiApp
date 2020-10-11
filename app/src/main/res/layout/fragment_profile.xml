@@ -33,11 +33,12 @@
         android:paddingTop="16dp">
 
         <ImageView
-            android:visibility="gone"
+            android:visibility="visible"
             android:id="@+id/backButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="10dp"
+
             android:src="@drawable/ic_arrow_back_24dp" />
 
         <Space
