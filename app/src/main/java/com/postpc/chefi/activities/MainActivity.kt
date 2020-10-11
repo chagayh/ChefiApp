@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
             "in onCreate of mainActivity user's name =${appContext.getCurrUser()?.name}"
         )
         tts = TextToSpeech(this, this)
-        tts?.setSpeechRate(0.6F)
+        tts?.setSpeechRate(0.75F)
 
 
 //        setUserObserver()
