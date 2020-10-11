@@ -133,7 +133,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         }
         holder.postDescription.text = item.description
         val likesNum = if(item.likes != null) item.likes  else 0
-        holder.likesTitle.text = String.format(holder.likesTitle.text.toString(), likesNum)
+        holder.likesTitle.text = String.format(likeMsg, likesNum)
         if (item.status != true) holder.forTrade.visibility = View.GONE
         if (appUser.favorites != null){
             if(appUser.favorites?.contains(item.myReference)!!) holder.favoritesImage.visibility = View.VISIBLE

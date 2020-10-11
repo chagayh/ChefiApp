@@ -15,7 +15,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.navigation.findNavController
@@ -38,6 +40,9 @@ class UploadPicFragment : Fragment() {
     private lateinit var cameraBtn: TextView
     private lateinit var galleryBtn: TextView
 
+    private lateinit var progressBar: ConstraintLayout
+    private lateinit var mainBts: LinearLayout
+
     private val REQUEST_PICK_IMAGE_FROM_GALLERY = 3242
     private val REQUEST_IMAGE_FROM_CAMERA = 44
     private val REQUEST_CODE_PERMISSION_GENERAL = 2034
@@ -55,6 +60,8 @@ class UploadPicFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_upload_pic, container, false)
         cameraBtn = view.findViewById(R.id.cameraBtn)
         galleryBtn = view.findViewById(R.id.galleryBtn)
+        progressBar = view.findViewById(R.id.constrainLayoutProgressBar)
+        mainBts = view.findViewById(R.id.mainLinearLayoutAdd)
         setButtons()
         checkForPermissions()
         return view
@@ -216,5 +223,7 @@ class UploadPicFragment : Fragment() {
                     view?.findNavController()?.popBackStack()
                 }
             })
+        mainBts.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
     }
 }

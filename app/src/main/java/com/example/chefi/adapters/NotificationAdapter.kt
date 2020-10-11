@@ -30,15 +30,23 @@ class NotificationAdapter(private val fragmentView: View): RecyclerView.Adapter<
 
     fun setItems(items: ArrayList<AppNotification>?){
         val notNotificationToShow: TextView = fragmentView.findViewById(R.id.noNotificationToShow)
+        val constraintLayoutProgressBar: androidx.constraintlayout.widget.ConstraintLayout = fragmentView.findViewById(R.id.constrainLayoutProgressBar)
+
         if (items != null){
+            Log.e("visibility", constraintLayoutProgressBar.visibility.toString())
+            constraintLayoutProgressBar.visibility = View.VISIBLE
             if (items.size > 0){
                 notNotificationToShow.visibility = View.GONE
+            }else{
+                notNotificationToShow.visibility = View.VISIBLE
+                constraintLayoutProgressBar.visibility = View.GONE
             }
             _items.clear()
             _items.addAll(items)
             notifyDataSetChanged()
         }else{
             notNotificationToShow.visibility = View.VISIBLE
+            constraintLayoutProgressBar.visibility = View.GONE
         }
     }
 

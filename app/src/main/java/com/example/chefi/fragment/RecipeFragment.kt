@@ -117,7 +117,7 @@ class RecipeFragment : Fragment() {
         }
         postDescription.text = item.description
         val likesNum = if(item.likes != null) item.likes  else 0
-        likesTitle.text = String.format(likesTitle.text.toString(), likesNum)
+        likesTitle.text = String.format(likeMsg, likesNum)
         if (item.status != true) forTrade.visibility = View.GONE
         Log.e("Bug", appUser.toString())
         if (appUser.favorites != null){

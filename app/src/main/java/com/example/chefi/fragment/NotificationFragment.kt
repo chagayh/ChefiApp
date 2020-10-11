@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import com.example.chefi.activities.MainActivity
 import com.example.chefi.adapters.FollowersAdapter
 import com.example.chefi.adapters.NotificationAdapter
 import com.example.chefi.database.AppNotification
+import com.example.chefi.database.DbUser
 
 
 /**
@@ -33,6 +35,7 @@ class NotificationFragment : Fragment() {
     private lateinit var notificationAdapter: NotificationAdapter
     private var notifications: ArrayList<AppNotification>? = null
     private lateinit var myActivity: MainActivity
+    private var appUser: DbUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +49,9 @@ class NotificationFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_notification, container, false)
         myActivity = activity as MainActivity
         myActivity.setNotificationBadge(0)
+        appUser = appContext.getCurrUser()
         recyclerViewNotification = view.findViewById(R.id.recyclerViewNotification)
         notificationAdapter = NotificationAdapter(view)
-        // TODO - get items from chagay
-
         Log.e("Notification", notifications?.size.toString())
         recyclerViewNotification.adapter = notificationAdapter
         recyclerViewNotification.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
