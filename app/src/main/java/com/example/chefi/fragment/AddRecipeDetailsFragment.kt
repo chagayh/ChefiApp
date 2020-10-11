@@ -230,6 +230,7 @@ class AddRecipeDetailsFragment : Fragment() {
                         value.outputData.getString(appContext.getString(R.string.keyUid))
                     val ingredientsAsJson =
                         value.outputData.getString(appContext.getString(R.string.keyUid))
+                    val location = value.outputData.getString(appContext.getString(R.string.keyRecipeLocation))
                     val status = value.outputData.getBoolean(
                         appContext.getString(R.string.keyStatus),
                         false
@@ -258,7 +259,8 @@ class AddRecipeDetailsFragment : Fragment() {
                         timestamp = gson.fromJson(
                             timeStampAsJson,
                             dateType
-                        )
+                        ),
+                        location = location
                     )
 
 //                    val recipeAsJson = value.outputData.getString(appContext.getString(R.string.keyRecipeType))
