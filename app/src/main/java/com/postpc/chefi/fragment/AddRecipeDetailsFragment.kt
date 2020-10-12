@@ -60,6 +60,7 @@ class AddRecipeDetailsFragment : Fragment() {
     private lateinit var user: DbUser
     private lateinit var broadcastReceiver: BroadcastReceiver
     private val REQUEST_CODE_GPS_PERMISSIN = 778
+    private val ACCURACY = 700
     private var locationTracker : LocationTracker? = null
     private var locationInfo : LocationInfo? = null
     private var locationInfoAsString : String? = null
@@ -142,20 +143,23 @@ class AddRecipeDetailsFragment : Fragment() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 when (intent?.action) {
                     "tracker" -> {
-                        if(switchLocation.isChecked && (locationInfo?._latitude == null || locationInfo?._longitude == null)){
-                            switchLocation.isChecked = false
-                            Toast.makeText(activity, "Track location. Please try again.", Toast.LENGTH_LONG).show()
-                        }else{
-                            Log.d("tracker", "gps coor = $locationInfo")
-                            locationInfoAsString = locationInfo?._latitude?.let {
-                                locationInfo?._longitude?.let { it1 ->
-                                    convertLatiAndLongToLand(
-                                        it,
-                                        it1
-                                    )
+                        if(switchLocation.isChecked == true &&  locationInfo != null){
+                            if(locationInfo?._accuracy!! > ACCURACY){
+                                Toast.makeText(activity, "Track location. Please wait.", Toast.LENGTH_LONG).show()
+                            }else{
+                                Log.d("tracker", "gps coor = $locationInfo")
+                                locationInfoAsString = locationInfo?._latitude?.let {
+                                    locationInfo?._longitude?.let { it1 ->
+                                        convertLatiAndLongToLand(
+                                            it,
+                                            it1
+                                        )
+                                    }
                                 }
+                                locationTracker?.stopTracking()
                             }
-                            locationTracker?.stopTracking()
+                        }else{
+                            Toast.makeText(activity, "Track location is failed. Please try again.", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
