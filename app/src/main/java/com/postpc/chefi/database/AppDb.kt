@@ -6,7 +6,6 @@ https://github.com/firebase/snippets-android/blob/c2d8cfd95d996bd7c0c3e0bdf35a91
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.postpc.chefi.Chefi
@@ -47,16 +46,12 @@ class AppDb {
     private val storageRef = FirebaseStorage.getInstance().getReference("uploads")
 
     // Users fields
-
     private var currDbUser: DbUser? = null
     private var dbUserFollowing: ArrayList<DbUser>? = null
     private var dbUserFollowers: ArrayList<DbUser>? = null
     private var unseenNotification: Int = 0
-    private var lastVisible: DocumentSnapshot? = null
-
 
     // App Objects
-
     private var userAppRecipes: ArrayList<AppRecipe>? = null
     private var userAppFavorites: ArrayList<AppRecipe>? = null
     private var userAppNotification: ArrayList<AppNotification>? = null
@@ -422,11 +417,14 @@ class AppDb {
         val commentRef = firestore
             .collection(Chefi.getCon().getString(R.string.commentsCollection))
             .document(comment.uid!!)
-        if (appRecipe.comments?.contains(commentRef)!!) {
-            appRecipe.comments?.remove(commentRef)
-        } else {
-            Log.w(TAG_APP_DB, "in deleteRecipe appRecipe.comments does not contain the comment")
+        if (appRecipe.comments != null) {
+            if (appRecipe.comments?.contains(commentRef)!!) {
+                appRecipe.comments?.remove(commentRef)
+            } else {
+                Log.w(TAG_APP_DB, "in deleteRecipe appRecipe.comments does not contain the comment")
+            }
         }
+
         firestore
             .collection(Chefi.getCon().getString(R.string.recipesCollection))
             .document(appRecipe.uid!!)
@@ -660,10 +658,8 @@ class AppDb {
                 }
                 currDbUser?.favorites!!.add(recipeRef)
                 updateUserInUsersCollection(currDbUser)
-
                 userAppFavorites!!.add(appRecipe)
             }
-
         }
     }
 
@@ -986,28 +982,49 @@ class AppDb {
         }
     }
 
-    fun fireBaseSearchUsers(searchText: String) {
+    fun firebaseSearchUsers(searchText: String) {
         val usersCollectionPath = Chefi.getCon().getString(R.string.usersCollection)
         val usersRef = firestore.collection(usersCollectionPath)
-        val query = usersRef
-            .whereEqualTo(
-                "userName_lowerCase",
-                searchText.toLowerCase(Locale.ROOT)
-            )
+        val userNameQuery = usersRef
+            .orderBy("userName_lowerCase")
+            .startAt(searchText.toLowerCase(Locale.ROOT))
+            .endAt(searchText.toLowerCase(Locale.ROOT) + "\uf8ff")
 
-        query.get()
-            .addOnSuccessListener { documents ->
-                if (documents != null) {
-                    val ansUsers = ArrayList<DbUser>()
-                    for (document in documents.documents) {
-                        val user = document.toObject<DbUser>()
-                        if (user != null) {
-                            ansUsers.add(user)
-                            Log.d(TAG_APP_DB, "userName = ${user.userName}")
+        val nameQuery = usersRef
+            .orderBy("name_lowerCase")
+            .startAt(searchText.toLowerCase(Locale.ROOT))
+            .endAt(searchText.toLowerCase(Locale.ROOT) + "\uf8ff")
+
+        userNameQuery.get()
+            .addOnSuccessListener { userNameSnapShot ->
+                nameQuery.get()
+                    .addOnSuccessListener { nameSnapShot ->
+                        val ansUsers = ArrayList<DbUser>()
+                        // load results by user name
+                        if (userNameSnapShot != null) {
+                            for (document in userNameSnapShot.documents) {
+                                val userByUserName = document.toObject<DbUser>()
+                                if (userByUserName != null) {
+                                    ansUsers.add(userByUserName)
+                                    Log.d("searchView", "user name load in appDb userName = ${userByUserName.userName}")
+                                    Log.d(TAG_APP_DB, "userName = ${userByUserName.userName}")
+                                }
+                            }
                         }
+                        // load results by name
+                        if (nameSnapShot != null) {
+                            for (document in nameSnapShot.documents) {
+                                val userByName = document.toObject<DbUser>()
+                                Log.d("searchView", "name load in appDb userName = ${userByName?.userName}")
+                                if (userByName != null && !ansUsers.contains(userByName)) {
+                                    ansUsers.add(userByName)
+                                    Log.d("searchView", "in appDb userName = ${userByName.userName}")
+                                    Log.d(TAG_APP_DB, "userName = ${userByName.userName}")
+                                }
+                            }
+                        }
+                        postUsersList(ansUsers)
                     }
-                    postUsersList(ansUsers)
-                }
             }
     }
 

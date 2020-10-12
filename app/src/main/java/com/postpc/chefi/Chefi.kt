@@ -266,8 +266,8 @@ class Chefi : Application() {
         appDb.deleteNotification(appNotificationItem)
     }
 
-    fun fireBaseSearchUsers(searchText: String) {
-        appDb.fireBaseSearchUsers(searchText)
+    fun firebaseSearchUsers(searchText: String) {
+        appDb.firebaseSearchUsers(searchText)
     }
 
     fun isFollowedByMe(ref: DocumentReference): Boolean{

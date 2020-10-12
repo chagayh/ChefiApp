@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.Toast
@@ -30,7 +29,7 @@ class SearchFragment : Fragment() {
         get() = activity?.applicationContext as Chefi
 
     private lateinit var searchBtn: ImageButton
-    private lateinit var barEditText: EditText
+    private lateinit var barEditText: SearchView
     private val TAG_SEARCH_FRAGMENT: String = "searchFragment"
     private var usersList : ArrayList<DbUser>? = null
     private lateinit var recyclerViewSearch: RecyclerView
@@ -43,7 +42,7 @@ class SearchFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_search, container, false)
-        searchBtn = view.findViewById(R.id.searchBtn)
+//        searchBtn = view.findViewById(R.id.searchBtn)
         barEditText = view.findViewById(R.id.barEditText)
         setUsersObserver()
         setSearchBtn()
@@ -56,15 +55,30 @@ class SearchFragment : Fragment() {
     }
 
     private fun setSearchBtn() {
-        searchBtn.setOnClickListener {
-            val searchText = barEditText.text.toString()
-            if (searchText.trim().isEmpty()) {
-                Toast.makeText(activity, "Empty search bar", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                appContext.fireBaseSearchUsers(searchText)
+        barEditText.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return if (newText == null) {
+                    Toast.makeText(activity, "Empty search bar", Toast.LENGTH_SHORT)
+                        .show()
+                    false
+                } else {
+                    Log.d("searchView", "$newText")
+                    appContext.firebaseSearchUsers(newText)
+                    true
+                }
             }
-        }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return if (query != null && query.isEmpty()) {
+                    Toast.makeText(activity, "Empty search bar", Toast.LENGTH_SHORT)
+                        .show()
+                    return true
+                } else {
+                    false
+                }
+            }
+        })
     }
 
     private fun setUsersObserver() {
