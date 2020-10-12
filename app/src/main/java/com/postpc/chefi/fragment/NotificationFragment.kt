@@ -30,6 +30,7 @@ class NotificationFragment : Fragment() {
         get() = activity?.applicationContext as Chefi
 
     private lateinit var recyclerViewNotification: RecyclerView
+    private var loadNotificationActive: Boolean = true
     private lateinit var notificationAdapter: NotificationAdapter
     private var notifications: ArrayList<AppNotification>? = null
     private lateinit var myActivity: MainActivity
@@ -72,6 +73,7 @@ class NotificationFragment : Fragment() {
 //                constraintLayoutProgressBar.visibility = View.VISIBLE
                 val content = value.getContentIfNotHandled()
                 if (content != null) {
+                    loadNotificationActive = false
                     if (content.size == 0) {
                         notNotificationToShow.visibility = View.VISIBLE
                         constraintLayoutProgressBar.visibility = View.GONE
@@ -103,17 +105,20 @@ class NotificationFragment : Fragment() {
         super.onResume()
         Log.d("notResume", "onResume of Notification Fragment")
         notifications = appContext.getUserNotifications()
-        if (notifications != null) {
-            if (notifications?.size!! == 0) {
-                notNotificationToShow.visibility = View.VISIBLE
-                constraintLayoutProgressBar.visibility = View.GONE
-            } else {
-                notNotificationToShow.visibility = View.INVISIBLE
-                constraintLayoutProgressBar.visibility = View.GONE
+        if (!loadNotificationActive) {
+            if (notifications != null) {
+                Log.d("notification", "onResume notifications?.size = ${notifications?.size}")
+                if (notifications?.size != 0) {
+                    constraintLayoutProgressBar.visibility = View.GONE
+                    notNotificationToShow.visibility = View.INVISIBLE
+                } else {
+                    Log.d("notification", "onResume else notifications?.size = ${notifications?.size}")
+                    constraintLayoutProgressBar.visibility = View.GONE
+                    notNotificationToShow.visibility = View.VISIBLE
+                }
             }
         }
         Log.d("notResume", "onResume of Notification Fragment size = ${notifications?.size}")
         notificationAdapter.setItems(notifications)
     }
-
 }

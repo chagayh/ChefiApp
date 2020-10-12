@@ -157,7 +157,7 @@ class AppDb {
         dbUserFollowing = null
         userAppRecipes = null
         userAppFavorites = null
-        userAppNotification = null
+        userAppNotification = ArrayList()
     }
 
     private fun initCurrentUserFields() {
@@ -176,7 +176,7 @@ class AppDb {
 
                     userAppRecipes = null
                     userAppFavorites = null
-                    userAppNotification = null
+                    userAppNotification = ArrayList()
                     postUser(currDbUser)
                 } else {
                     Log.d("account", "user = null")
