@@ -225,15 +225,24 @@ class RecipeFragment : Fragment() {
         }
 
         recipeImage.setOnLongClickListener {
-            if(appUser.favorites == null || !appUser.favorites?.contains(appRecipe.myReference)!!) {
+            val item = appRecipe
+            if (appUser.favorites != null){
+                if(!appUser.favorites?.contains(item.myReference)!!) {
+                    appContext.addRecipeToFavorites(appRecipe)
+                    favoritesImage.visibility = View.VISIBLE
+                    Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
+                        .show()
+                }else{
+                    appContext.deleteRecipeFromFavorites(item)
+                    favoritesImage.visibility = View.GONE
+                }
+            }else{
                 appContext.addRecipeToFavorites(appRecipe)
                 favoritesImage.visibility = View.VISIBLE
                 Toast.makeText(it.context, "Recipe was added to favorites", Toast.LENGTH_LONG)
                     .show()
-            }else{
-                appContext.deleteRecipeFromFavorites(appRecipe)
-                favoritesImage.visibility = View.GONE
             }
+
             true
         }
 

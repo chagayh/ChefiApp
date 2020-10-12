@@ -32,6 +32,7 @@
             android:textSize="12sp"
             android:hint="Search by name"
             android:padding="10dp"
+            android:theme="@style/SCBSwitch"
             android:inputType="textPersonName"
             android:layout_weight="1"
             android:background="@drawable/circularbordersolid"/>
