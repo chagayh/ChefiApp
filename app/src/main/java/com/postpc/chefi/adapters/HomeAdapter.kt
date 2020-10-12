@@ -92,16 +92,6 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
 
     override fun onBindViewHolder(holder: HomeHolder, position: Int) {
         customizeComponents(holder, position)
-//        updateFeedRoutine(position)
-    }
-
-    private fun updateFeedRoutine(position: Int){
-        Log.e("Position", "$position")
-        if(position % 5 == 2){
-            appContext.uploadFeed()
-            LiveDataHolder.getFeedListLiveData().observe(viewLifecycleOwner, observer)
-            Log.e("Home fragment", _items.size.toString())
-        }
     }
 
     private fun customizeComponents(holder:HomeHolder, position: Int){
@@ -128,7 +118,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
                 .into(holder.recipeImage)
         }
         else{
-            holder.userImage.setImageResource(R.drawable.pasta3)
+            holder.userImage.setImageResource(R.drawable.defpp)
         }
         holder.postDescription.text = item.description
         val likesNum = if(item.likes != null) item.likes  else 0
