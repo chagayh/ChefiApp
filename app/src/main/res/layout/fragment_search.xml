@@ -32,7 +32,7 @@
             android:textSize="12sp"
             android:iconifiedByDefault="false"
             android:queryHint="Search by name"
-            android:hint="Search by name"
+            android:hint="Search by name or username"
             android:theme="@style/SCBSwitch"
             android:inputType="textPersonName"
             android:layout_weight="1"
