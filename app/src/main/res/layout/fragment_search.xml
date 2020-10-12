@@ -25,19 +25,19 @@
         android:ellipsize="end"
         android:maxLines="1">
 
-        <EditText
+        <SearchView
             android:id="@+id/barEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:hint="Search by name"
-            android:padding="10dp"
             android:theme="@style/SCBSwitch"
             android:inputType="textPersonName"
             android:layout_weight="1"
             android:background="@drawable/circularbordersolid"/>
 
         <ImageButton
+            android:visibility="gone"
             android:id="@+id/searchBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
