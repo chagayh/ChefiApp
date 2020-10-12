@@ -719,6 +719,8 @@ class AppDb {
                         }
                     }
                 }
+        } else {
+            postNotificationList(ArrayList())
         }
     }
 

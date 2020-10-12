@@ -76,22 +76,42 @@ class NotificationFragment : Fragment() {
                         notNotificationToShow.visibility = View.VISIBLE
                         constraintLayoutProgressBar.visibility = View.GONE
                     } else {
-                        notNotificationToShow.visibility = View.GONE
-                        constraintLayoutProgressBar.visibility = View.GONE
-                        notifications = ArrayList(content)
-                        notificationAdapter.setItems(notifications)
+                        if (content[0].destinationRef == appContext.getCurrUser()?.myReference) {
+                            notNotificationToShow.visibility = View.GONE
+                            constraintLayoutProgressBar.visibility = View.GONE
+                            notifications = ArrayList(content)
+                            notificationAdapter.setItems(notifications)
+                            printNotification(notifications!!)
+                        }
                     }
                 } else {
-                    notNotificationToShow.visibility = View.VISIBLE
-                    constraintLayoutProgressBar.visibility = View.GONE
+                    if (notifications != null && notifications?.size!! == 0) {
+                        notNotificationToShow.visibility = View.VISIBLE
+                        constraintLayoutProgressBar.visibility = View.GONE
+                    }
                 }
             })
+    }
+
+    private fun printNotification(notificationsL: ArrayList<AppNotification>) {
+        for (not in notificationsL) {
+            Log.d("printNotification", "in notification fragment not = ${not.uid}")
+        }
     }
 
     override fun onResume() {
         super.onResume()
         Log.d("notResume", "onResume of Notification Fragment")
         notifications = appContext.getUserNotifications()
+        if (notifications != null) {
+            if (notifications?.size!! == 0) {
+                notNotificationToShow.visibility = View.VISIBLE
+                constraintLayoutProgressBar.visibility = View.GONE
+            } else {
+                notNotificationToShow.visibility = View.INVISIBLE
+                constraintLayoutProgressBar.visibility = View.GONE
+            }
+        }
         Log.d("notResume", "onResume of Notification Fragment size = ${notifications?.size}")
         notificationAdapter.setItems(notifications)
     }
