@@ -122,7 +122,7 @@
                         android:background="@drawable/circularbordersolid"
                         android:fontFamily="@font/proximanovaregular"
                         android:padding="10dp"
-                        android:text="Instructions"
+                        android:text="Directions"
                         android:textStyle="bold"
                         android:textColor="@color/blue"
                         android:textSize="12sp" />

@@ -133,7 +133,7 @@ class RecipeFragment : Fragment() {
         }
         // comment details
         if (item.comments != null){
-            commentTitle.text = String.format(commentTitle.text.toString(), item.comments!!.size)
+            commentTitle.text = String.format(commentMsg, item.comments!!.size)
             setNavigateToCommentComponents()
             if(item.comments!!.size > 0)
             {
@@ -144,7 +144,15 @@ class RecipeFragment : Fragment() {
                     tempComment = item.comments!![1]
                     commentTwoUsername.text = tempComment.userName
                     commentTwoContent.text = tempComment.commentContent
+                }else{
+                    commentTwoUsername.text = ""
+                    commentTwoContent.text = ""
                 }
+            }else{
+                commentOneUsername.text = ""
+                commentOneContent.text = ""
+                commentTwoUsername.text = ""
+                commentTwoContent.text = ""
             }
         }
         setAddCommentButton()
