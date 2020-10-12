@@ -134,13 +134,14 @@ class AppDb {
 
     fun getUserNotification() : ArrayList<AppNotification>? {
         printNotificationToLog()
+        Log.d("notificationLifecycle", "getUserNotification appDB size = ${userAppNotification?.size}")
         return userAppNotification
     }
 
     private fun printNotificationToLog() {
         if (userAppNotification != null) {
             for (not in userAppNotification!!) {
-                Log.d("notificationPrint", "notification uid = ${not.uid}")
+                Log.d("notificationLifecycle", "notification uid = ${not.uid}")
             }
         }
     }

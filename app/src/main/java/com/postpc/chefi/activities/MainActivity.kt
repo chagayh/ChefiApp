@@ -17,7 +17,11 @@ import com.postpc.chefi.R
 import com.postpc.chefi.database.DbUser
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.postpc.chefi.database.AppNotification
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
@@ -27,6 +31,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
 
     private var currentPhotoPath: String? = null
     private var capturedImageUri: Uri? = null
+    private var notificationsList: ArrayList<AppNotification>? = null
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var bottomMenu: Menu
     private lateinit var notificationBadge: BadgeDrawable
@@ -116,6 +121,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         return capturedImageUri
     }
 
+    fun getNotificationsList() : ArrayList<AppNotification>? {
+        return notificationsList
+    }
+
+    fun setNotificationsList(notifications : ArrayList<AppNotification>?) {
+        notificationsList = notifications
+    }
+
     fun setCurrentPhotoPath(imagePath: String){
         currentPhotoPath = imagePath
     }
@@ -132,6 +145,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         if (currentPhotoPath != null) {
             outState.putString(getString(R.string.keyPathPhoto), currentPhotoPath);
         }
+
+        if (notificationsList != null) {
+            val notificationsAsJson = Gson().toJson(notificationsList)
+            outState.putString("notificationsList", notificationsAsJson)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -141,6 +159,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener{
         }
         if (savedInstanceState.containsKey(getString(R.string.keyPathPhoto))){
             currentPhotoPath = savedInstanceState.getString(getString(R.string.keyPathPhoto))
+        }
+        if (savedInstanceState.containsKey("notificationsList")) {
+            val notListAsJson = savedInstanceState.getString("notificationsList")
+            val notType = object : TypeToken<ArrayList<AppNotification>>() {}.type
+            notificationsList = Gson().fromJson<ArrayList<AppNotification>>(notListAsJson, notType)
         }
         super.onRestoreInstanceState(savedInstanceState)
     }
