@@ -177,6 +177,8 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                         appContext.updateUserFields("aboutMe", aboutMeDescription.text.toString())
                     }
                 })
+                alertDialog.setNegativeButton("Cancel", DialogInterface.OnClickListener { _, _ ->
+                })
                 alertDialog.create().show()
             }
 
@@ -190,6 +192,8 @@ class ProfileAdapter(private val dbUser: DbUser?, viewLifecycleOwner: LifecycleO
                         holder.nameTextView.text = fullName.text
                         appContext.updateUserFields("name", fullName.text.toString())
                     }
+                })
+                alertDialog.setNegativeButton("Cancel", DialogInterface.OnClickListener { _, _ ->
                 })
                 alertDialog.create().show()
             }

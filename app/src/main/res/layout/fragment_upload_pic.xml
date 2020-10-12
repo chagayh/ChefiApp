@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/lightgrey"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/addFragment"
     tools:context=".fragment.UploadPicFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/constrainLayoutProgressBar"
         android:layout_gravity="center"
         android:orientation="vertical"
@@ -75,15 +76,10 @@
 
     <LinearLayout
         android:id="@+id/mainLinearLayoutAdd"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/lightgrey"
         android:weightSum="1"
-        android:paddingTop="250dp"
-        android:paddingBottom="250dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -94,6 +90,7 @@
             android:layout_height="match_parent"
             android:id="@+id/galleryBtn"
             android:gravity="center"
+            android:padding="50dp"
             android:layout_gravity="top"
             android:layout_weight="0.5"
             android:layout_margin="10dp"
@@ -108,6 +105,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:layout_margin="10dp"
+            android:padding="50dp"
+
             android:layout_weight="0.5"
             android:background="@drawable/circularbordersolid"
             android:fontFamily="@font/proximanovaregular"
