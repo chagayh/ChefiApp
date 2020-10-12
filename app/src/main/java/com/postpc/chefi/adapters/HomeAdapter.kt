@@ -145,7 +145,7 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
         }
         // comment details
         if (item.comments != null){
-            holder.commentTitle.text = String.format(holder.commentTitle.text.toString(), item.comments!!.size)
+            holder.commentTitle.text = String.format(commentMsg, item.comments!!.size)
             setNavigateToCommentComponents(holder, item)
             if(item.comments!!.size > 0)
             {
@@ -156,7 +156,15 @@ class HomeAdapter(val viewLifecycleOwner: LifecycleOwner, private val fragmentVi
                     tempComment = item.comments!![1]
                     holder.commentTwoUsername.text = tempComment.userName
                     holder.commentTwoContent.text = tempComment.commentContent
+                }else{
+                    holder.commentTwoUsername.text = ""
+                    holder.commentTwoContent.text = ""
                 }
+            }else{
+                holder.commentOneUsername.text = ""
+                holder.commentOneContent.text = ""
+                holder.commentTwoUsername.text = ""
+                holder.commentTwoContent.text = ""
             }
         }
         setAddCommentButton(holder, item, position)
